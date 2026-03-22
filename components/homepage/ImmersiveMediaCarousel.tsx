@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 type CarouselSlide = {
@@ -37,48 +37,81 @@ export default function ImmersiveMediaCarousel() {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setActiveSlide((current) => (current + 1) % slides.length);
-    }, 4500);
+    }, 8000);
 
     return () => clearInterval(intervalId);
   }, []);
-
-  const currentSlide = useMemo(() => slides[activeSlide], [activeSlide]);
 
   return (
     <section className="mx-auto mt-12 max-w-6xl px-4">
       <div className="overflow-hidden border border-black/15 bg-black">
         <div className="relative h-90 w-full sm:h-110 lg:h-140">
-          {currentSlide.videoSrc ? (
-            <video
-              key={currentSlide.videoSrc}
-              className="h-full w-full object-cover"
-              autoPlay
-              muted
-              loop
-              playsInline
-              poster={currentSlide.imageSrc}
-            >
-              <source src={currentSlide.videoSrc} type="video/mp4" />
-            </video>
-          ) : (
-            <Image
-              src={currentSlide.imageSrc}
-              alt={currentSlide.label}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1120px"
-              className="object-cover"
-              priority
-            />
-          )}
+          {slides.map((slide, index) => {
+            const isActive = index === activeSlide;
+
+            return (
+              <div
+                key={slide.label}
+                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                  isActive ? "opacity-100" : "opacity-0"
+                }`}
+                aria-hidden={!isActive}
+              >
+                {slide.videoSrc ? (
+                  <video
+                    key={`${slide.videoSrc}-${isActive ? "active" : "idle"}`}
+                    className={`h-full w-full object-cover transition-transform duration-8000 ease-out ${
+                      isActive ? "scale-105" : "scale-100"
+                    }`}
+                    autoPlay={isActive}
+                    muted
+                    loop
+                    playsInline
+                    preload={isActive ? "auto" : "metadata"}
+                    poster={slide.imageSrc}
+                  >
+                    <source src={slide.videoSrc} type="video/mp4" />
+                  </video>
+                ) : (
+                  <Image
+                    src={slide.imageSrc}
+                    alt={slide.label}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1120px"
+                    className={`object-cover transition-transform duration-8000 ease-out ${
+                      isActive ? "scale-105" : "scale-100"
+                    }`}
+                    priority={isActive}
+                  />
+                )}
+              </div>
+            );
+          })}
 
           <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/25 to-transparent" />
 
           <div className="absolute bottom-0 left-0 right-0 p-6 text-white sm:p-8">
-            <p className="text-xs uppercase tracking-[0.2em] text-red-400">Immersive Campaign</p>
-            <h2 className="mt-2 text-3xl font-semibold sm:text-4xl">{currentSlide.label}</h2>
-            <p className="mt-3 max-w-2xl text-sm text-white/80 sm:text-base">
-              {currentSlide.caption}
-            </p>
+            <div className="relative min-h-30 sm:min-h-32">
+              {slides.map((slide, index) => {
+                const isActive = index === activeSlide;
+
+                return (
+                  <div
+                    key={`caption-${slide.label}`}
+                    className={`absolute inset-0 transition-all duration-700 ease-out ${
+                      isActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+                    }`}
+                    aria-hidden={!isActive}
+                  >
+                    <p className="text-xs uppercase tracking-[0.2em] text-red-400">Immersive Campaign</p>
+                    <h2 className="mt-2 text-3xl font-semibold sm:text-4xl">{slide.label}</h2>
+                    <p className="mt-3 max-w-2xl text-sm text-white/80 sm:text-base">
+                      {slide.caption}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
 
