@@ -1,0 +1,11 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1920" height="1080" fill="#F5F5F5"/>
+  <rect x="120" y="120" width="1680" height="840" fill="#FFFFFF" stroke="#121212" stroke-width="2"/>
+  <rect x="220" y="220" width="760" height="640" fill="#0C0C0C"/>
+  <circle cx="1250" cy="520" r="280" fill="#FFFFFF" stroke="#111111" stroke-width="2"/>
+  <circle cx="1250" cy="520" r="200" fill="#151515"/>
+  <circle cx="1250" cy="520" r="180" stroke="#FF2A2A" stroke-width="2"/>
+  <text x="1060" y="540" fill="#FFFFFF" font-size="42" font-family="Times New Roman, serif" letter-spacing="2">ATELIER LINE</text>
+  <text x="1060" y="585" fill="#8F8F8F" font-size="20" font-family="Arial, Helvetica, sans-serif" letter-spacing="2">SHARP TAILORING · MODERN SILHOUETTE</text>
+  <line x1="220" y1="890" x2="1700" y2="890" stroke="#FF2A2A" stroke-width="2"/>
+</svg>
