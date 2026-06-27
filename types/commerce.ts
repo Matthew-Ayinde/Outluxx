@@ -1,4 +1,4 @@
-export type ProductCategory = "women" | "men" | "accessories";
+export type ProductCategory = "tshirts" | "pants" | "armless" | "tank-tops";
 
 export type ProductVariant = {
   label: string;
@@ -30,7 +30,6 @@ export type Product = {
   material: string;
   careInstructions: string;
   tags: string[];
-  designerId: string;
 };
 
 export type CartItem = {
@@ -98,28 +97,4 @@ export type Customer = {
   totalSpent: number;
   joinedAt: string;
   addresses: Address[];
-};
-
-export type Designer = {
-  id: string;
-  slug: string;
-  name: string;
-  origin: string;
-  description: string;
-  image: string;
-  productCount: number;
-  founded: number;
-};
-
-export type EditorialArticle = {
-  id: string;
-  slug: string;
-  title: string;
-  subtitle: string;
-  category: string;
-  coverImage: string;
-  author: string;
-  publishedAt: string;
-  readTime: number;
-  excerpt: string;
 };

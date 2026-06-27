@@ -62,16 +62,16 @@ export default function AboutPage() {
       {/* CTA */}
       <div className="flex flex-wrap gap-4">
         <Link
-          href="/designers"
+          href="/new-arrivals"
           className="inline-block border border-black px-8 py-3 text-xs font-semibold uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
         >
-          Meet Our Designers
+          Shop New Arrivals
         </Link>
         <Link
-          href="/editorial"
+          href="/tshirts"
           className="inline-block border border-black/20 px-8 py-3 text-xs font-semibold uppercase tracking-widest hover:border-black transition-colors"
         >
-          Read the Journal
+          Explore T-Shirts
         </Link>
       </div>
     </div>

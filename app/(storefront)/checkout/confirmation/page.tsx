@@ -1,11 +1,14 @@
 import Link from "next/link";
 
-const ORDER_NUMBER = "OLX-" + Math.floor(29000 + Math.random() * 1000);
+export default async function ConfirmationPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ order?: string }>;
+}) {
+  const { order } = await searchParams;
 
-export default function ConfirmationPage() {
   return (
     <div className="mx-auto max-w-lg py-16 text-center">
-      {/* Checkmark */}
       <div className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-full border-2 border-black">
         <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
           <path d="M2 11l8 8L26 2" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -17,19 +20,19 @@ export default function ConfirmationPage() {
       </p>
       <h1 className="font-heading mb-3 text-3xl font-semibold">Thank You</h1>
       <p className="mb-2 text-sm text-zinc-600">
-        Your order has been placed. We'll send a confirmation to your email shortly.
+        Your order has been placed. A confirmation will be sent to your email shortly.
       </p>
-      <p className="mb-8 text-lg font-semibold">{ORDER_NUMBER}</p>
+      {order && <p className="mb-8 text-lg font-semibold">{order}</p>}
 
       <div className="mb-10 border border-black/10 p-6 text-left text-sm">
         <div className="space-y-3 text-zinc-600">
           <div className="flex justify-between">
             <span className="font-medium text-black">Estimated delivery</span>
-            <span>5–7 business days</span>
+            <span>3–5 business days</span>
           </div>
           <div className="flex justify-between">
-            <span className="font-medium text-black">Shipping to</span>
-            <span>London, United Kingdom</span>
+            <span className="font-medium text-black">Payment</span>
+            <span>Authorised</span>
           </div>
           <div className="flex justify-between">
             <span className="font-medium text-black">Carrier</span>

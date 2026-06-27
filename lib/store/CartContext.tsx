@@ -1,7 +1,9 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useState, useCallback, useEffect } from "react";
 import type { CartItem, Product } from "@/types/commerce";
+
+const CART_STORAGE_KEY = "olx_cart";
 
 type CartState = {
   items: CartItem[];
@@ -17,19 +19,13 @@ type CartContextValue = CartState & {
   clearCart: () => void;
   openCart: () => void;
   closeCart: () => void;
-  applyPromo: (code: string) => boolean;
+  applyPromo: (code: string) => Promise<boolean>;
   itemCount: number;
   subtotal: number;
   total: number;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
-
-const PROMO_CODES: Record<string, number> = {
-  OUTLUXX10: 0.10,
-  FIRST15: 0.15,
-  VIP20: 0.20,
-};
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<CartState>({
@@ -38,6 +34,27 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     promoCode: "",
     discount: 0,
   });
+
+  // Rehydrate from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(CART_STORAGE_KEY);
+      if (saved) {
+        const { items, promoCode, discount } = JSON.parse(saved);
+        setState((s) => ({ ...s, items: items ?? [], promoCode: promoCode ?? "", discount: discount ?? 0 }));
+      }
+    } catch {}
+  }, []);
+
+  // Persist to localStorage whenever items/promo change
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        CART_STORAGE_KEY,
+        JSON.stringify({ items: state.items, promoCode: state.promoCode, discount: state.discount })
+      );
+    } catch {}
+  }, [state.items, state.promoCode, state.discount]);
 
   const addItem = useCallback(
     (product: Product, selectedSize: string, selectedColor: string) => {
@@ -119,15 +136,25 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const closeCart = useCallback(() =>
     setState((prev) => ({ ...prev, isOpen: false })), []);
 
-  const applyPromo = useCallback((code: string): boolean => {
-    const rate = PROMO_CODES[code.toUpperCase()];
-    if (!rate) return false;
-    setState((prev) => ({
-      ...prev,
-      promoCode: code.toUpperCase(),
-      discount: rate,
-    }));
-    return true;
+  const applyPromo = useCallback(async (code: string): Promise<boolean> => {
+    try {
+      const res = await fetch("/api/promo/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+      if (!res.ok) return false;
+      const json = await res.json();
+      const { discount } = json.data as { code: string; discount: number };
+      setState((prev) => ({
+        ...prev,
+        promoCode: code.toUpperCase(),
+        discount,
+      }));
+      return true;
+    } catch {
+      return false;
+    }
   }, []);
 
   const itemCount = state.items.reduce((n, i) => n + i.quantity, 0);

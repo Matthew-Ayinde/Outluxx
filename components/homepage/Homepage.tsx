@@ -1,157 +1,156 @@
 import Link from "next/link";
-import ImmersiveMediaCarousel from "@/components/homepage/ImmersiveMediaCarousel";
+import Image from "next/image";
 import FeaturedProducts from "@/components/homepage/FeaturedProducts";
-import EditorialStrip from "@/components/homepage/EditorialStrip";
+import BrandStatement from "@/components/homepage/BrandStatement";
 
-const departments = [
-  { label: "Women",      href: "/women",      sub: "Dresses, Coats & More" },
-  { label: "Men",        href: "/men",         sub: "Suits, Knitwear & More" },
-  { label: "Accessories",href: "/accessories", sub: "Bags, Shoes & More" },
-  { label: "Sale",       href: "/sale",        sub: "Up to 30% off" },
+const categories = [
+  {
+    label: "T-Shirts",
+    href: "/tshirts",
+    seed: "olx-cat-ts",
+    sub: "Supima · Pima · Modal",
+  },
+  {
+    label: "Pants",
+    href: "/pants",
+    seed: "olx-cat-pt",
+    sub: "Wool · Linen · Cashmere",
+  },
+  {
+    label: "Armless",
+    href: "/armless",
+    seed: "olx-cat-ar",
+    sub: "Silk · Knit · Linen",
+  },
+  {
+    label: "Tank Tops",
+    href: "/tank-tops",
+    seed: "olx-cat-tt",
+    sub: "Cotton · Silk · Cashmere",
+  },
 ];
 
 const trustItems = [
-  {
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-        <path d="M10 2L3 6v4c0 4 3 7.7 7 9 4-1.3 7-5 7-9V6l-7-4z"
-          stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
-        <path d="M7 10l2 2 4-4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    ),
-    label: "Verified Luxury",
-    sub: "Every piece authenticated",
-  },
-  {
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-        <path d="M3 7h14l-1.5 9H4.5L3 7z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
-        <path d="M7 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      </svg>
-    ),
-    label: "Global Shipping",
-    sub: "Free on orders over $250",
-  },
-  {
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-        <path d="M4 10h12M4 10l4-4M4 10l4 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    ),
-    label: "Easy Returns",
-    sub: "30-day free returns",
-  },
+  { label: "Authenticated Luxury", sub: "Every piece verified" },
+  { label: "Global Shipping",      sub: "Complimentary over $250" },
+  { label: "30-Day Returns",       sub: "Free, no questions asked" },
 ];
 
 export default function Homepage() {
   return (
-    <div className="bg-white">
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-black text-white">
-        <div className="absolute -left-16 top-12 h-56 w-56 rounded-full border border-red-500/20" />
-        <div className="absolute -right-24 bottom-8 h-72 w-72 rounded-full border border-white/10" />
+    <div className="bg-background">
+      {/* ── Hero ──────────────────────────────────────────────────────────── */}
+      <section className="relative h-screen overflow-hidden bg-black">
+        <Image
+          src="https://picsum.photos/seed/olx-hero-main/1600/900"
+          alt="Outluxx hero"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover opacity-70"
+        />
+        {/* Subtle dark vignette at bottom only */}
+        <div className="absolute inset-x-0 bottom-0 h-2/5 bg-black/50" style={{ maskImage: "linear-gradient(to bottom, transparent, black)" }} />
 
-        <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-16 md:grid-cols-[1.2fr_0.8fr] md:items-end lg:py-24">
-          <div>
-            <p className="mb-4 text-[11px] font-medium uppercase tracking-[0.24em] text-red-400">
-              Outluxx • Premium Fashion House
-            </p>
-            <h1 className="max-w-3xl text-5xl font-semibold leading-[1.02] sm:text-6xl lg:text-7xl">
-              A New Language
-              <span className="ml-3 text-red-500">of Luxury</span>
-            </h1>
-            <p className="mt-6 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">
-              Discover timeless tailoring, elevated essentials, and editorial pieces
-              designed to command attention.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="/new-arrivals"
-                className="border border-white px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] hover:border-red-500 hover:text-red-400 transition-colors"
-              >
-                Shop New Arrivals
-              </Link>
-              <Link
-                href="/editorial"
-                className="border border-red-600 bg-red-600 px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-white hover:bg-red-700 transition-colors"
-              >
-                View Campaign
-              </Link>
-            </div>
-          </div>
-
-          <div className="border border-white/15 bg-white/5 p-6">
-            <p className="text-[10px] uppercase tracking-[0.2em] text-red-400">Featured Capsule</p>
-            <h2 className="mt-2 text-3xl font-semibold">Noir Atelier 26</h2>
-            <p className="mt-3 text-sm leading-7 text-white/70">
-              Precision tailoring, expressive textures, and sculpted monochrome statements
-              for day-to-night dressing.
-            </p>
-            <div className="mt-4 text-[10px] uppercase tracking-[0.18em] text-white/50">
-              Limited release · Worldwide shipping
-            </div>
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-5 text-center text-white">
+          <p className="animate-fade-up-delay-1 text-[10px] font-medium uppercase tracking-[0.35em] text-white/60">
+            Outluxx · Premium Fashion House
+          </p>
+          <h1 className="animate-fade-up-delay-2 mt-4 font-heading text-6xl font-light leading-[1.05] tracking-[-0.01em] sm:text-7xl lg:text-8xl xl:text-9xl">
+            Refined.
+            <br />
+            Restrained.
+            <br />
+            Resolute.
+          </h1>
+          <p className="animate-fade-up-delay-3 mt-8 max-w-sm text-sm font-light leading-7 text-white/60 sm:max-w-md">
+            Considered apparel built on exceptional material and precise construction. For wardrobes that outlast trends.
+          </p>
+          <div className="animate-fade-up-delay-4 mt-10 flex items-center gap-6">
             <Link
-              href="/editorial/the-art-of-layering"
-              className="mt-5 inline-block text-[11px] font-medium uppercase tracking-[0.14em] text-red-400 hover:text-red-300 transition-colors"
+              href="/new-arrivals"
+              className="border border-white px-8 py-3 text-[11px] font-medium uppercase tracking-[0.2em] text-white transition-all duration-300 hover:bg-white hover:text-black"
             >
-              Explore the collection →
+              Shop New Arrivals
             </Link>
           </div>
         </div>
+
+        {/* Scroll indicator */}
+        <div className="animate-fade-in absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+          <div className="h-10 w-px bg-white/30" />
+          <p className="text-[9px] font-medium uppercase tracking-[0.28em] text-white/40">Scroll</p>
+        </div>
       </section>
 
-      {/* Carousel */}
-      <ImmersiveMediaCarousel />
-
-      {/* Departments */}
-      <section className="mx-auto max-w-6xl px-4 py-14">
-        <div className="mb-6 flex items-end justify-between gap-4 border-b border-black/10 pb-4">
-          <h2 className="text-3xl font-semibold sm:text-4xl">Curated Departments</h2>
-          <Link
-            href="/designers"
-            className="text-[11px] font-medium uppercase tracking-[0.14em] text-red-600 hover:text-red-700 transition-colors"
-          >
-            Explore Designers
-          </Link>
+      {/* ── Category Grid ─────────────────────────────────────────────────── */}
+      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+        <div className="mb-12 flex items-end justify-between border-b border-border pb-6">
+          <div>
+            <p className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.28em] text-muted">
+              Collections
+            </p>
+            <h2 className="font-heading text-4xl font-light sm:text-5xl">
+              Shop by Category
+            </h2>
+          </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {departments.map((dept) => (
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
+          {categories.map((cat, i) => (
             <Link
-              key={dept.label}
-              href={dept.href}
-              className="group border border-black/15 p-6 hover:border-red-600 transition-colors"
+              key={cat.href}
+              href={cat.href}
+              className="group relative overflow-hidden bg-surface"
+              style={{ animationDelay: `${i * 80}ms` }}
             >
-              <p className="text-[10px] uppercase tracking-widest text-black/40">Outluxx</p>
-              <p className="mt-8 text-2xl font-semibold">{dept.label}</p>
-              <p className="mt-2 text-xs text-black/50">{dept.sub}</p>
-              <p className="mt-4 text-[11px] font-medium uppercase tracking-[0.12em] text-black group-hover:text-red-600 transition-colors">
-                View Collection →
-              </p>
+              <div className="relative aspect-[3/4] w-full overflow-hidden">
+                <Image
+                  src={`https://picsum.photos/seed/${cat.seed}/600/800`}
+                  alt={cat.label}
+                  fill
+                  sizes="(max-width: 640px) 50vw, 25vw"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                />
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-black/20 transition-opacity duration-500 group-hover:bg-black/30" />
+              </div>
+
+              {/* Caption */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 text-white sm:p-5">
+                <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/60">
+                  {cat.sub}
+                </p>
+                <p className="mt-1 font-heading text-xl font-light sm:text-2xl">
+                  {cat.label}
+                </p>
+                <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-white/50 transition-opacity duration-300 group-hover:text-white/80">
+                  Explore →
+                </p>
+              </div>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* Featured Products */}
-      <div className="border-t border-black/10">
+      {/* ── Featured Products ──────────────────────────────────────────────── */}
+      <div className="border-t border-border">
         <FeaturedProducts />
       </div>
 
-      {/* Editorial */}
-      <EditorialStrip />
+      {/* ── Brand Statement ────────────────────────────────────────────────── */}
+      <BrandStatement />
 
-      {/* Trust strip */}
-      <section className="border-y border-black/10 bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-8">
+      {/* ── Trust Strip ───────────────────────────────────────────────────── */}
+      <section className="border-y border-border bg-surface">
+        <div className="mx-auto max-w-7xl px-5 py-10 lg:px-8">
           <div className="grid gap-6 sm:grid-cols-3">
             {trustItems.map((item) => (
-              <div key={item.label} className="flex items-start gap-4">
-                <div className="shrink-0 text-black">{item.icon}</div>
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em]">{item.label}</p>
-                  <p className="mt-0.5 text-xs text-zinc-500">{item.sub}</p>
-                </div>
+              <div key={item.label} className="flex flex-col items-center text-center gap-1 py-2">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground">
+                  {item.label}
+                </p>
+                <p className="text-xs text-muted">{item.sub}</p>
               </div>
             ))}
           </div>

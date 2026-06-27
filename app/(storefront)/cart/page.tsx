@@ -13,9 +13,9 @@ export default function CartPage() {
   const [promoError, setPromoError] = useState("");
   const [promoSuccess, setPromoSuccess] = useState(false);
 
-  function handlePromo(e: React.FormEvent) {
+  async function handlePromo(e: React.FormEvent) {
     e.preventDefault();
-    const ok = applyPromo(promoInput.trim());
+    const ok = await applyPromo(promoInput.trim());
     if (ok) {
       setPromoSuccess(true);
       setPromoError("");
@@ -40,7 +40,7 @@ export default function CartPage() {
           <h2 className="mb-3 text-xl font-semibold">Your bag is empty</h2>
           <p className="mb-8 text-sm text-zinc-500">Add items to your bag to see them here.</p>
           <Link
-            href="/women"
+            href="/tshirts"
             className="inline-block border border-black px-8 py-3 text-xs font-semibold uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
           >
             Continue Shopping
@@ -84,7 +84,7 @@ export default function CartPage() {
                     </p>
                     <Link
                       href={`/products/${item.product.slug}`}
-                      className="mt-0.5 block text-sm font-medium hover:text-red-600 transition-colors"
+                      className="mt-0.5 block text-sm font-medium opacity-80 hover:opacity-100 transition-opacity"
                     >
                       {item.product.title}
                     </Link>
@@ -147,7 +147,7 @@ export default function CartPage() {
               </button>
             </form>
           )}
-          {promoError && <p className="mb-3 text-xs text-red-600">{promoError}</p>}
+          {promoError && <p className="mb-3 text-xs text-foreground opacity-60">{promoError}</p>}
           {promoSuccess && (
             <p className="mb-3 text-xs text-green-700">
               Code applied: {promoCode} ({Math.round(discount * 100)}% off)
@@ -160,7 +160,7 @@ export default function CartPage() {
               <span className="font-medium">{formatMoney(subtotal)}</span>
             </div>
             {discount > 0 && (
-              <div className="flex justify-between text-red-600">
+              <div className="flex justify-between text-foreground opacity-60">
                 <span>Discount ({Math.round(discount * 100)}%)</span>
                 <span>–{formatMoney(subtotal * discount)}</span>
               </div>
@@ -191,8 +191,8 @@ export default function CartPage() {
           </Link>
 
           <Link
-            href="/women"
-            className="mt-3 flex items-center justify-center text-xs text-zinc-400 underline underline-offset-2 hover:text-black transition-colors"
+            href="/tshirts"
+            className="mt-3 flex items-center justify-center text-xs text-muted underline underline-offset-2 hover:opacity-100 transition-opacity"
           >
             Continue Shopping
           </Link>

@@ -1,8 +1,10 @@
 export const routes = {
   home: "/",
-  women: "/women",
-  men: "/men",
-  accessories: "/accessories",
+  tshirts: "/tshirts",
+  pants: "/pants",
+  armless: "/armless",
+  tankTops: "/tank-tops",
+  newArrivals: "/new-arrivals",
   sale: "/sale",
   cart: "/cart",
   checkout: "/checkout",

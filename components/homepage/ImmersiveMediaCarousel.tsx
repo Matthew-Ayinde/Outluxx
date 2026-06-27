@@ -3,149 +3,80 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-type CarouselSlide = {
-  label: string;
-  caption: string;
-  imageSrc: string;
-  videoSrc?: string;
-};
+type Slide = { label: string; caption: string; seed: string };
 
-const slides = [
-  {
-    imageSrc: "/media/home/slide-1.svg",
-    videoSrc: "/media/home/slide-1.mp4",
-    label: "Noir Editorial",
-    caption: "A cinematic monochrome story with signature red accents.",
-  },
-  {
-    imageSrc: "/media/home/slide-2.svg",
-    videoSrc: "/media/home/slide-2.mp4",
-    label: "Atelier Line",
-    caption: "Sharp tailoring and gallery-inspired visual composition.",
-  },
-  {
-    imageSrc: "/media/home/slide-3.svg",
-    videoSrc: "/media/home/slide-3.mp4",
-    label: "Night Signature",
-    caption: "Minimal luxury silhouettes with high-contrast mood.",
-  },
-] satisfies CarouselSlide[];
+const slides: Slide[] = [
+  { seed: "olx-slide-a", label: "Autumn Collection", caption: "Precision tailoring and considered materials for the season ahead." },
+  { seed: "olx-slide-b", label: "Monochrome Edit",   caption: "A study in restraint — black, white, and the space between." },
+  { seed: "olx-slide-c", label: "The Essentials",    caption: "Foundational pieces elevated to their highest possible expression." },
+];
 
 export default function ImmersiveMediaCarousel() {
-  const [activeSlide, setActiveSlide] = useState(0);
+  const [active, setActive] = useState(0);
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setActiveSlide((current) => (current + 1) % slides.length);
-    }, 8000);
-
-    return () => clearInterval(intervalId);
+    const id = setInterval(() => setActive((c) => (c + 1) % slides.length), 7000);
+    return () => clearInterval(id);
   }, []);
 
   return (
-    <section className="mx-auto mt-12 max-w-6xl px-4">
-      <div className="overflow-hidden border border-black/15 bg-black">
-        <div className="relative h-90 w-full sm:h-110 lg:h-140">
-          {slides.map((slide, index) => {
-            const isActive = index === activeSlide;
-
-            return (
-              <div
-                key={slide.label}
-                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                  isActive ? "opacity-100" : "opacity-0"
-                }`}
-                aria-hidden={!isActive}
-              >
-                {slide.videoSrc ? (
-                  <video
-                    key={`${slide.videoSrc}-${isActive ? "active" : "idle"}`}
-                    className={`h-full w-full object-cover transition-transform duration-8000 ease-out ${
-                      isActive ? "scale-105" : "scale-100"
-                    }`}
-                    autoPlay={isActive}
-                    muted
-                    loop
-                    playsInline
-                    preload={isActive ? "auto" : "metadata"}
-                    poster={slide.imageSrc}
-                  >
-                    <source src={slide.videoSrc} type="video/mp4" />
-                  </video>
-                ) : (
-                  <Image
-                    src={slide.imageSrc}
-                    alt={slide.label}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1120px"
-                    className={`object-cover transition-transform duration-8000 ease-out ${
-                      isActive ? "scale-105" : "scale-100"
-                    }`}
-                    priority={isActive}
-                  />
-                )}
-              </div>
-            );
-          })}
-
-          <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/25 to-transparent" />
-
-          <div className="absolute bottom-0 left-0 right-0 p-6 text-white sm:p-8">
-            <div className="relative min-h-30 sm:min-h-32">
-              {slides.map((slide, index) => {
-                const isActive = index === activeSlide;
-
-                return (
-                  <div
-                    key={`caption-${slide.label}`}
-                    className={`absolute inset-0 transition-all duration-700 ease-out ${
-                      isActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-                    }`}
-                    aria-hidden={!isActive}
-                  >
-                    <p className="text-xs uppercase tracking-[0.2em] text-red-400">Immersive Campaign</p>
-                    <h2 className="mt-2 text-3xl font-semibold sm:text-4xl">{slide.label}</h2>
-                    <p className="mt-3 max-w-2xl text-sm text-white/80 sm:text-base">
-                      {slide.caption}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
+    <section className="mx-auto max-w-7xl px-5 py-6 lg:px-8">
+      <div className="relative overflow-hidden bg-black" style={{ aspectRatio: "16/7" }}>
+        {slides.map((slide, i) => (
+          <div
+            key={slide.seed}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+              i === active ? "opacity-100" : "opacity-0"
+            }`}
+            aria-hidden={i !== active}
+          >
+            <Image
+              src={`https://picsum.photos/seed/${slide.seed}/1600/700`}
+              alt={slide.label}
+              fill
+              sizes="(max-width: 1280px) 100vw, 1280px"
+              className={`object-cover transition-transform duration-7000 ease-out ${
+                i === active ? "scale-105" : "scale-100"
+              }`}
+              priority={i === 0}
+            />
+            <div className="absolute inset-0 bg-black/30" />
           </div>
+        ))}
+
+        {/* Caption */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10">
+          {slides.map((slide, i) => (
+            <div
+              key={`cap-${slide.seed}`}
+              className={`absolute inset-x-6 bottom-6 sm:inset-x-10 sm:bottom-10 transition-all duration-700 ease-out ${
+                i === active ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              }`}
+              aria-hidden={i !== active}
+            >
+              <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-white/50">
+                Campaign
+              </p>
+              <h2 className="mt-2 font-heading text-3xl font-light text-white sm:text-4xl">
+                {slide.label}
+              </h2>
+              <p className="mt-2 max-w-sm text-sm text-white/60">{slide.caption}</p>
+            </div>
+          ))}
         </div>
 
-        <div className="flex items-center justify-between border-t border-white/15 bg-black px-4 py-4 text-white sm:px-6">
-          <div className="flex items-center gap-2">
-            {slides.map((slide, index) => (
-              <button
-                type="button"
-                key={slide.label}
-                onClick={() => setActiveSlide(index)}
-                className={`h-2.5 w-10 transition ${
-                  index === activeSlide ? "bg-red-500" : "bg-white/30 hover:bg-white/50"
-                }`}
-                aria-label={`Show ${slide.label}`}
-              />
-            ))}
-          </div>
-
-          <div className="flex items-center gap-2">
+        {/* Controls */}
+        <div className="absolute bottom-6 right-6 flex items-center gap-3 sm:bottom-10 sm:right-10">
+          {slides.map((slide, i) => (
             <button
-              type="button"
-              onClick={() => setActiveSlide((activeSlide - 1 + slides.length) % slides.length)}
-              className="border border-white/30 px-4 py-1.5 text-xs uppercase tracking-[0.16em] hover:border-red-500 hover:text-red-400"
-            >
-              Prev
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveSlide((activeSlide + 1) % slides.length)}
-              className="border border-white/30 px-4 py-1.5 text-xs uppercase tracking-[0.16em] hover:border-red-500 hover:text-red-400"
-            >
-              Next
-            </button>
-          </div>
+              key={`dot-${slide.seed}`}
+              onClick={() => setActive(i)}
+              className={`h-px transition-all duration-300 ${
+                i === active ? "w-8 bg-white" : "w-4 bg-white/30 hover:bg-white/60"
+              }`}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
         </div>
       </div>
     </section>

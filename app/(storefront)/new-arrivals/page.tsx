@@ -1,22 +1,16 @@
 import PLPTemplate from "@/components/plp/PLPTemplate";
-import { getNewArrivals } from "@/lib/data";
+import { getNewArrivals } from "@/lib/data/server";
 
 export const metadata = { title: "New Arrivals" };
 
-export default function NewArrivalsPage() {
-  const products = getNewArrivals();
-  const subcats = [...new Set(products.map((p) => p.subcategory))];
-  const colors = [...new Set(products.flatMap((p) => p.colors.map((c) => c.label)))];
-  const brands = [...new Set(products.map((p) => p.brand))];
-
+export default async function NewArrivalsPage() {
+  const products = await getNewArrivals();
   return (
     <PLPTemplate
       title="New Arrivals"
-      subtitle="The latest from our most considered houses."
+      subtitle="The latest from the edit."
+      heroSeed="olx-hero-newarrivals"
       products={products}
-      subcategories={subcats}
-      colors={colors}
-      brands={brands}
     />
   );
 }

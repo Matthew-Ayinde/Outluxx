@@ -1,22 +1,16 @@
 import PLPTemplate from "@/components/plp/PLPTemplate";
-import { getSaleProducts } from "@/lib/data";
+import { getSaleProducts } from "@/lib/data/server";
 
 export const metadata = { title: "Sale" };
 
-export default function SalePage() {
-  const products = getSaleProducts();
-  const subcats = [...new Set(products.map((p) => p.subcategory))];
-  const colors = [...new Set(products.flatMap((p) => p.colors.map((c) => c.label)))];
-  const brands = [...new Set(products.map((p) => p.brand))];
-
+export default async function SalePage() {
+  const products = await getSaleProducts();
   return (
     <PLPTemplate
       title="Sale"
-      subtitle="Exceptional pieces at exceptional prices."
+      subtitle="Exceptional pieces. Exceptional prices."
+      heroSeed="olx-hero-sale"
       products={products}
-      subcategories={subcats}
-      colors={colors}
-      brands={brands}
     />
   );
 }

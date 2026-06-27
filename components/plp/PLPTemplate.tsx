@@ -1,89 +1,116 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useMemo } from "react";
 import ProductGrid from "@/components/product/ProductGrid";
-import FilterSidebar, { type FilterState } from "@/components/plp/FilterSidebar";
 import SortDropdown from "@/components/plp/SortDropdown";
 import type { Product } from "@/types/commerce";
 
 type PLPTemplateProps = {
   title: string;
   subtitle?: string;
+  heroSeed: string;
   products: Product[];
-  subcategories: string[];
-  colors: string[];
-  brands: string[];
 };
 
-export default function PLPTemplate({
-  title, subtitle, products, subcategories, colors, brands,
-}: PLPTemplateProps) {
+export default function PLPTemplate({ title, subtitle, heroSeed, products }: PLPTemplateProps) {
   const [sort, setSort] = useState("featured");
-  const [filters, setFilters] = useState<FilterState>({
-    subcategories: [], colors: [], brands: [], priceMin: 0, priceMax: 10000,
-  });
+  const [sizeFilter, setSizeFilter] = useState<string[]>([]);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+  const allSizes = useMemo(
+    () => [...new Set(products.flatMap((p) => p.sizes.map((s) => s.label)))],
+    [products]
+  );
 
   const filtered = useMemo(() => {
     let result = [...products];
-
-    if (filters.subcategories.length)
-      result = result.filter((p) => filters.subcategories.includes(p.subcategory));
-    if (filters.colors.length)
-      result = result.filter((p) => p.colors.some((c) => filters.colors.includes(c.label)));
-    if (filters.brands.length)
-      result = result.filter((p) => filters.brands.includes(p.brand));
-
+    if (sizeFilter.length)
+      result = result.filter((p) => p.sizes.some((s) => sizeFilter.includes(s.label) && s.available));
     switch (sort) {
       case "price-asc":  result.sort((a, b) => a.price - b.price); break;
       case "price-desc": result.sort((a, b) => b.price - a.price); break;
       case "newest":     result.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0)); break;
     }
-
     return result;
-  }, [products, filters, sort]);
+  }, [products, sizeFilter, sort]);
+
+  function toggleSize(s: string) {
+    setSizeFilter((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]);
+  }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
-      {/* Page header */}
-      <div className="mb-8 border-b border-black/10 pb-6">
-        <h1 className="text-4xl font-semibold sm:text-5xl">{title}</h1>
-        {subtitle && <p className="mt-2 text-sm text-zinc-500">{subtitle}</p>}
-      </div>
-
-      {/* Mobile filter toggle */}
-      <div className="mb-4 flex items-center justify-between md:hidden">
-        <button
-          onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
-          className="flex items-center gap-2 border border-black/15 px-4 py-2 text-xs font-medium uppercase tracking-[0.12em]"
-        >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M1 3h12M3 7h8M5 11h4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-          </svg>
-          Filters
-        </button>
-        <SortDropdown value={sort} onChange={setSort} count={filtered.length} />
-      </div>
-
-      <div className="flex gap-10">
-        {/* Sidebar — desktop always visible, mobile conditionally */}
-        <div className={["hidden md:block", mobileFiltersOpen ? "!block" : ""].join(" ")}>
-          <FilterSidebar
-            subcategories={subcategories}
-            colors={colors}
-            brands={brands}
-            filters={filters}
-            onChange={setFilters}
-          />
+    <div className="bg-background">
+      {/* Hero */}
+      <div className="relative h-[38vh] min-h-52 overflow-hidden bg-black">
+        <Image
+          src={`https://picsum.photos/seed/${heroSeed}/1600/600`}
+          alt={title}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover opacity-60"
+        />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white">
+          {subtitle && (
+            <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.3em] text-white/60">
+              {subtitle}
+            </p>
+          )}
+          <h1 className="font-heading text-5xl font-light sm:text-6xl lg:text-7xl">{title}</h1>
         </div>
+      </div>
 
-        {/* Products */}
-        <div className="flex-1 min-w-0">
-          <div className="mb-6 hidden md:block">
-            <SortDropdown value={sort} onChange={setSort} count={filtered.length} />
+      <div className="mx-auto max-w-7xl px-5 py-10 lg:px-8">
+        {/* Toolbar */}
+        <div className="mb-8 flex items-center justify-between border-b border-border pb-5">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
+              className="flex items-center gap-2 border border-border px-4 py-2 text-[11px] font-medium uppercase tracking-[0.14em] text-foreground transition-colors hover:border-foreground"
+            >
+              <svg width="14" height="12" viewBox="0 0 14 12" fill="none">
+                <path d="M1 2h12M3 6h8M5 10h4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+              </svg>
+              Filter
+            </button>
+            <span className="text-xs text-muted">{filtered.length} pieces</span>
           </div>
-          <ProductGrid products={filtered} columns={3} />
+          <SortDropdown value={sort} onChange={setSort} count={filtered.length} />
         </div>
+
+        {/* Size filter strip */}
+        {mobileFiltersOpen && allSizes.length > 0 && (
+          <div className="mb-8 flex flex-wrap items-center gap-2 border-b border-border pb-6">
+            <p className="mr-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
+              Size
+            </p>
+            {allSizes.map((s) => (
+              <button
+                key={s}
+                onClick={() => toggleSize(s)}
+                className={[
+                  "border px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider transition-colors",
+                  sizeFilter.includes(s)
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border text-foreground hover:border-foreground",
+                ].join(" ")}
+              >
+                {s}
+              </button>
+            ))}
+            {sizeFilter.length > 0 && (
+              <button
+                onClick={() => setSizeFilter([])}
+                className="ml-1 text-[10px] text-muted underline underline-offset-2 hover:opacity-100 transition-opacity opacity-70"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        )}
+
+        <ProductGrid products={filtered} columns={4} />
       </div>
     </div>
   );

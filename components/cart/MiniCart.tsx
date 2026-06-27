@@ -102,7 +102,7 @@ export default function MiniCart() {
                         <span className="text-xs text-zinc-500">Qty {item.quantity}</span>
                         <button
                           onClick={() => removeItem(item.product.id, item.selectedSize, item.selectedColor)}
-                          className="text-[10px] font-medium uppercase tracking-widest text-zinc-400 hover:text-red-600 transition-colors"
+                          className="text-[10px] font-medium uppercase tracking-widest text-muted transition-opacity hover:opacity-100"
                         >
                           Remove
                         </button>

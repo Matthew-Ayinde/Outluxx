@@ -3,36 +3,117 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/store/CartContext";
+import { useCheckout } from "@/lib/store/CheckoutContext";
 import { formatMoney } from "@/lib/utils/format";
+import { createIntent } from "@/lib/api/checkout";
+import type { CheckoutItem } from "@/lib/api/checkout";
+import { ApiError } from "@/lib/api/client";
 import Image from "next/image";
 
 export default function ShippingPage() {
   const router = useRouter();
-  const { items, subtotal, total, discount } = useCart();
-  const shipping = subtotal >= 500 ? 0 : 15;
+  const { items, subtotal, total, discount, promoCode } = useCart();
+  const { setShipping, setIntent, setCartItems } = useCheckout();
+
+  const [deliveryMethod, setDeliveryMethod] = useState<"standard" | "express">("standard");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const shipping = deliveryMethod === "express" ? 25 : subtotal >= 500 ? 0 : 15;
 
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "", phone: "",
-    line1: "", line2: "", city: "", state: "", postcode: "", country: "United Kingdom",
+    line1: "", line2: "", city: "", state: "", postalCode: "", country: "United Kingdom",
   });
 
   function set(field: string, val: string) {
     setForm((prev) => ({ ...prev, [field]: val }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    router.push("/checkout/payment");
+    setLoading(true);
+    setError("");
+
+    try {
+      const checkoutItems: CheckoutItem[] = items.map((i) => ({
+        slug: i.product.slug,
+        quantity: i.quantity,
+        selectedSize: i.selectedSize,
+        selectedColor: i.selectedColor,
+      }));
+
+      const { shippingAddress, deliveryMethod: dm, ...rest } = {
+        shippingAddress: {
+          firstName: form.firstName,
+          lastName: form.lastName,
+          line1: form.line1,
+          line2: form.line2 || undefined,
+          city: form.city,
+          state: form.state || undefined,
+          postalCode: form.postalCode,
+          country: form.country,
+        },
+        deliveryMethod,
+        ...({} as object),
+      };
+      void rest;
+
+      const address = {
+        firstName: form.firstName,
+        lastName: form.lastName,
+        line1: form.line1,
+        line2: form.line2 || undefined,
+        city: form.city,
+        state: form.state || undefined,
+        postalCode: form.postalCode,
+        country: form.country,
+      };
+
+      const result = await createIntent({
+        items: checkoutItems,
+        deliveryMethod,
+        customerEmail: form.email,
+        promoCode: promoCode || undefined,
+      });
+
+      setShipping(address, deliveryMethod);
+      setIntent(result.paymentIntentId, result.breakdown);
+      setCartItems(checkoutItems);
+
+      // Store email in sessionStorage for use on confirm
+      sessionStorage.setItem("olx_checkout_email", form.email);
+
+      router.push("/checkout/payment");
+    } catch (e) {
+      setError(e instanceof ApiError ? e.message : "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (items.length === 0) {
+    return (
+      <div className="py-20 text-center">
+        <p className="text-zinc-500">Your cart is empty.</p>
+        <a href="/" className="mt-4 inline-block text-xs font-semibold uppercase tracking-widest underline">
+          Continue Shopping
+        </a>
+      </div>
+    );
   }
 
   return (
     <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_360px]">
-      {/* Form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-8">
         <div>
           <h1 className="mb-1 text-2xl font-semibold">Shipping Address</h1>
           <p className="text-sm text-zinc-500">Step 1 of 3</p>
         </div>
+
+        {error && (
+          <div className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>
+        )}
 
         <section className="flex flex-col gap-4">
           <div className="grid grid-cols-2 gap-4">
@@ -48,7 +129,7 @@ export default function ShippingPage() {
             <Field label="County / State" value={form.state} onChange={(v) => set("state", v)} />
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <Field label="Postcode / ZIP" value={form.postcode} onChange={(v) => set("postcode", v)} required />
+            <Field label="Postcode / ZIP" value={form.postalCode} onChange={(v) => set("postalCode", v)} required />
             <div>
               <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Country</label>
               <select
@@ -67,13 +148,19 @@ export default function ShippingPage() {
         <section>
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest">Delivery Method</h2>
           <div className="space-y-3">
-            {[
-              { id: "standard", label: "Standard Delivery", time: "3–5 business days", price: shipping === 0 ? "Free" : formatMoney(15) },
-              { id: "express", label: "Express Delivery", time: "1–2 business days", price: formatMoney(25) },
-            ].map((opt) => (
+            {([
+              { id: "standard" as const, label: "Standard Delivery", time: "3–5 business days", price: subtotal >= 500 ? "Free" : formatMoney(15) },
+              { id: "express" as const, label: "Express Delivery", time: "1–2 business days", price: formatMoney(25) },
+            ]).map((opt) => (
               <label key={opt.id} className="flex cursor-pointer items-center justify-between border border-black/15 p-4 hover:border-black transition-colors">
                 <div className="flex items-center gap-3">
-                  <input type="radio" name="delivery" defaultChecked={opt.id === "standard"} className="accent-black" />
+                  <input
+                    type="radio"
+                    name="delivery"
+                    checked={deliveryMethod === opt.id}
+                    onChange={() => setDeliveryMethod(opt.id)}
+                    className="accent-black"
+                  />
                   <div>
                     <p className="text-sm font-medium">{opt.label}</p>
                     <p className="text-xs text-zinc-500">{opt.time}</p>
@@ -87,13 +174,13 @@ export default function ShippingPage() {
 
         <button
           type="submit"
-          className="mt-2 flex h-12 w-full items-center justify-center bg-black text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors"
+          disabled={loading}
+          className="mt-2 flex h-12 w-full items-center justify-center bg-black text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors disabled:opacity-60"
         >
-          Continue to Payment
+          {loading ? "Please wait…" : "Continue to Payment"}
         </button>
       </form>
 
-      {/* Order summary */}
       <OrderSummary items={items} subtotal={subtotal} total={total} discount={discount} shipping={shipping} />
     </div>
   );
