@@ -1,16 +1,32 @@
 import Link from "next/link";
-import { orders } from "@/lib/data";
+import { redirect } from "next/navigation";
+import { getSession } from "@/lib/utils/auth";
+import { getCustomerOrders } from "@/lib/data/server";
 import { formatMoney } from "@/lib/utils/format";
 
 export const metadata = { title: "My Orders" };
 
-export default function OrdersPage() {
+export default async function OrdersPage() {
+  const session = await getSession();
+  if (!session) redirect("/account/sign-in?redirect=/account/orders");
+
+  const orders = await getCustomerOrders(session.sub);
+
   return (
     <div>
       <h2 className="mb-6 text-xl font-semibold">Order History</h2>
 
       {orders.length === 0 ? (
-        <p className="text-sm text-zinc-500">You have no orders yet.</p>
+        <div className="border border-black/10 p-8 text-center">
+          <p className="text-sm font-medium">You have no orders yet</p>
+          <p className="mt-1 text-xs text-zinc-500">When you place an order, it will show up here.</p>
+          <Link
+            href="/new-arrivals"
+            className="mt-4 inline-block border border-black px-5 py-2 text-[10px] font-semibold uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+          >
+            Start Shopping
+          </Link>
+        </div>
       ) : (
         <div className="space-y-3">
           {orders.map((order) => (
@@ -36,10 +52,10 @@ export default function OrdersPage() {
               </div>
 
               <div className="mt-3 flex flex-wrap gap-2">
-                {order.items.map((item) => (
-                  <div key={item.productId} className="text-xs text-zinc-500">
+                {order.items.map((item, i) => (
+                  <div key={`${item.productId}-${i}`} className="text-xs text-zinc-500">
                     {item.productTitle}
-                    {order.items.indexOf(item) < order.items.length - 1 ? "," : ""}
+                    {i < order.items.length - 1 ? "," : ""}
                   </div>
                 ))}
               </div>

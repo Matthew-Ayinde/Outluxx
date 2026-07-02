@@ -1,12 +1,18 @@
 import Link from "next/link";
-import { orders } from "@/lib/data";
+import { redirect } from "next/navigation";
+import { getSession } from "@/lib/utils/auth";
+import { getCustomerOrders } from "@/lib/data/server";
 import { formatMoney } from "@/lib/utils/format";
 
 export const metadata = { title: "Returns" };
 
-const returnedOrders = orders.filter((o) => o.status === "returned" || o.status === "delivered");
+export default async function ReturnsPage() {
+  const session = await getSession();
+  if (!session) redirect("/account/sign-in?redirect=/account/returns");
 
-export default function ReturnsPage() {
+  const orders = await getCustomerOrders(session.sub);
+  const eligibleOrders = orders.filter((o) => o.status === "returned" || o.status === "delivered");
+
   return (
     <div>
       <h2 className="mb-2 text-xl font-semibold">Returns & Refunds</h2>
@@ -16,30 +22,39 @@ export default function ReturnsPage() {
 
       <div className="mb-6 border border-black/10 p-5">
         <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest">Eligible for Return</h3>
-        <div className="space-y-3">
-          {returnedOrders.slice(0, 3).map((order) => (
-            <div key={order.id} className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium">{order.orderNumber}</p>
-                <p className="text-xs text-zinc-500">
-                  {order.items.map((i) => i.productTitle).join(", ")}
-                </p>
+        {eligibleOrders.length === 0 ? (
+          <p className="text-sm text-zinc-500">
+            No delivered orders yet. Once an order is delivered, it will appear here and can be returned within 14 days.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {eligibleOrders.slice(0, 5).map((order) => (
+              <div key={order.id} className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium">{order.orderNumber}</p>
+                  <p className="text-xs text-zinc-500">
+                    {order.items.map((i) => i.productTitle).join(", ")}
+                  </p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-semibold">{formatMoney(order.total)}</span>
+                  {order.status === "returned" ? (
+                    <span className="border border-purple-200 bg-purple-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-purple-700">
+                      Returned
+                    </span>
+                  ) : (
+                    <Link
+                      href="/support/contact"
+                      className="border border-black px-4 py-1.5 text-[10px] font-semibold uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+                    >
+                      Start Return
+                    </Link>
+                  )}
+                </div>
               </div>
-              <div className="flex items-center gap-4">
-                <span className="text-sm font-semibold">{formatMoney(order.total)}</span>
-                {order.status === "returned" ? (
-                  <span className="border border-purple-200 bg-purple-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-purple-700">
-                    Returned
-                  </span>
-                ) : (
-                  <button className="border border-black px-4 py-1.5 text-[10px] font-semibold uppercase tracking-widest hover:bg-black hover:text-white transition-colors">
-                    Start Return
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="border border-black/10 p-5">

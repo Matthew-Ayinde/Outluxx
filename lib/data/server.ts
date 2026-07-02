@@ -4,9 +4,11 @@
  */
 import connectDB from "@/lib/db/mongoose";
 import { Product as ProductModel } from "@/lib/db/models/Product";
+import { Customer as CustomerModel, type ICustomerAddress } from "@/lib/db/models/Customer";
+import { Order as OrderModel, type IOrderItem, type IAddress, type OrderStatus, type PaymentStatus } from "@/lib/db/models/Order";
 import type { Product, ProductCategory } from "@/types/commerce";
 import type { IProduct } from "@/lib/db/models/Product";
-import type mongoose from "mongoose";
+import mongoose from "mongoose";
 
 type LeanProduct = Omit<IProduct, "_id"> & { _id: mongoose.Types.ObjectId };
 
@@ -89,4 +91,107 @@ export async function getAllProducts(opts: {
 
   const docs = await ProductModel.find(filter).sort(sortObj).lean<LeanProduct[]>();
   return docs.map(toProduct);
+}
+
+// ── Account data (session-scoped) ───────────────────────────────────────────
+
+export interface AccountProfile {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  addresses: ICustomerAddress[];
+  memberSince: string;
+}
+
+export interface AccountOrder {
+  id: string;
+  orderNumber: string;
+  status: OrderStatus;
+  paymentStatus: PaymentStatus;
+  items: IOrderItem[];
+  subtotal: number;
+  shipping: number;
+  discount: number;
+  total: number;
+  shippingAddress: IAddress;
+  deliveryMethod: "standard" | "express";
+  placedAt: string;
+}
+
+interface LeanOrder {
+  _id: mongoose.Types.ObjectId;
+  orderNumber: string;
+  status: OrderStatus;
+  paymentStatus: PaymentStatus;
+  items: IOrderItem[];
+  subtotal: number;
+  shipping: number;
+  discount: number;
+  total: number;
+  shippingAddress: IAddress;
+  deliveryMethod: "standard" | "express";
+  createdAt: Date;
+}
+
+function toAccountOrder(doc: LeanOrder): AccountOrder {
+  return {
+    id: doc._id.toString(),
+    orderNumber: doc.orderNumber,
+    status: doc.status,
+    paymentStatus: doc.paymentStatus,
+    items: doc.items.map(({ productId, productTitle, productBrand, productImage, quantity, selectedSize, selectedColor, price }) => ({
+      productId, productTitle, productBrand, productImage, quantity, selectedSize, selectedColor, price,
+    })),
+    subtotal: doc.subtotal,
+    shipping: doc.shipping,
+    discount: doc.discount,
+    total: doc.total,
+    shippingAddress: {
+      firstName: doc.shippingAddress.firstName,
+      lastName: doc.shippingAddress.lastName,
+      line1: doc.shippingAddress.line1,
+      line2: doc.shippingAddress.line2,
+      city: doc.shippingAddress.city,
+      state: doc.shippingAddress.state,
+      postalCode: doc.shippingAddress.postalCode,
+      country: doc.shippingAddress.country,
+    },
+    deliveryMethod: doc.deliveryMethod,
+    placedAt: doc.createdAt.toISOString(),
+  };
+}
+
+export async function getCustomerProfile(customerId: string): Promise<AccountProfile | null> {
+  await connectDB();
+  const doc = await CustomerModel.findById(customerId).lean();
+  if (!doc) return null;
+  return {
+    id: doc._id.toString(),
+    firstName: doc.firstName,
+    lastName: doc.lastName,
+    email: doc.email,
+    phone: doc.phone,
+    addresses: doc.addresses.map(({ id, label, firstName, lastName, line1, line2, city, state, postalCode, country, isDefault }) => ({
+      id, label, firstName, lastName, line1, line2, city, state, postalCode, country, isDefault,
+    })),
+    memberSince: doc.createdAt.toISOString(),
+  };
+}
+
+export async function getCustomerOrders(customerId: string): Promise<AccountOrder[]> {
+  await connectDB();
+  const docs = await OrderModel.find({ customerId })
+    .sort({ createdAt: -1 })
+    .lean<LeanOrder[]>();
+  return docs.map(toAccountOrder);
+}
+
+export async function getCustomerOrder(customerId: string, orderId: string): Promise<AccountOrder | null> {
+  if (!mongoose.isValidObjectId(orderId)) return null;
+  await connectDB();
+  const doc = await OrderModel.findOne({ _id: orderId, customerId }).lean<LeanOrder>();
+  if (!doc) return null;
+  return toAccountOrder(doc);
 }

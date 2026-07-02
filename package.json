@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "seed": "tsx --tsconfig tsconfig.json lib/db/seed.ts"
+    "seed": "tsx --tsconfig tsconfig.json lib/db/seed.ts",
+    "seed:admin": "tsx --tsconfig tsconfig.json lib/db/seed-admin.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

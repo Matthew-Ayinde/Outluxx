@@ -1,22 +1,28 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
-import { orders } from "@/lib/data";
+import { getSession } from "@/lib/utils/auth";
+import { getCustomerOrder } from "@/lib/data/server";
 import { formatMoney } from "@/lib/utils/format";
 
 type Props = { params: Promise<{ orderId: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { orderId } = await params;
-  const order = orders.find((o) => o.id === orderId);
+  const session = await getSession();
+  if (!session) return {};
+  const order = await getCustomerOrder(session.sub, orderId);
   if (!order) return {};
   return { title: `Order ${order.orderNumber}` };
 }
 
 export default async function OrderDetailPage({ params }: Props) {
   const { orderId } = await params;
-  const order = orders.find((o) => o.id === orderId);
+  const session = await getSession();
+  if (!session) redirect(`/account/sign-in?redirect=/account/orders/${orderId}`);
+
+  const order = await getCustomerOrder(session.sub, orderId);
   if (!order) notFound();
 
   const statusStyles: Record<string, string> = {
@@ -26,6 +32,12 @@ export default async function OrderDetailPage({ params }: Props) {
     pending: "bg-zinc-50 text-zinc-600 border-zinc-200",
     cancelled: "bg-red-50 text-red-700 border-red-200",
     returned: "bg-purple-50 text-purple-700 border-purple-200",
+  };
+
+  const paymentLabel: Record<string, string> = {
+    paid: "Paid",
+    pending: "Payment pending",
+    failed: "Payment failed",
   };
 
   return (
@@ -54,8 +66,8 @@ export default async function OrderDetailPage({ params }: Props) {
           <h3 className="text-xs font-semibold uppercase tracking-widest">Items</h3>
         </div>
         <div className="divide-y divide-black/5">
-          {order.items.map((item) => (
-            <div key={item.productId} className="flex gap-4 px-5 py-4">
+          {order.items.map((item, i) => (
+            <div key={`${item.productId}-${i}`} className="flex gap-4 px-5 py-4">
               <div className="relative h-20 w-14 shrink-0 overflow-hidden bg-zinc-50">
                 <Image src={item.productImage} alt={item.productTitle} fill className="object-cover" sizes="56px" />
               </div>
@@ -85,11 +97,16 @@ export default async function OrderDetailPage({ params }: Props) {
             <p>{order.shippingAddress.city}, {order.shippingAddress.postalCode}</p>
             <p>{order.shippingAddress.country}</p>
           </div>
+          <p className="mt-3 text-xs text-zinc-400 capitalize">{order.deliveryMethod} delivery</p>
         </div>
         <div className="border border-black/10 p-5">
           <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest">Payment</h3>
-          <p className="text-sm text-zinc-600">Visa ending in 4242</p>
-          <p className="mt-1 text-xs text-zinc-400">Charged on {new Date(order.placedAt).toLocaleDateString("en-GB")}</p>
+          <p className="text-sm text-zinc-600">{paymentLabel[order.paymentStatus] ?? order.paymentStatus}</p>
+          {order.paymentStatus === "paid" && (
+            <p className="mt-1 text-xs text-zinc-400">
+              Charged on {new Date(order.placedAt).toLocaleDateString("en-GB")}
+            </p>
+          )}
         </div>
       </div>
 

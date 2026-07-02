@@ -70,7 +70,15 @@ const NAV = [
   },
 ];
 
-export default function AdminShell({ children }: { children: React.ReactNode }) {
+export default function AdminShell({
+  children,
+  adminEmail,
+  adminName,
+}: {
+  children: React.ReactNode;
+  adminEmail?: string;
+  adminName?: string;
+}) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -160,8 +168,10 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
             <span className="text-sm font-medium text-zinc-500">Outluxx Admin</span>
           </div>
           <div className="flex items-center gap-4 ml-auto">
-            <span className="hidden text-xs text-zinc-400 sm:inline">admin@outluxx.com</span>
-            <div className="flex h-8 w-8 items-center justify-center bg-black text-xs font-semibold text-white">A</div>
+            <span className="hidden text-xs text-zinc-400 sm:inline">{adminEmail ?? "Admin"}</span>
+            <div className="flex h-8 w-8 items-center justify-center bg-black text-xs font-semibold text-white">
+              {(adminName?.[0] ?? "A").toUpperCase()}
+            </div>
           </div>
         </header>
         <main className="flex-1 p-4 lg:p-8">{children}</main>

@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { z } from "zod";
 import connectDB from "@/lib/db/mongoose";
 import { Customer } from "@/lib/db/models/Customer";
-import { getSession } from "@/lib/utils/auth";
+import { getSession, comparePassword, hashPassword } from "@/lib/utils/auth";
 import { ok, err } from "@/lib/utils/api";
 
 const UpdateProfileSchema = z.object({
@@ -26,6 +26,8 @@ const UpdateProfileSchema = z.object({
       })
     )
     .optional(),
+  currentPassword: z.string().min(1).optional(),
+  newPassword: z.string().min(8).optional(),
 });
 
 export async function PUT(req: NextRequest) {
@@ -38,9 +40,22 @@ export async function PUT(req: NextRequest) {
   const parsed = UpdateProfileSchema.safeParse(body);
   if (!parsed.success) return err(parsed.error.issues[0].message, 422);
 
+  const { currentPassword, newPassword, ...profileFields } = parsed.data;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const update: Record<string, any> = { ...profileFields };
+
+  if (newPassword) {
+    if (!currentPassword) return err("Current password is required to set a new password", 422);
+    const withHash = await Customer.findById(session.sub).select("+passwordHash");
+    if (!withHash) return err("Account not found", 404);
+    const valid = await comparePassword(currentPassword, withHash.passwordHash);
+    if (!valid) return err("Current password is incorrect", 401);
+    update.passwordHash = await hashPassword(newPassword);
+  }
+
   const customer = await Customer.findByIdAndUpdate(
     session.sub,
-    { $set: parsed.data },
+    { $set: update },
     { new: true, runValidators: true }
   ).lean();
 

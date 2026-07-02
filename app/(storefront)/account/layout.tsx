@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import SignOutButton from "@/components/account/SignOutButton";
 
 const NAV = [
   { label: "Overview", href: "/account" },
@@ -31,12 +32,7 @@ export default function AccountLayout({ children }: { children: ReactNode }) {
               </Link>
             ))}
             <hr className="my-2 border-black/10 hidden md:block" />
-            <Link
-              href="/account/sign-in"
-              className="block py-1.5 text-sm text-zinc-400 hover:text-black transition-colors"
-            >
-              Sign Out
-            </Link>
+            <SignOutButton />
           </nav>
         </aside>
 
