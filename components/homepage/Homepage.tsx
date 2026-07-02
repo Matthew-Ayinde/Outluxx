@@ -39,7 +39,7 @@ const trustItems = [
 export default function Homepage() {
   return (
     <div className="bg-background">
-      {/* ── Hero ──────────────────────────────────────────────────────────── */}
+      {/* -- Hero ------------------------------------------------------------ */}
       <section className="relative h-screen overflow-hidden bg-black">
         <Image
           src="https://picsum.photos/seed/olx-hero-main/1600/900"
@@ -83,7 +83,7 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* ── Category Grid ─────────────────────────────────────────────────── */}
+      {/* -- Category Grid --------------------------------------------------─ */}
       <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
         <div className="mb-12 flex items-end justify-between border-b border-border pb-6">
           <div>
@@ -133,15 +133,15 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* ── Featured Products ──────────────────────────────────────────────── */}
+      {/* -- Featured Products ------------------------------------------------ */}
       <div className="border-t border-border">
         <FeaturedProducts />
       </div>
 
-      {/* ── Brand Statement ────────────────────────────────────────────────── */}
+      {/* -- Brand Statement -------------------------------------------------- */}
       <BrandStatement />
 
-      {/* ── Trust Strip ───────────────────────────────────────────────────── */}
+      {/* -- Trust Strip ----------------------------------------------------─ */}
       <section className="border-y border-border bg-surface">
         <div className="mx-auto max-w-7xl px-5 py-10 lg:px-8">
           <div className="grid gap-6 sm:grid-cols-3">

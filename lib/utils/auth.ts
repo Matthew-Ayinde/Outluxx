@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const COOKIE_NAME = "olx_token";
@@ -43,21 +44,23 @@ export async function getSession(): Promise<JWTPayload | null> {
   return verifyToken(token);
 }
 
-export function setAuthCookie(res: Response, token: string): void {
-  const maxAge = 7 * 24 * 60 * 60;
-  res.headers.set(
-    "Set-Cookie",
-    `${COOKIE_NAME}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}${
-      process.env.NODE_ENV === "production" ? "; Secure" : ""
-    }`
-  );
+export function setAuthCookie(res: NextResponse, token: string): void {
+  res.cookies.set(COOKIE_NAME, token, {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 7 * 24 * 60 * 60,
+    secure: process.env.NODE_ENV === "production",
+  });
 }
 
-export function clearAuthCookie(res: Response): void {
-  res.headers.set(
-    "Set-Cookie",
-    `${COOKIE_NAME}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`
-  );
+export function clearAuthCookie(res: NextResponse): void {
+  res.cookies.set(COOKIE_NAME, "", {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+  });
 }
 
 export { COOKIE_NAME };
