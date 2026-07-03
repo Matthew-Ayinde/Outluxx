@@ -78,7 +78,7 @@ export default function ShippingPage() {
       });
 
       setShipping(address, deliveryMethod);
-      setIntent(result.paymentIntentId, result.breakdown);
+      setIntent(result.paymentIntentId, result.clientSecret, result.breakdown);
       setCartItems(checkoutItems);
 
       // Store email in sessionStorage for use on confirm

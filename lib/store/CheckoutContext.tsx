@@ -13,6 +13,7 @@ interface CheckoutState {
   shippingAddress: CheckoutAddress | null;
   deliveryMethod: "standard" | "express";
   paymentIntentId: string | null;
+  clientSecret: string | null;
   breakdown: {
     subtotal: number;
     discountAmount: number;
@@ -22,14 +23,17 @@ interface CheckoutState {
   confirmedOrderNumber: string | null;
   confirmedOrderId: string | null;
   promoCode: string;
+  paymentMethodDescription: string | null;
 }
 
 interface CheckoutContextValue extends CheckoutState {
   setShipping: (address: CheckoutAddress, method: "standard" | "express") => void;
   setIntent: (
     paymentIntentId: string,
+    clientSecret: string,
     breakdown: CheckoutState["breakdown"]
   ) => void;
+  setPaymentMethodDescription: (description: string) => void;
   setConfirmed: (orderNumber: string, orderId: string) => void;
   setPromoCode: (code: string) => void;
   reset: () => void;
@@ -43,10 +47,12 @@ const initial: CheckoutState = {
   shippingAddress: null,
   deliveryMethod: "standard",
   paymentIntentId: null,
+  clientSecret: null,
   breakdown: null,
   confirmedOrderNumber: null,
   confirmedOrderId: null,
   promoCode: "",
+  paymentMethodDescription: null,
 };
 
 export function CheckoutProvider({ children }: { children: ReactNode }) {
@@ -61,11 +67,15 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   );
 
   const setIntent = useCallback(
-    (paymentIntentId: string, breakdown: CheckoutState["breakdown"]) => {
-      setState((s) => ({ ...s, paymentIntentId, breakdown }));
+    (paymentIntentId: string, clientSecret: string, breakdown: CheckoutState["breakdown"]) => {
+      setState((s) => ({ ...s, paymentIntentId, clientSecret, breakdown }));
     },
     []
   );
+
+  const setPaymentMethodDescription = useCallback((description: string) => {
+    setState((s) => ({ ...s, paymentMethodDescription: description }));
+  }, []);
 
   const setConfirmed = useCallback((orderNumber: string, orderId: string) => {
     setState((s) => ({ ...s, confirmedOrderNumber: orderNumber, confirmedOrderId: orderId }));
@@ -92,6 +102,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
         setIntent,
         setConfirmed,
         setPromoCode,
+        setPaymentMethodDescription,
         reset,
         cartItems,
         setCartItems,

@@ -8,7 +8,7 @@ export type OrderStatus =
   | "cancelled"
   | "returned";
 
-export type PaymentStatus = "pending" | "paid" | "failed";
+export type PaymentStatus = "pending" | "paid" | "failed" | "refunded";
 
 export interface IOrderItem {
   productId: string;
@@ -40,6 +40,7 @@ export interface IOrder extends Document {
   status: OrderStatus;
   paymentStatus: PaymentStatus;
   stripePaymentIntentId?: string;
+  stripeRefundId?: string;
   items: IOrderItem[];
   subtotal: number;
   shipping: number;
@@ -93,10 +94,11 @@ const OrderSchema = new Schema<IOrder>(
     },
     paymentStatus: {
       type: String,
-      enum: ["pending", "paid", "failed"],
+      enum: ["pending", "paid", "failed", "refunded"],
       default: "pending",
     },
     stripePaymentIntentId: { type: String, index: true },
+    stripeRefundId: { type: String },
     items: { type: [OrderItemSchema], required: true },
     subtotal: { type: Number, required: true, min: 0 },
     shipping: { type: Number, required: true, min: 0 },

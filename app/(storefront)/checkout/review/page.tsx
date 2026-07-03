@@ -12,7 +12,7 @@ import { ApiError } from "@/lib/api/client";
 export default function ReviewPage() {
   const router = useRouter();
   const { items, clearCart, promoCode } = useCart();
-  const { shippingAddress, deliveryMethod, paymentIntentId, breakdown, cartItems, setConfirmed, reset } = useCheckout();
+  const { shippingAddress, deliveryMethod, paymentIntentId, breakdown, cartItems, setConfirmed, reset, paymentMethodDescription } = useCheckout();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -108,8 +108,8 @@ export default function ReviewPage() {
           <button onClick={() => router.push("/checkout/payment")} className="text-[11px] text-zinc-400 underline hover:text-black">Edit</button>
         </div>
         <div className="px-5 py-4 text-sm text-zinc-600">
-          <p>Simulated payment authorised</p>
-          <p className="text-xs text-zinc-400">Test card · 4242 4242 4242 4242</p>
+          <p>{paymentMethodDescription ?? "Payment authorised"}</p>
+          <p className="text-xs text-zinc-400">Secured by Stripe</p>
         </div>
       </section>
 

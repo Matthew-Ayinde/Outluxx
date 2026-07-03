@@ -49,6 +49,17 @@ const NAV = [
     ),
   },
   {
+    label: "Payments",
+    href: "/admin/payments",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <rect x="1" y="3" width="14" height="10" rx="1" stroke="currentColor" strokeWidth="1.2" />
+        <path d="M1 6h14" stroke="currentColor" strokeWidth="1.2" />
+        <path d="M4 10h3M11 10h1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
     label: "Analytics",
     href: "/admin/analytics",
     icon: (
