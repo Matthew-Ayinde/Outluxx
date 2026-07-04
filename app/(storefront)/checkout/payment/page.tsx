@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useCheckout } from "@/lib/store/CheckoutContext";
+import { useCart } from "@/lib/store/CartContext";
+import { confirmOrder } from "@/lib/api/checkout";
+import { ApiError } from "@/lib/api/client";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -22,7 +25,7 @@ export default function PaymentPage() {
     <div className="max-w-lg">
       <div className="mb-8">
         <h1 className="mb-1 text-2xl font-semibold">Payment Details</h1>
-        <p className="text-sm text-zinc-500">Step 2 of 3 · Your payment is encrypted and secure.</p>
+        <p className="text-sm text-zinc-500">Step 2 of 2 · Your payment is encrypted and secure.</p>
       </div>
 
       <Elements
@@ -69,15 +72,34 @@ export default function PaymentPage() {
   );
 }
 
+const COUNTRY_CODES: Record<string, string> = {
+  "United Kingdom": "GB",
+  "United States": "US",
+  "France": "FR",
+  "Germany": "DE",
+  "Italy": "IT",
+  "Japan": "JP",
+  "Australia": "AU",
+  "Canada": "CA",
+};
+
 function PaymentForm() {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
-  const { setPaymentMethodDescription } = useCheckout();
+  const {
+    setPaymentMethodDescription,
+    shippingAddress,
+    deliveryMethod,
+    paymentIntentId,
+    cartItems,
+    setConfirmed,
+  } = useCheckout();
+  const { promoCode } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!stripe || !elements) return;
 
@@ -96,6 +118,23 @@ function PaymentForm() {
       redirect: "if_required",
       confirmParams: {
         return_url: `${window.location.origin}/checkout/review`,
+        payment_method_data: {
+          billing_details: {
+            name: shippingAddress
+              ? `${shippingAddress.firstName} ${shippingAddress.lastName}`
+              : undefined,
+            address: shippingAddress
+              ? {
+                  line1: shippingAddress.line1,
+                  line2: shippingAddress.line2 ?? "",
+                  city: shippingAddress.city,
+                  state: shippingAddress.state ?? "",
+                  postal_code: shippingAddress.postalCode,
+                  country: COUNTRY_CODES[shippingAddress.country] ?? shippingAddress.country,
+                }
+              : undefined,
+          },
+        },
       },
     });
 
@@ -108,7 +147,28 @@ function PaymentForm() {
     if (paymentIntent?.status === "succeeded" || paymentIntent?.status === "requires_capture") {
       const pm = paymentIntent.payment_method_types?.[0] ?? "card";
       setPaymentMethodDescription(pm === "card" ? "Card ending in ····" : pm);
-      router.push("/checkout/review");
+
+      try {
+        const email = sessionStorage.getItem("olx_checkout_email") ?? "";
+        const order = await confirmOrder({
+          paymentIntentId: paymentIntentId!,
+          shippingAddress: shippingAddress!,
+          deliveryMethod,
+          customerEmail: email,
+          items: cartItems,
+          promoCode: promoCode || undefined,
+        });
+
+        setConfirmed(order.orderNumber, order._id);
+        router.push(`/checkout/confirmation?order=${order.orderNumber}`);
+      } catch (e) {
+        setError(
+          e instanceof ApiError
+            ? e.message
+            : "Payment succeeded but we couldn't finalize your order. Please contact support."
+        );
+        setLoading(false);
+      }
     } else {
       setError("Payment was not completed. Please try again.");
       setLoading(false);
@@ -151,7 +211,7 @@ function PaymentForm() {
           disabled={!stripe || loading}
           className="flex h-12 flex-1 items-center justify-center bg-black text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors disabled:opacity-60"
         >
-          {loading ? "Processing…" : "Review Order"}
+          {loading ? "Placing Order…" : "Place Order"}
         </button>
       </div>
     </form>

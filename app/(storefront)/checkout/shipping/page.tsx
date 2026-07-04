@@ -108,7 +108,7 @@ export default function ShippingPage() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-8">
         <div>
           <h1 className="mb-1 text-2xl font-semibold">Shipping Address</h1>
-          <p className="text-sm text-zinc-500">Step 1 of 3</p>
+          <p className="text-sm text-zinc-500">Step 1 of 2</p>
         </div>
 
         {error && (

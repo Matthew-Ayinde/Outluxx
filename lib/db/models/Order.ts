@@ -121,12 +121,10 @@ function generateOrderNumber(): string {
   return `OLX-${ts}-${rand}`;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(OrderSchema as any).pre("validate", function (this: IOrder, next: () => void) {
+OrderSchema.pre("validate", async function () {
   if (!this.orderNumber) {
     this.orderNumber = generateOrderNumber();
   }
-  next();
 });
 
 export const Order =

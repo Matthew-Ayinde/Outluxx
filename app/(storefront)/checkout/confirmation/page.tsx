@@ -1,4 +1,5 @@
 import Link from "next/link";
+import FinalizeCheckoutOnMount from "@/components/checkout/FinalizeCheckoutOnMount";
 
 export default async function ConfirmationPage({
   searchParams,
@@ -9,6 +10,7 @@ export default async function ConfirmationPage({
 
   return (
     <div className="mx-auto max-w-lg py-16 text-center">
+      <FinalizeCheckoutOnMount />
       <div className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-full border-2 border-black">
         <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
           <path d="M2 11l8 8L26 2" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />

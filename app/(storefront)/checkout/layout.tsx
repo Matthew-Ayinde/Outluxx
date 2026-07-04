@@ -1,15 +1,16 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import CloseCartOnMount from "@/components/cart/CloseCartOnMount";
 
 const STEPS = [
   { label: "Shipping", href: "/checkout/shipping" },
   { label: "Payment", href: "/checkout/payment" },
-  { label: "Review", href: "/checkout/review" },
 ];
 
 export default function CheckoutLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-white">
+      <CloseCartOnMount />
       {/* Minimal header */}
       <header className="border-b border-black/10">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useCart } from "@/lib/store/CartContext";
@@ -16,8 +16,13 @@ export default function ReviewPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    if (!shippingAddress || !paymentIntentId || !breakdown) {
+      router.replace("/checkout/shipping");
+    }
+  }, [shippingAddress, paymentIntentId, breakdown, router]);
+
   if (!shippingAddress || !paymentIntentId || !breakdown) {
-    router.replace("/checkout/shipping");
     return null;
   }
 

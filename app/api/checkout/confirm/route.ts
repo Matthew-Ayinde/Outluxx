@@ -7,6 +7,7 @@ import { Order } from "@/lib/db/models/Order";
 import { PromoCode } from "@/lib/db/models/PromoCode";
 import { getSession } from "@/lib/utils/auth";
 import { ok, err } from "@/lib/utils/api";
+import { sendOrderConfirmationEmail, sendAdminOrderNotification } from "@/lib/email/order";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-06-24.dahlia" });
 
@@ -113,6 +114,15 @@ export async function POST(req: NextRequest) {
 
   if (process.env.NODE_ENV !== "production") {
     console.log(`[ORDER CREATED] ${order.orderNumber} — £${total.toFixed(2)} for ${customerEmail}`);
+  }
+
+  try {
+    await Promise.all([
+      sendOrderConfirmationEmail(order),
+      sendAdminOrderNotification(order),
+    ]);
+  } catch (e) {
+    console.error("Failed to send order emails:", e);
   }
 
   return ok(order.toObject(), 201);
