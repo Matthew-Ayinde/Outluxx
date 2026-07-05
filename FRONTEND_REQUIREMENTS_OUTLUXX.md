@@ -1,14 +1,14 @@
-# Outluxx Frontend Requirements Document
+# Outlxx Frontend Requirements Document
 
 ## 1) Document Control
-- Product: Outluxx (online fashion store)
+- Product: Outlxx (online fashion store)
 - Scope: Customer-facing web frontend
 - Version: 1.0
 - Date: 22 March 2026
 - Status: Draft for implementation planning
 
 ## 2) Product Vision
-Outluxx should feel premium, editorial, and fast. The frontend must combine luxury brand storytelling with high-converting ecommerce UX across mobile, tablet, and desktop.
+Outlxx should feel premium, editorial, and fast. The frontend must combine luxury brand storytelling with high-converting ecommerce UX across mobile, tablet, and desktop.
 
 ## 3) Goals and Success Metrics
 ### Primary goals
@@ -153,7 +153,7 @@ Must include:
 - Shoppable hotspots or linked products.
 
 ### 7.11 Static Utility Pages
-- About Outluxx
+- About Outlxx
 - Shipping & Delivery
 - Returns & Refunds
 - Size Guide

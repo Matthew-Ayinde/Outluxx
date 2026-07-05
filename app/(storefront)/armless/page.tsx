@@ -8,7 +8,7 @@ export default async function ArmlessPage() {
   return (
     <PLPTemplate
       title="Armless"
-      subtitle="Outluxx Essentials"
+      subtitle="Outlxx Essentials"
       heroSeed="olx-hero-armless"
       products={products}
     />

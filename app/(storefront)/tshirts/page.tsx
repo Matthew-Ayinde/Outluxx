@@ -8,7 +8,7 @@ export default async function TshirtsPage() {
   return (
     <PLPTemplate
       title="T-Shirts"
-      subtitle="Outluxx Essentials"
+      subtitle="Outlxx Essentials"
       heroSeed="olx-hero-tshirts"
       products={products}
     />

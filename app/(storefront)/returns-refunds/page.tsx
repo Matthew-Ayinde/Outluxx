@@ -55,7 +55,7 @@ export default function ReturnsRefundsPage() {
             <li>Print the pre-paid returns label</li>
             <li>Package your item securely and drop off at any Post Office or DHL location</li>
           </ol>
-          <p className="mt-3">You can also initiate a return by emailing returns@outluxx.com with your order number.</p>
+          <p className="mt-3">You can also initiate a return by emailing returns@outlxx.com with your order number.</p>
         </div>
 
         <div>

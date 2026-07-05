@@ -15,7 +15,7 @@ export default function CheckoutLayout({ children }: { children: ReactNode }) {
       <header className="border-b border-black/10">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <Link href="/" className="font-heading text-xl font-semibold tracking-widest">
-            OUTLUXX
+            Outlxx
           </Link>
           <nav className="hidden items-center gap-1 sm:flex">
             {STEPS.map((step, i) => (

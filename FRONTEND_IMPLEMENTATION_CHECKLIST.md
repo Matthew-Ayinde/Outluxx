@@ -1,4 +1,4 @@
-# Outluxx Frontend Implementation Checklist
+# Outlxx Frontend Implementation Checklist
 
 ## 0) Project Setup
 - [ ] Confirm Next.js version conventions and routing rules.

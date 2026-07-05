@@ -43,7 +43,7 @@ export default function Homepage() {
       <section className="relative h-screen overflow-hidden bg-black">
         <Image
           src="https://picsum.photos/seed/olx-hero-main/1600/900"
-          alt="Outluxx hero"
+          alt="Outlxx hero"
           fill
           priority
           sizes="100vw"
@@ -54,7 +54,7 @@ export default function Homepage() {
 
         <div className="absolute inset-0 flex flex-col items-center justify-center px-5 text-center text-white">
           <p className="animate-fade-up-delay-1 text-[10px] font-medium uppercase tracking-[0.35em] text-white/60">
-            Outluxx · Premium Fashion House
+            Outlxx · Premium Fashion House
           </p>
           <h1 className="animate-fade-up-delay-2 mt-4 font-heading text-6xl font-light leading-[1.05] tracking-[-0.01em] sm:text-7xl lg:text-8xl xl:text-9xl">
             Refined.

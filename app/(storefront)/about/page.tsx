@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export const metadata = { title: "About Outluxx" };
+export const metadata = { title: "About Outlxx" };
 
 export default function AboutPage() {
   return (
@@ -13,7 +13,7 @@ export default function AboutPage() {
           Luxury, without compromise.
         </h1>
         <p className="mt-5 text-base leading-relaxed text-zinc-600">
-          Outluxx was founded on a single conviction: that exceptional fashion should be accessible to those who know what they are looking for. We are not a marketplace. We are a considered edit — a small portfolio of the world's most rigorous fashion houses, brought together under one roof.
+          Outlxx was founded on a single conviction: that exceptional fashion should be accessible to those who know what they are looking for. We are not a marketplace. We are a considered edit — a small portfolio of the world's most rigorous fashion houses, brought together under one roof.
         </p>
       </div>
 
@@ -21,7 +21,7 @@ export default function AboutPage() {
       <div className="relative mb-14 h-[400px] overflow-hidden bg-zinc-50">
         <Image
           src="https://picsum.photos/seed/olx-about1/1200/400"
-          alt="Outluxx atelier"
+          alt="Outlxx atelier"
           fill
           className="object-cover"
           sizes="100vw"
@@ -54,9 +54,9 @@ export default function AboutPage() {
       {/* Team quote */}
       <div className="mb-14 border-l-4 border-black pl-8">
         <blockquote className="font-heading text-2xl font-medium leading-relaxed text-zinc-700">
-          "We built Outluxx because we were tired of choosing between accessibility and quality. The two should not be in opposition."
+          "We built Outlxx because we were tired of choosing between accessibility and quality. The two should not be in opposition."
         </blockquote>
-        <cite className="mt-4 block text-sm text-zinc-500">— Founders, Outluxx</cite>
+        <cite className="mt-4 block text-sm text-zinc-500">— Founders, Outlxx</cite>
       </div>
 
       {/* CTA */}

@@ -10,7 +10,7 @@ export default async function FeaturedProducts() {
       <div className="mb-10 flex items-end justify-between border-b border-border pb-6">
         <div>
           <p className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.28em] text-muted">
-            Outluxx Selection
+            Outlxx Selection
           </p>
           <h2 className="font-heading text-4xl font-light sm:text-5xl">Featured Pieces</h2>
         </div>

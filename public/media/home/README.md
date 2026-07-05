@@ -1,4 +1,4 @@
-# Outluxx Homepage Media
+# Outlxx Homepage Media
 
 The homepage immersive carousel supports both image and video slides.
 

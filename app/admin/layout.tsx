@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import AdminShell from "@/components/admin/AdminShell";
 import { getSession } from "@/lib/utils/auth";
 
-export const metadata = { title: { template: "%s | Outluxx Admin", default: "Outluxx Admin" } };
+export const metadata = { title: { template: "%s | Outlxx Admin", default: "Outlxx Admin" } };
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   // Defense in depth: proxy.ts guards /admin at the edge of the request,

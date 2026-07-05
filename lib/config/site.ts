@@ -1,4 +1,4 @@
 export const siteConfig = {
-  name: "Outluxx",
+  name: "Outlxx",
   description: "Premium online fashion storefront",
 };

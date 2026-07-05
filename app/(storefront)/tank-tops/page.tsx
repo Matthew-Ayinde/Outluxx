@@ -8,7 +8,7 @@ export default async function TankTopsPage() {
   return (
     <PLPTemplate
       title="Tank Tops"
-      subtitle="Outluxx Essentials"
+      subtitle="Outlxx Essentials"
       heroSeed="olx-hero-tanktops"
       products={products}
     />

@@ -7,7 +7,7 @@ const FAQ = [
     items: [
       { q: "How long does standard delivery take?", a: "Standard delivery takes 3–5 business days within the UK. International orders typically take 5–10 business days depending on destination." },
       { q: "Can I track my order?", a: "Yes. Once your order is dispatched, you'll receive a tracking number via email. You can also track your order from your account dashboard." },
-      { q: "Do you offer express delivery?", a: "Yes, express delivery (1–2 business days) is available at checkout for an additional fee." },
+      { q: "Do you offer express delivery?", a: "Yes, express delivery (5 - 7 business days) is available at checkout for an additional fee." },
       { q: "Can I change or cancel my order?", a: "Orders can be cancelled or modified within 2 hours of placement. After this, items are already being processed for dispatch." },
     ],
   },

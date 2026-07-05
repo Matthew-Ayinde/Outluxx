@@ -1,7 +1,7 @@
-# Outluxx Frontend PRD (One Page)
+# Outlxx Frontend PRD (One Page)
 
 ## Product
-Outluxx — premium online fashion store (web).
+Outlxx — premium online fashion store (web).
 
 ## Problem
 Fashion shoppers want a luxury-feel experience that is fast, trustworthy, and easy to buy from on mobile and desktop. Most stores force a tradeoff between editorial brand experience and conversion-focused ecommerce UX.

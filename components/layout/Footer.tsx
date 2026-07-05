@@ -25,7 +25,7 @@ const columns = [
   {
     heading: "Company",
     links: [
-      { label: "About Outluxx",   href: "/about" },
+      { label: "About Outlxx",   href: "/about" },
       { label: "Privacy Policy",  href: "/privacy-policy" },
       { label: "Terms of Service",href: "/terms" },
       { label: "Cookie Policy",   href: "/cookie-policy" },
@@ -40,10 +40,10 @@ export default function Footer() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand col */}
           <div>
-            <Link href="/" aria-label="Outluxx home">
+            <Link href="/" aria-label="Outlxx home">
               <Image
                 src="/logo.jpg"
-                alt="Outluxx"
+                alt="Outlxx"
                 width={120}
                 height={32}
                 className="h-8 w-auto"
@@ -90,7 +90,7 @@ export default function Footer() {
 
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-5 text-xs text-muted sm:flex-row sm:items-center sm:justify-between lg:px-8">
-          <p>© {new Date().getFullYear()} Outluxx. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Outlxx. All rights reserved.</p>
           <p className="text-[10px] uppercase tracking-[0.18em]">
             Complimentary global shipping on orders over $250
           </p>

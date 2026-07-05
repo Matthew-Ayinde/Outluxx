@@ -14,9 +14,9 @@ export default function PrivacyPolicyPage() {
           ["2. How We Use Your Data", "We use your data to process orders, provide customer support, send transactional emails, and improve our platform. We do not sell your personal data to third parties."],
           ["3. Data Retention", "We retain your personal data for as long as necessary to provide our services and comply with legal obligations. You may request deletion of your data at any time."],
           ["4. Cookies", "We use cookies to enhance your browsing experience, analyse platform usage, and deliver relevant content. You can manage your cookie preferences at any time in your browser settings or via our Cookie Policy."],
-          ["5. Your Rights", "Under GDPR, you have the right to access, correct, delete, and port your personal data. To exercise these rights, contact us at privacy@outluxx.com."],
+          ["5. Your Rights", "Under GDPR, you have the right to access, correct, delete, and port your personal data. To exercise these rights, contact us at privacy@outlxx.com."],
           ["6. Security", "We use industry-standard encryption and security measures to protect your data. However, no online transmission is completely secure, and we cannot guarantee absolute security."],
-          ["7. Contact", "For privacy-related enquiries, contact our Data Protection Officer at privacy@outluxx.com or write to us at Outluxx Ltd, 14 Savile Row, London W1S 3JN."],
+          ["7. Contact", "For privacy-related enquiries, contact our Data Protection Officer at privacy@outlxx.com or write to us at Outlxx Ltd, 14 Savile Row, London W1S 3JN."],
         ].map(([title, body]) => (
           <div key={title as string}>
             <h2 className="mb-2 font-semibold text-black">{title}</h2>

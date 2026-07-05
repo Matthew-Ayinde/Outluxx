@@ -137,32 +137,32 @@ async function seed() {
   const passwordHash = await bcrypt.hash("Admin1234!", 12);
   await CustomerModel.create({
     firstName: "Admin",
-    lastName: "Outluxx",
-    email: "admin@outluxx.com",
+    lastName: "Outlxx",
+    email: "admin@outlxx.com",
     passwordHash,
     role: "admin",
   });
-  console.log("✅ Admin: admin@outluxx.com / Admin1234!");
+  console.log("✅ Admin: admin@outlxx.com / Admin1234!");
 
   // Seed a test customer
   const customerHash = await bcrypt.hash("Test1234!", 12);
   await CustomerModel.create({
     firstName: "Test",
     lastName: "Customer",
-    email: "customer@outluxx.com",
+    email: "customer@outlxx.com",
     passwordHash: customerHash,
     role: "customer",
   });
-  console.log("✅ Customer: customer@outluxx.com / Test1234!");
+  console.log("✅ Customer: customer@outlxx.com / Test1234!");
 
   // Seed promo codes
   console.log("🏷️  Seeding promo codes…");
   await PromoCodeModel.insertMany([
-    { code: "OUTLUXX10", discount: 0.10 },
+    { code: "Outlxx10", discount: 0.10 },
     { code: "FIRST15", discount: 0.15 },
     { code: "VIP20", discount: 0.20, usageLimit: 100 },
   ]);
-  console.log("✅ Promo codes: OUTLUXX10, FIRST15, VIP20");
+  console.log("✅ Promo codes: Outlxx10, FIRST15, VIP20");
 
   await mongoose.disconnect();
   console.log("\n🎉 Seed complete!");

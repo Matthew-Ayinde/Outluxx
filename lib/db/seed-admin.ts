@@ -20,10 +20,10 @@ if (!MONGODB_URI) {
   process.exit(1);
 }
 
-const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || "admin@outluxx.com").toLowerCase();
+const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || "admin@outlxx.com").toLowerCase();
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Admin1234!";
 const ADMIN_FIRST_NAME = process.env.ADMIN_FIRST_NAME || "Admin";
-const ADMIN_LAST_NAME = process.env.ADMIN_LAST_NAME || "Outluxx";
+const ADMIN_LAST_NAME = process.env.ADMIN_LAST_NAME || "Outlxx";
 
 const CustomerSchema = new mongoose.Schema(
   {

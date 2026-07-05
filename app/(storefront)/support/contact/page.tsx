@@ -52,9 +52,9 @@ export default function ContactPage() {
         {/* Contact info */}
         <div className="space-y-8">
           {[
-            { label: "Email", value: "clientservices@outluxx.com", sub: "We reply within 24 hours" },
+            { label: "Email", value: "clientservices@outlxx.com", sub: "We reply within 24 hours" },
             { label: "Phone", value: "+44 (0) 20 7946 0958", sub: "Mon–Fri, 9am–6pm GMT" },
-            { label: "Address", value: "Outluxx Ltd, 14 Savile Row", sub: "London W1S 3JN, United Kingdom" },
+            { label: "Address", value: "Outlxx Ltd, 14 Savile Row", sub: "London W1S 3JN, United Kingdom" },
           ].map((item) => (
             <div key={item.label}>
               <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">{item.label}</p>

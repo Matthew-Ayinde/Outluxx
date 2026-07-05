@@ -51,7 +51,7 @@ function SignInForm() {
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <Link href="/" className="font-heading mb-6 inline-block text-xl font-semibold tracking-widest">
-            OUTLUXX
+            Outlxx
           </Link>
           <h1 className="mt-4 text-2xl font-semibold">Welcome back</h1>
           <p className="mt-2 text-sm text-zinc-500">Sign in to your account</p>
@@ -108,7 +108,7 @@ function SignInForm() {
         </form>
 
         <p className="mt-6 text-center text-sm text-zinc-500">
-          New to Outluxx?{" "}
+          New to Outlxx?{" "}
           <Link href="/account/register" className="font-medium text-black underline underline-offset-2">
             Create account
           </Link>

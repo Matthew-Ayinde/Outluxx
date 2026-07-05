@@ -51,10 +51,10 @@ export default function RegisterPage() {
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <Link href="/" className="font-heading mb-6 inline-block text-xl font-semibold tracking-widest">
-            OUTLUXX
+            Outlxx
           </Link>
           <h1 className="mt-4 text-2xl font-semibold">Create Account</h1>
-          <p className="mt-2 text-sm text-zinc-500">Join Outluxx for exclusive access and benefits</p>
+          <p className="mt-2 text-sm text-zinc-500">Join Outlxx for exclusive access and benefits</p>
         </div>
 
         {error && (

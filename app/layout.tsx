@@ -19,8 +19,8 @@ const bodyFont = Jost({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Outluxx",
-    default: "Outluxx — Premium Fashion House",
+    template: "%s | Outlxx",
+    default: "Outlxx — Premium Fashion House",
   },
   description:
     "Curated luxury fashion for the modern wardrobe. Discover timeless tailoring, elevated essentials, and editorial pieces.",
@@ -41,7 +41,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                var t = localStorage.getItem('outluxx-theme');
+                var t = localStorage.getItem('outlxx-theme');
                 if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                   document.documentElement.classList.add('dark');
                 }

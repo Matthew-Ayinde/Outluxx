@@ -9,7 +9,7 @@ export default function BrandStatement() {
           "Clothing should be felt before it is seen — a quiet authority that speaks without words."
         </blockquote>
         <p className="mt-8 text-sm leading-7 text-muted">
-          Every piece in the Outluxx collection is selected against a single standard: would we wear it for the next decade? If the answer is anything less than an unqualified yes, it does not make the edit.
+          Every piece in the Outlxx collection is selected against a single standard: would we wear it for the next decade? If the answer is anything less than an unqualified yes, it does not make the edit.
         </p>
       </div>
     </section>

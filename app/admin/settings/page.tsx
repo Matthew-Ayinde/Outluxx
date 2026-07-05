@@ -21,9 +21,9 @@ export default function AdminSettingsPage() {
         <div className="space-y-6">
           {/* General */}
           <Section title="General">
-            <Field label="Store Name" defaultValue="Outluxx" />
-            <Field label="Store URL" defaultValue="https://outluxx.com" />
-            <Field label="Contact Email" defaultValue="hello@outluxx.com" />
+            <Field label="Store Name" defaultValue="Outlxx" />
+            <Field label="Store URL" defaultValue="https://outlxx.com" />
+            <Field label="Contact Email" defaultValue="hello@outlxx.com" />
             <Field label="Support Phone" defaultValue="+44 (0) 20 7946 0958" />
           </Section>
 
@@ -37,7 +37,7 @@ export default function AdminSettingsPage() {
 
           {/* SEO */}
           <Section title="SEO & Metadata">
-            <Field label="Meta Title" defaultValue="Outluxx — Premium Fashion House" />
+            <Field label="Meta Title" defaultValue="Outlxx — Premium Fashion House" />
             <div>
               <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
                 Meta Description

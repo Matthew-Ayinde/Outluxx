@@ -116,7 +116,7 @@ export default function AdminShell({
           <div className="h-6 w-6 shrink-0 bg-white" />
           {!collapsed && (
             <div>
-              <span className="block font-heading text-sm font-semibold tracking-widest">OUTLUXX</span>
+              <span className="block font-heading text-sm font-semibold tracking-widest">Outlxx</span>
               <span className="block text-[9px] font-medium uppercase tracking-widest text-white/40">Admin</span>
             </div>
           )}
@@ -176,7 +176,7 @@ export default function AdminShell({
             </svg>
           </button>
           <div className="hidden lg:block">
-            <span className="text-sm font-medium text-zinc-500">Outluxx Admin</span>
+            <span className="text-sm font-medium text-zinc-500">Outlxx Admin</span>
           </div>
           <div className="flex items-center gap-4 ml-auto">
             <span className="hidden text-xs text-zinc-400 sm:inline">{adminEmail ?? "Admin"}</span>

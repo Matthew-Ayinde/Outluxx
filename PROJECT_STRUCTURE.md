@@ -1,4 +1,4 @@
-# Outluxx Frontend Project Structure
+# Outlxx Frontend Project Structure
 
 This file maps the implementation scaffold created from `FRONTEND_IMPLEMENTATION_CHECKLIST.md`.
 

@@ -6,7 +6,7 @@ import { emailLayout, itemsTable, totalsBlock, addressBlock, button, LOGO_CID } 
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 const FROM = process.env.EMAIL_FROM || process.env.SMTP_USER || "";
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@outluxx.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@outlxx.com";
 
 const LOGO_ATTACHMENT = {
   filename: "logo.jpg",

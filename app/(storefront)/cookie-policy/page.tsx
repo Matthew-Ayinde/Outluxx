@@ -10,7 +10,7 @@ export default function CookiePolicyPage() {
       </div>
 
       <div className="space-y-8 text-sm leading-relaxed text-zinc-700">
-        <p>We use cookies to improve your experience on Outluxx. This policy explains what cookies are, what we use them for, and how you can control them.</p>
+        <p>We use cookies to improve your experience on Outlxx. This policy explains what cookies are, what we use them for, and how you can control them.</p>
 
         <div>
           <h2 className="mb-3 font-semibold text-black">What are cookies?</h2>

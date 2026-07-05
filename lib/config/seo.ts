@@ -1,4 +1,4 @@
 export const defaultSeo = {
-  titleTemplate: "%s | Outluxx",
-  description: "Outluxx premium online fashion storefront",
+  titleTemplate: "%s | Outlxx",
+  description: "Outlxx premium online fashion storefront",
 };

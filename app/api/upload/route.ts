@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
   const resourceType = file.type.startsWith("video") ? "video" : "image";
 
   const result = await cloudinary.uploader.upload(base64, {
-    folder: `outluxx/${folder}`,
+    folder: `outlxx/${folder}`,
     resource_type: resourceType,
     transformation: resourceType === "image"
       ? [{ quality: "auto", fetch_format: "auto" }]

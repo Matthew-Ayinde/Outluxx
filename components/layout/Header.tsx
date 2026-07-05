@@ -26,7 +26,7 @@ function DarkModeToggle() {
     const next = !dark;
     setDark(next);
     document.documentElement.classList.toggle("dark", next);
-    try { localStorage.setItem("outluxx-theme", next ? "dark" : "light"); } catch {}
+    try { localStorage.setItem("outlxx-theme", next ? "dark" : "light"); } catch {}
   }
 
   return (
@@ -76,10 +76,10 @@ export default function Header() {
       >
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-5 lg:px-8">
           {/* Logo */}
-          <Link href="/" aria-label="Outluxx home" className="shrink-0">
+          <Link href="/" aria-label="Outlxx home" className="shrink-0">
             <Image
               src="/logo.jpg"
-              alt="Outluxx"
+              alt="Outlxx"
               width={120}
               height={32}
               priority
