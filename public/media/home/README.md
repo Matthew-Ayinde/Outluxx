@@ -1,15 +1,11 @@
 # Outlxx Homepage Media
 
-The homepage immersive carousel supports both image and video slides.
+The homepage hero slideshow (`components/homepage/HeroSlideshow.tsx`) cycles:
 
-## Naming convention
-For each slide, use the same base name:
-- `slide-1.svg` (or `.jpg/.png`) as image fallback/poster
-- `slide-1.mp4` as autoplay background video
+1. `slide-1.mp4` — autoplay background video (poster: `slide-1.svg`)
+2. `img1.jpg` — editorial image slide (Ken Burns drift)
+3. `img2.jpg` — editorial image slide (Ken Burns drift)
 
-Current carousel expects:
-- `slide-1.mp4`
-- `slide-2.mp4`
-- `slide-3.mp4`
-
-If an `.mp4` file is missing, the browser will still show the poster image when available.
+To swap media, replace these files or edit the `slides` array in
+`HeroSlideshow.tsx` (each slide sets its own eyebrow, headline lines,
+copy, and duration).
