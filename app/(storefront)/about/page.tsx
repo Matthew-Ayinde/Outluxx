@@ -8,12 +8,12 @@ export default function AboutPage() {
     <div className="mx-auto max-w-6xl px-4 py-10">
       {/* Header */}
       <div className="mb-14 max-w-2xl">
-        <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">Our Story</p>
+        <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">About Outlxx</p>
         <h1 className="font-heading text-5xl font-semibold leading-tight">
-          Luxury, without compromise.
+          Redefining Contemporary Fashion
         </h1>
         <p className="mt-5 text-base leading-relaxed text-zinc-600">
-          Outlxx was founded on a single conviction: that exceptional fashion should be accessible to those who know what they are looking for. We are not a marketplace. We are a considered edit — a small portfolio of the world's most rigorous fashion houses, brought together under one roof.
+          At Outlxx, we believe style is more than what you wear&mdash;it&apos;s an expression of confidence, ambition, and individuality.
         </p>
       </div>
 
@@ -28,35 +28,27 @@ export default function AboutPage() {
         />
       </div>
 
-      {/* Three-column values */}
-      <div className="mb-14 grid gap-8 sm:grid-cols-3">
-        {[
-          {
-            title: "Curation over Volume",
-            body: "We carry fewer than 200 products at any time. Every piece is chosen because it is genuinely exceptional — not because it sells.",
-          },
-          {
-            title: "Craft Over Marketing",
-            body: "The houses we work with spend their budgets on materials and craftspeople, not celebrity endorsements. We think this shows.",
-          },
-          {
-            title: "Investment Over Impulse",
-            body: "Everything in our portfolio is designed to be worn for a decade, not a season. We believe this is the only defensible way to buy fashion.",
-          },
-        ].map((v) => (
-          <div key={v.title}>
-            <h3 className="mb-3 text-sm font-semibold">{v.title}</h3>
-            <p className="text-sm leading-relaxed text-zinc-600">{v.body}</p>
-          </div>
-        ))}
+      {/* Story */}
+      <div className="mb-14 max-w-3xl space-y-6 text-base leading-relaxed text-zinc-600">
+        <p>
+          Founded with a vision to bridge contemporary streetwear and premium craftsmanship, Outlxx delivers carefully curated pieces designed for those who appreciate quality, timeless design, and effortless style. Every collection reflects our commitment to creating garments that elevate everyday wear while maintaining comfort and durability.
+        </p>
+        <p>
+          With operations based in both the United Kingdom and Nigeria, we proudly serve customers across both regions, combining global standards with exceptional customer service.
+        </p>
+        <p>
+          Our focus extends beyond clothing. We&apos;re dedicated to building a community that values authenticity, confidence, and self-expression. Every order is handled with care, from secure checkout to doorstep delivery, ensuring your shopping experience is seamless from start to finish.
+        </p>
+        <p>
+          Whether you&apos;re refreshing your wardrobe or making a statement, Outlxx is here to help you wear confidence every day.
+        </p>
       </div>
 
-      {/* Team quote */}
+      {/* Closing note */}
       <div className="mb-14 border-l-4 border-black pl-8">
-        <blockquote className="font-heading text-2xl font-medium leading-relaxed text-zinc-700">
-          "We built Outlxx because we were tired of choosing between accessibility and quality. The two should not be in opposition."
-        </blockquote>
-        <cite className="mt-4 block text-sm text-zinc-500">— Founders, Outlxx</cite>
+        <p className="font-heading text-2xl font-medium leading-relaxed text-zinc-700">
+          Thank you for choosing Outlxx.
+        </p>
       </div>
 
       {/* CTA */}

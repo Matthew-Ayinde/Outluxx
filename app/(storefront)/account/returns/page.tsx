@@ -17,14 +17,14 @@ export default async function ReturnsPage() {
     <div>
       <h2 className="mb-2 text-xl font-semibold">Returns & Refunds</h2>
       <p className="mb-6 text-sm text-zinc-500">
-        Returns are accepted within 14 days of delivery. Items must be in original condition.
+        Returns are accepted within 10 days of delivery. Items must be in original condition.
       </p>
 
       <div className="mb-6 border border-black/10 p-5">
         <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest">Eligible for Return</h3>
         {eligibleOrders.length === 0 ? (
           <p className="text-sm text-zinc-500">
-            No delivered orders yet. Once an order is delivered, it will appear here and can be returned within 14 days.
+            No delivered orders yet. Once an order is delivered, it will appear here and can be returned within 10 days.
           </p>
         ) : (
           <div className="space-y-3">
@@ -62,7 +62,7 @@ export default async function ReturnsPage() {
         <ul className="space-y-2 text-sm text-zinc-600">
           <li className="flex gap-2">
             <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-black" />
-            Returns accepted within 14 days of delivery
+            Returns accepted within 10 days of delivery
           </li>
           <li className="flex gap-2">
             <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-black" />

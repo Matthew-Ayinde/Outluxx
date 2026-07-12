@@ -1,54 +1,48 @@
-export const metadata = { title: "Shipping & Delivery" };
+export const metadata = { title: "Shipping Policy" };
 
 export default function ShippingDeliveryPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
       <div className="mb-10">
         <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">Delivery Information</p>
-        <h1 className="text-4xl font-semibold">Shipping & Delivery</h1>
+        <h1 className="text-4xl font-semibold">Shipping Policy</h1>
       </div>
 
       <div className="space-y-10 text-sm leading-relaxed text-zinc-700">
-        <Section title="Delivery Options">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-black/10">
-                {["Method", "Timeframe", "Cost"].map((h) => (
-                  <th key={h} className="pb-3 pr-8 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-black/5">
-              {[
-                { method: "Standard (UK)", time: "3–5 business days", cost: "Free over £500 · £15 otherwise" },
-                { method: "Express (UK)", time: "1–2 business days", cost: "£25" },
-                { method: "Standard (EU)", time: "5–7 business days", cost: "£20" },
-                { method: "Standard (Rest of World)", time: "7–14 business days", cost: "£35" },
-                { method: "Express (International)", time: "3–5 business days", cost: "£55" },
-              ].map((row) => (
-                <tr key={row.method}>
-                  <td className="py-3 pr-8 font-medium">{row.method}</td>
-                  <td className="py-3 pr-8 text-zinc-600">{row.time}</td>
-                  <td className="py-3 text-zinc-600">{row.cost}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <Section title="Shipping Destinations">
+          <p>Outlxx currently ships throughout:</p>
+          <ul className="mt-3 list-disc space-y-1 pl-5">
+            <li>United Kingdom</li>
+            <li>Nigeria</li>
+          </ul>
+          <p className="mt-3">We&apos;re continuously working to expand our shipping network and serve more customers worldwide.</p>
         </Section>
 
         <Section title="Order Processing">
-          <p>Orders placed before 2pm GMT on a business day are dispatched same day. Orders placed after 2pm or on weekends are dispatched the following business day.</p>
-          <p className="mt-3">During peak periods (sale, new season launches), processing may take 1–2 additional business days.</p>
+          <p>Orders are processed after payment has been successfully confirmed.</p>
+          <p className="mt-3">Please allow 1&ndash;2 business days for processing before your order is dispatched.</p>
+          <p className="mt-3">Orders placed on weekends or public holidays will be processed on the next working day.</p>
         </Section>
 
-        <Section title="Tracking Your Order">
-          <p>Once dispatched, you will receive a confirmation email with your tracking number. All orders are fully tracked from our warehouse to your door.</p>
-          <p className="mt-3">You can also track your order from your account dashboard under 'My Orders'.</p>
+        <Section title="Delivery Time">
+          <p>Estimated delivery time: <span className="font-medium">10&ndash;12 business days</span></p>
+          <p className="mt-3">While we work closely with our delivery partners to ensure timely shipping, unforeseen circumstances such as customs clearance, weather conditions, or peak shopping periods may occasionally cause delays.</p>
         </Section>
 
-        <Section title="Customs & Duties">
-          <p>For international deliveries outside the UK, customs duties and import taxes may be applicable. These charges are the responsibility of the recipient and are not included in your order total.</p>
-          <p className="mt-3">We recommend checking your country's import regulations before placing an order.</p>
+        <Section title="Shipping Costs">
+          <p>Shipping fees are calculated during checkout based on your delivery location.</p>
+          <h3 className="mb-2 mt-5 text-sm font-semibold">Free Shipping</h3>
+          <p>We proudly offer <span className="font-medium">FREE shipping</span> on all orders over £100.</p>
+          <p className="mt-3">Orders below this amount will incur the applicable shipping charge shown at checkout.</p>
+        </Section>
+
+        <Section title="Order Tracking">
+          <p>Once your order has been dispatched, you&apos;ll receive a confirmation email containing your tracking number, allowing you to monitor your shipment every step of the way.</p>
+        </Section>
+
+        <Section title="Incorrect Shipping Information">
+          <p>Customers are responsible for ensuring that shipping details are accurate before completing their purchase.</p>
+          <p className="mt-3">Outlxx cannot be held responsible for delays or failed deliveries caused by incorrect address information provided during checkout.</p>
         </Section>
       </div>
     </div>

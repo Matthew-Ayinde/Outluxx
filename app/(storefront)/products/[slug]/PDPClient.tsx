@@ -191,7 +191,7 @@ export default function PDPClient({ product, related }: { product: Product; rela
               Complimentary standard delivery 3–5 business days. Express available at checkout (1–2 days). All orders fully tracked.
             </AccordionSection>
             <AccordionSection title="Returns">
-              Returns accepted within 14 days of delivery. Items must be unworn with tags attached.
+              Returns accepted within 10 days of delivery. Items must be unworn with tags attached.
             </AccordionSection>
           </div>
         </div>
