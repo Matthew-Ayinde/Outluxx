@@ -10,24 +10,28 @@ const categories = [
     href: "/tshirts",
     seed: "olx-cat-ts",
     sub: "Supima · Pima · Modal",
+    image: "/media/img10.PNG",
   },
   {
     label: "Pants",
     href: "/pants",
     seed: "olx-cat-pt",
     sub: "Wool · Linen · Cashmere",
+    image: "/media/img2.PNG",
   },
   {
     label: "Armless",
     href: "/armless",
     seed: "olx-cat-ar",
     sub: "Silk · Knit · Linen",
+    image: "/media/img8.PNG",
   },
   {
     label: "Tank Tops",
     href: "/tank-tops",
     seed: "olx-cat-tt",
     sub: "Cotton · Silk · Cashmere",
+    image: "/media/img6.PNG",
   },
 ];
 
@@ -66,7 +70,7 @@ export default function Homepage() {
             >
               <div className="relative aspect-[3/4] w-full overflow-hidden">
                 <Image
-                  src={`https://picsum.photos/seed/${cat.seed}/600/800`}
+                  src={cat.image}
                   alt={cat.label}
                   fill
                   sizes="(max-width: 640px) 50vw, 25vw"

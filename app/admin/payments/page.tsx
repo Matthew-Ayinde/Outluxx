@@ -2,17 +2,12 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { formatMoney } from "@/lib/utils/format";
+import { IconCard, IconEye, IconExternalLink, IconClose } from "@/components/admin/icons";
+import { IconButton, PAYMENT_STATUS_TONES, Panel, SectionHeader, StatCard, StatusBadge } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
 
 const STRIPE_DASHBOARD = "https://dashboard.stripe.com/test/payments";
-
-const PAYMENT_STATUS_STYLES: Record<string, string> = {
-  paid: "bg-green-50 text-green-700",
-  failed: "bg-red-50 text-red-600",
-  pending: "bg-zinc-100 text-zinc-500",
-  refunded: "bg-purple-50 text-purple-700",
-};
 
 const FILTERS = ["all", "paid", "failed", "pending", "refunded"] as const;
 type Filter = (typeof FILTERS)[number];
@@ -101,36 +96,33 @@ export default function AdminPaymentsPage() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold">Payments</h1>
-        <p className="mt-1 text-sm text-zinc-500">All payment transactions powered by Stripe</p>
-      </div>
+      <SectionHeader title="Payments" subtitle="All payment transactions powered by Stripe" />
 
       {/* Stats */}
       <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Net Revenue" value={formatMoney(netRevenue)} sub="Paid minus refunded" positive />
+        <StatCard label="Net Revenue" value={formatMoney(netRevenue)} sub="Paid minus refunded" trend="up" icon={<IconCard className="h-3.5 w-3.5" />} />
         <StatCard
           label="Paid"
           value={stats ? `${stats.paid.count}` : "—"}
-          sub={stats ? formatMoney(stats.paid.total) : ""}
-          positive
+          sub={stats ? formatMoney(stats.paid.total) : undefined}
+          trend="up"
         />
         <StatCard
           label="Failed"
           value={stats ? `${stats.failed.count}` : "—"}
-          sub={stats ? `${stats.pending.count} pending` : ""}
-          positive={false}
+          sub={stats ? `${stats.pending.count} pending` : undefined}
+          trend="down"
         />
         <StatCard
           label="Refunded"
           value={stats ? `${stats.refunded.count}` : "—"}
-          sub={stats ? formatMoney(stats.refunded.total) : ""}
-          positive={false}
+          sub={stats ? formatMoney(stats.refunded.total) : undefined}
+          trend="flat"
         />
       </div>
 
       {refundError && (
-        <div className="mb-4 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">{refundError}</div>
+        <div className="mb-4 border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{refundError}</div>
       )}
 
       {/* Filter tabs */}
@@ -141,7 +133,7 @@ export default function AdminPaymentsPage() {
             onClick={() => setFilter(f)}
             className={[
               "px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-colors",
-              f === filter ? "bg-black text-white" : "border border-black/15 hover:border-black",
+              f === filter ? "bg-zinc-900 text-white" : "border border-zinc-200 text-zinc-600 hover:border-zinc-900 hover:text-zinc-900",
             ].join(" ")}
           >
             {f}
@@ -155,11 +147,11 @@ export default function AdminPaymentsPage() {
       </div>
 
       {/* Table */}
-      <div className="border border-black/10 bg-white">
+      <Panel>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-black/10 bg-zinc-50">
+              <tr className="border-b border-zinc-100 bg-zinc-50">
                 {["Order #", "Date", "Customer", "Stripe PI", "Status", "Amount", "Actions"].map((h) => (
                   <th key={h} className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
                     {h}
@@ -167,13 +159,13 @@ export default function AdminPaymentsPage() {
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-black/5">
+            <tbody className="divide-y divide-zinc-100">
               {loading ? (
                 <tr><td colSpan={7} className="px-5 py-10 text-center text-sm text-zinc-400">Loading…</td></tr>
               ) : payments.length === 0 ? (
                 <tr><td colSpan={7} className="px-5 py-10 text-center text-sm text-zinc-400">No payments found</td></tr>
               ) : payments.map((p) => (
-                <tr key={p._id} className="hover:bg-zinc-50 transition-colors">
+                <tr key={p._id} className="transition-colors hover:bg-zinc-50/80">
                   <td className="px-5 py-3 font-semibold">{p.orderNumber}</td>
                   <td className="px-5 py-3 text-zinc-500 whitespace-nowrap">
                     {new Date(p.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
@@ -188,34 +180,27 @@ export default function AdminPaymentsPage() {
                         href={`${STRIPE_DASHBOARD}/${p.stripePaymentIntentId}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-mono text-xs text-zinc-400 hover:text-black underline underline-offset-2 transition-colors"
+                        className="inline-flex items-center gap-1 font-mono text-xs text-zinc-400 hover:text-zinc-900 transition-colors"
                         title={p.stripePaymentIntentId}
                       >
-                        {p.stripePaymentIntentId.slice(0, 18)}…
+                        {p.stripePaymentIntentId.slice(0, 18)}… <IconExternalLink className="h-3 w-3" />
                       </a>
                     ) : (
                       <span className="text-xs text-zinc-300">—</span>
                     )}
                   </td>
                   <td className="px-5 py-3">
-                    <span className={`inline-block px-2.5 py-1 text-[10px] font-bold uppercase ${PAYMENT_STATUS_STYLES[p.paymentStatus] ?? PAYMENT_STATUS_STYLES.pending}`}>
-                      {p.paymentStatus}
-                    </span>
+                    <StatusBadge label={p.paymentStatus} tone={PAYMENT_STATUS_TONES[p.paymentStatus] ?? "neutral"} />
                   </td>
                   <td className="px-5 py-3 font-semibold">{formatMoney(p.total)}</td>
                   <td className="px-5 py-3">
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() => setDetail(p)}
-                        className="text-xs text-zinc-400 underline underline-offset-2 hover:text-black transition-colors"
-                      >
-                        View
-                      </button>
+                    <div className="flex items-center gap-2">
+                      <IconButton icon={<IconEye className="h-3.5 w-3.5" />} label="View payment" onClick={() => setDetail(p)} />
                       {p.paymentStatus === "paid" && p.stripePaymentIntentId && (
                         <button
                           onClick={() => issueRefund(p)}
                           disabled={refundingId === p._id}
-                          className="text-xs text-red-500 underline underline-offset-2 hover:text-red-700 transition-colors disabled:opacity-40"
+                          className="text-xs font-medium text-rose-500 hover:text-rose-700 transition-colors disabled:opacity-40"
                         >
                           {refundingId === p._id ? "Refunding…" : "Refund"}
                         </button>
@@ -228,11 +213,11 @@ export default function AdminPaymentsPage() {
           </table>
         </div>
         {total > payments.length && (
-          <div className="border-t border-black/5 px-5 py-3 text-xs text-zinc-400">
+          <div className="border-t border-zinc-100 px-5 py-3 text-xs text-zinc-400">
             Showing {payments.length} of {total} payments
           </div>
         )}
-      </div>
+      </Panel>
 
       {/* Detail panel */}
       {detail && (
@@ -244,17 +229,17 @@ export default function AdminPaymentsPage() {
             className="h-full w-full max-w-md overflow-y-auto bg-white shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 flex items-center justify-between border-b border-black/10 bg-white px-6 py-4">
-              <h2 className="text-sm font-semibold uppercase tracking-widest">{detail.orderNumber}</h2>
-              <button onClick={() => setDetail(null)} className="text-zinc-400 hover:text-black">✕</button>
+            <div className="sticky top-0 flex items-center justify-between border-b border-zinc-100 bg-white px-6 py-4">
+              <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest">
+                <IconCard className="h-4 w-4 text-zinc-400" /> {detail.orderNumber}
+              </h2>
+              <IconButton icon={<IconClose className="h-4 w-4" />} label="Close" onClick={() => setDetail(null)} />
             </div>
 
             <div className="p-6 space-y-6 text-sm">
               {/* Status */}
               <div className="flex items-center gap-3">
-                <span className={`px-2.5 py-1 text-[10px] font-bold uppercase ${PAYMENT_STATUS_STYLES[detail.paymentStatus] ?? PAYMENT_STATUS_STYLES.pending}`}>
-                  {detail.paymentStatus}
-                </span>
+                <StatusBadge label={detail.paymentStatus} tone={PAYMENT_STATUS_TONES[detail.paymentStatus] ?? "neutral"} />
                 <span className="text-xs text-zinc-400">Order status: {detail.status}</span>
               </div>
 
@@ -276,9 +261,9 @@ export default function AdminPaymentsPage() {
                       href={`${STRIPE_DASHBOARD}/${detail.stripePaymentIntentId}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-1 inline-flex items-center gap-1 text-xs text-zinc-400 underline hover:text-black transition-colors"
+                      className="mt-1 inline-flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-900 transition-colors"
                     >
-                      View in Stripe Dashboard ↗
+                      View in Stripe Dashboard <IconExternalLink className="h-3 w-3" />
                     </a>
                   </>
                 ) : (
@@ -299,10 +284,10 @@ export default function AdminPaymentsPage() {
                 <div className="space-y-1.5 text-sm">
                   <Row label="Subtotal" value={formatMoney(detail.subtotal)} />
                   {detail.discount > 0 && (
-                    <Row label="Discount" value={`–${formatMoney(detail.discount)}`} className="text-red-600" />
+                    <Row label="Discount" value={`–${formatMoney(detail.discount)}`} className="text-rose-600" />
                   )}
                   <Row label="Shipping" value={detail.shipping === 0 ? "Free" : formatMoney(detail.shipping)} />
-                  <div className="border-t border-black/10 pt-2">
+                  <div className="border-t border-zinc-100 pt-2">
                     <Row label="Total" value={formatMoney(detail.total)} bold />
                   </div>
                 </div>
@@ -319,11 +304,11 @@ export default function AdminPaymentsPage() {
 
               {/* Refund action */}
               {detail.paymentStatus === "paid" && detail.stripePaymentIntentId && (
-                <div className="border-t border-black/10 pt-4">
+                <div className="border-t border-zinc-100 pt-4">
                   <button
                     onClick={() => issueRefund(detail)}
                     disabled={refundingId === detail._id}
-                    className="flex h-10 w-full items-center justify-center border border-red-300 text-xs font-semibold uppercase tracking-widest text-red-600 hover:bg-red-50 transition-colors disabled:opacity-40"
+                    className="flex h-10 w-full items-center justify-center border border-rose-300 text-xs font-semibold uppercase tracking-widest text-rose-600 hover:bg-rose-50 transition-colors disabled:opacity-40"
                   >
                     {refundingId === detail._id ? "Processing Refund…" : `Refund ${formatMoney(detail.total)}`}
                   </button>
@@ -336,16 +321,6 @@ export default function AdminPaymentsPage() {
           </div>
         </div>
       )}
-    </div>
-  );
-}
-
-function StatCard({ label, value, sub, positive }: { label: string; value: string; sub: string; positive: boolean }) {
-  return (
-    <div className="border border-black/10 bg-white p-5">
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">{label}</p>
-      <p className="mt-2 text-2xl font-semibold">{value}</p>
-      <p className={`mt-1 text-xs ${positive ? "text-green-600" : "text-zinc-400"}`}>{sub}</p>
     </div>
   );
 }

@@ -22,7 +22,7 @@ const slides: Slide[] = [
     duration: 10000,
     media: {
       type: "video",
-      src: "/media/home/slide-1.mp4",
+      src: "/media/home/hero1.MOV",
       poster: "/media/home/slide-1.svg",
     },
   },
@@ -33,8 +33,19 @@ const slides: Slide[] = [
     duration: 7000,
     media: {
       type: "image",
-      src: "/media/home/img1.jpg",
+      src: "/media/img3.PNG",
       alt: "Tailored garment detail",
+    },
+  },
+    {
+    eyebrow: "Outlxx · Premium Fashion House",
+    lines: [{ text: "Refined by" }, { text: "Restraint.", italic: true }],
+    copy: "Considered apparel built on exceptional material and precise construction. For wardrobes that outlast trends.",
+    duration: 10000,
+    media: {
+      type: "video",
+      src: "/media/home/hero2.MOV",
+      poster: "/media/home/slide-1.svg",
     },
   },
   {
@@ -44,7 +55,7 @@ const slides: Slide[] = [
     duration: 7000,
     media: {
       type: "image",
-      src: "/media/home/img2.jpg",
+      src: "/media/img9.PNG",
       alt: "Monochrome editorial look",
     },
   },

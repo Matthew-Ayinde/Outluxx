@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
 import { formatMoney } from "@/lib/utils/format";
 import { ApiError } from "@/lib/api/client";
+import { IconPlus, IconSearch, IconPencil, IconTrash, IconClose, IconShirt, IconStar, IconUpload } from "@/components/admin/icons";
+import { SectionHeader, Panel, IconButton, Tag } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -78,30 +80,33 @@ export default function AdminProductsPage() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Products</h1>
-          <p className="mt-1 text-sm text-zinc-500">{displayProducts.length} products in catalogue</p>
-        </div>
-        <button
-          onClick={() => { setEditing(null); setShowModal(true); }}
-          className="bg-black px-5 py-2.5 text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors"
-        >
-          + Add Product
-        </button>
-      </div>
+      <SectionHeader
+        title="Products"
+        subtitle={`${displayProducts.length} products in catalogue`}
+        action={
+          <button
+            onClick={() => { setEditing(null); setShowModal(true); }}
+            className="flex items-center gap-2 bg-zinc-900 px-5 py-2.5 text-xs font-semibold uppercase tracking-widest text-white transition-colors hover:bg-zinc-800"
+          >
+            <IconPlus className="h-3.5 w-3.5" /> Add Product
+          </button>
+        }
+      />
 
-      {error && <div className="mb-4 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>}
+      {error && <div className="mb-4 border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div>}
 
       {/* Filters */}
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <input
-          type="search"
-          placeholder="Search products…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="border border-black/15 px-3 py-2 text-sm outline-none focus:border-black w-52"
-        />
+        <div className="relative w-52">
+          <IconSearch className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
+          <input
+            type="search"
+            placeholder="Search products…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full border border-zinc-200 py-2 pl-9 pr-3 text-sm outline-none focus:border-zinc-900"
+          />
+        </div>
         {CATEGORY_FILTERS.map((f) => (
           <button
             key={f}
@@ -109,8 +114,8 @@ export default function AdminProductsPage() {
             className={[
               "border px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider transition-colors",
               f === activeFilter
-                ? "border-black bg-black text-white"
-                : "border-black/15 hover:border-black",
+                ? "border-zinc-900 bg-zinc-900 text-white"
+                : "border-zinc-200 text-zinc-600 hover:border-zinc-900 hover:text-zinc-900",
             ].join(" ")}
           >
             {f}
@@ -119,28 +124,30 @@ export default function AdminProductsPage() {
       </div>
 
       {/* Table */}
-      <div className="border border-black/10 bg-white">
+      <Panel>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-black/10 bg-zinc-50">
+              <tr className="border-b border-zinc-100 bg-zinc-50">
                 {["Product", "Category", "Price", "Stock", "Status", "Actions"].map((h) => (
                   <th key={h} className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-black/5">
+            <tbody className="divide-y divide-zinc-100">
               {loading ? (
                 <tr><td colSpan={6} className="px-5 py-10 text-center text-sm text-zinc-400">Loading…</td></tr>
               ) : displayProducts.length === 0 ? (
                 <tr><td colSpan={6} className="px-5 py-10 text-center text-sm text-zinc-400">No products found</td></tr>
               ) : displayProducts.map((product) => (
-                <tr key={product._id} className="hover:bg-zinc-50 transition-colors">
+                <tr key={product._id} className="transition-colors hover:bg-zinc-50/80">
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="relative h-12 w-9 shrink-0 overflow-hidden bg-zinc-50">
-                        {product.images[0] && (
+                      <div className="relative flex h-12 w-9 shrink-0 items-center justify-center overflow-hidden border border-zinc-100 bg-zinc-50">
+                        {product.images[0] ? (
                           <Image src={product.images[0].src} alt={product.title} fill className="object-cover" sizes="36px" />
+                        ) : (
+                          <IconShirt className="h-4 w-4 text-zinc-300" />
                         )}
                       </div>
                       <div>
@@ -157,28 +164,31 @@ export default function AdminProductsPage() {
                     )}
                   </td>
                   <td className="px-5 py-3">
-                    <span className={`text-xs font-semibold ${product.stock > 0 ? "text-green-600" : "text-zinc-400"}`}>
+                    <span className={`text-xs font-semibold ${product.stock > 0 ? "text-emerald-600" : "text-zinc-400"}`}>
                       {product.stock > 0 ? `${product.stock} in stock` : "Out of Stock"}
                     </span>
                   </td>
                   <td className="px-5 py-3">
                     <div className="flex flex-wrap gap-1">
-                      {product.isNew && <span className="bg-black px-2 py-0.5 text-[9px] font-bold uppercase text-white">New</span>}
-                      {product.isSale && <span className="border border-black/20 px-2 py-0.5 text-[9px] font-bold uppercase text-zinc-600">Sale</span>}
-                      {product.isFeatured && <span className="border border-black/20 px-2 py-0.5 text-[9px] font-bold uppercase text-zinc-400">Featured</span>}
+                      {product.isNew && <Tag label="New" variant="solid" />}
+                      {product.isSale && <Tag label="Sale" />}
+                      {product.isFeatured && <Tag label="Featured" icon={<IconStar className="h-2.5 w-2.5" />} />}
                     </div>
                   </td>
                   <td className="px-5 py-3">
-                    <div className="flex gap-3">
-                      <button
+                    <div className="flex gap-2">
+                      <IconButton
+                        icon={<IconPencil className="h-3.5 w-3.5" />}
+                        label="Edit product"
                         onClick={() => { setEditing(product); setShowModal(true); }}
-                        className="text-xs text-zinc-400 underline underline-offset-2 hover:text-black"
-                      >Edit</button>
-                      <button
-                        onClick={() => handleDelete(product.slug)}
+                      />
+                      <IconButton
+                        icon={<IconTrash className="h-3.5 w-3.5" />}
+                        label="Delete product"
+                        tone="danger"
                         disabled={deleting === product.slug}
-                        className="text-xs text-red-400 underline underline-offset-2 hover:text-red-600 disabled:opacity-50"
-                      >{deleting === product.slug ? "…" : "Delete"}</button>
+                        onClick={() => handleDelete(product.slug)}
+                      />
                     </div>
                   </td>
                 </tr>
@@ -186,7 +196,7 @@ export default function AdminProductsPage() {
             </tbody>
           </table>
         </div>
-      </div>
+      </Panel>
 
       {showModal && (
         <ProductModal
@@ -303,12 +313,14 @@ function ProductModal({
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 pt-10 pb-10">
       <div className="w-full max-w-2xl bg-white mx-4">
-        <div className="flex items-center justify-between border-b border-black/10 px-6 py-4">
-          <h2 className="text-sm font-semibold uppercase tracking-widest">{isEdit ? "Edit Product" : "Add Product"}</h2>
-          <button onClick={onClose} className="text-zinc-400 hover:text-black">✕</button>
+        <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-4">
+          <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest">
+            <IconShirt className="h-4 w-4 text-zinc-400" /> {isEdit ? "Edit Product" : "Add Product"}
+          </h2>
+          <IconButton icon={<IconClose className="h-4 w-4" />} label="Close" onClick={onClose} />
         </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-6">
-          {error && <div className="border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-600">{error}</div>}
+          {error && <div className="border border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700">{error}</div>}
 
           <div className="grid grid-cols-2 gap-4">
             <F label="Title *" value={form.title} onChange={(v) => setForm((f) => ({ ...f, title: v }))} required />
@@ -321,7 +333,7 @@ function ProductModal({
               <select
                 value={form.category}
                 onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
-                className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black"
+                className="w-full border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-zinc-900"
               >
                 {["tshirts", "pants", "armless", "tank-tops"].map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
@@ -336,7 +348,7 @@ function ProductModal({
           <div className="flex gap-6">
             {(["isNew", "isSale", "isFeatured"] as const).map((key) => (
               <label key={key} className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={form[key]} onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.checked }))} className="accent-black" />
+                <input type="checkbox" checked={form[key]} onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.checked }))} className="accent-zinc-900" />
                 {key === "isNew" ? "New" : key === "isSale" ? "On Sale" : "Featured"}
               </label>
             ))}
@@ -349,7 +361,7 @@ function ProductModal({
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               rows={3}
               required
-              className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black resize-none"
+              className="w-full border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-zinc-900 resize-none"
             />
           </div>
 
@@ -367,23 +379,29 @@ function ProductModal({
             </label>
             <div className="flex flex-wrap gap-2 mb-2">
               {form.images.map((img, i) => (
-                <div key={i} className="relative h-16 w-12 overflow-hidden bg-zinc-100">
+                <div key={i} className="relative h-16 w-12 overflow-hidden border border-zinc-100 bg-zinc-50">
                   <Image src={img.src} alt={img.alt} fill className="object-cover" sizes="48px" />
                   <button
                     type="button"
                     onClick={() => setForm((f) => ({ ...f, images: f.images.filter((_, j) => j !== i) }))}
-                    className="absolute right-0 top-0 bg-black/70 text-white text-[10px] px-1"
-                  >✕</button>
+                    className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center bg-black/70 text-white"
+                    aria-label="Remove image"
+                  >
+                    <IconClose className="h-2.5 w-2.5" />
+                  </button>
                 </div>
               ))}
+              <label className="flex h-16 w-12 cursor-pointer flex-col items-center justify-center gap-1 border border-dashed border-zinc-300 text-zinc-400 hover:border-zinc-500 hover:text-zinc-600 transition-colors">
+                <IconUpload className="h-4 w-4" />
+                <input
+                  type="file"
+                  accept="image/*,video/*"
+                  multiple
+                  onChange={(e) => e.target.files && uploadImages(e.target.files)}
+                  className="hidden"
+                />
+              </label>
             </div>
-            <input
-              type="file"
-              accept="image/*,video/*"
-              multiple
-              onChange={(e) => e.target.files && uploadImages(e.target.files)}
-              className="text-sm text-zinc-500"
-            />
           </div>
 
           {/* Sizes */}
@@ -400,7 +418,7 @@ function ProductModal({
                       sizes[i] = { ...sizes[i], available: e.target.checked };
                       setForm((f) => ({ ...f, sizes }));
                     }}
-                    className="accent-black"
+                    className="accent-zinc-900"
                   />
                   {s.label}
                 </label>
@@ -408,14 +426,14 @@ function ProductModal({
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-2 border-t border-black/10">
-            <button type="button" onClick={onClose} className="border border-black/20 px-6 py-2.5 text-xs font-semibold uppercase tracking-widest hover:border-black transition-colors">
+          <div className="flex justify-end gap-3 pt-2 border-t border-zinc-100">
+            <button type="button" onClick={onClose} className="border border-zinc-200 px-6 py-2.5 text-xs font-semibold uppercase tracking-widest text-zinc-600 hover:border-zinc-900 hover:text-zinc-900 transition-colors">
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading || uploadingImages}
-              className="bg-black px-6 py-2.5 text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors disabled:opacity-60"
+              className="bg-zinc-900 px-6 py-2.5 text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors disabled:opacity-60"
             >
               {loading ? "Saving…" : isEdit ? "Update Product" : "Add Product"}
             </button>
@@ -438,7 +456,7 @@ function F({ label, value, onChange, type = "text", required, disabled }: {
         onChange={onChange ? (e) => onChange(e.target.value) : undefined}
         required={required}
         disabled={disabled}
-        className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black disabled:bg-zinc-50 disabled:text-zinc-400"
+        className="w-full border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-zinc-900 disabled:bg-zinc-50 disabled:text-zinc-400"
       />
     </div>
   );

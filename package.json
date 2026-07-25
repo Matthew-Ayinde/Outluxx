@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "seed": "tsx --tsconfig tsconfig.json lib/db/seed.ts",
-    "seed:admin": "tsx --tsconfig tsconfig.json lib/db/seed-admin.ts"
+    "seed:admin": "tsx --tsconfig tsconfig.json lib/db/seed-admin.ts",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^6.7.0",
@@ -26,6 +28,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.0",
     "@tailwindcss/postcss": "^4",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.10",

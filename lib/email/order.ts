@@ -9,8 +9,8 @@ const FROM = process.env.EMAIL_FROM || process.env.SMTP_USER || "";
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@outlxx.com";
 
 const LOGO_ATTACHMENT = {
-  filename: "logo.jpg",
-  path: path.join(process.cwd(), "public", "logo.jpg"),
+  filename: "black-logo.png",
+  path: path.join(process.cwd(), "public", "black-logo.png"),
   cid: LOGO_CID,
 };
 

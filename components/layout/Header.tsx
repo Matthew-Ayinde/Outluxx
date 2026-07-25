@@ -78,12 +78,20 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" aria-label="Outlxx home" className="shrink-0">
             <Image
-              src="/logo.jpg"
+              src="/black-logo.png"
               alt="Outlxx"
               width={120}
               height={32}
               priority
-              className="h-7 w-auto"
+              className="h-7 w-auto dark:hidden"
+            />
+            <Image
+              src="/white-logo.png"
+              alt="Outlxx"
+              width={120}
+              height={32}
+              priority
+              className="hidden h-7 w-auto dark:block"
             />
           </Link>
 

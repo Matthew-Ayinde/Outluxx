@@ -1,84 +1,32 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  IconGrid,
+  IconShirt,
+  IconReceipt,
+  IconUsers,
+  IconCard,
+  IconChartBar,
+  IconGear,
+  IconLayout,
+  IconMenu,
+  IconChevronLeft,
+  IconArrowLeft,
+} from "./icons";
 
 const NAV = [
-  {
-    label: "Dashboard",
-    href: "/admin",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <rect x="1" y="1" width="6" height="6" rx="0.5" stroke="currentColor" strokeWidth="1.2" />
-        <rect x="9" y="1" width="6" height="6" rx="0.5" stroke="currentColor" strokeWidth="1.2" />
-        <rect x="1" y="9" width="6" height="6" rx="0.5" stroke="currentColor" strokeWidth="1.2" />
-        <rect x="9" y="9" width="6" height="6" rx="0.5" stroke="currentColor" strokeWidth="1.2" />
-      </svg>
-    ),
-  },
-  {
-    label: "Products",
-    href: "/admin/products",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M13 5H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1Z" stroke="currentColor" strokeWidth="1.2" />
-        <path d="M11 5V4a3 3 0 0 0-6 0v1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-  {
-    label: "Orders",
-    href: "/admin/orders",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M2 2h2l1.5 8h7L14 5H5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-        <circle cx="7" cy="13.5" r="0.5" fill="currentColor" stroke="currentColor" />
-        <circle cx="11" cy="13.5" r="0.5" fill="currentColor" stroke="currentColor" />
-      </svg>
-    ),
-  },
-  {
-    label: "Customers",
-    href: "/admin/customers",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="5" r="3" stroke="currentColor" strokeWidth="1.2" />
-        <path d="M2 14c0-3 2.686-5 6-5s6 2 6 5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-  {
-    label: "Payments",
-    href: "/admin/payments",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <rect x="1" y="3" width="14" height="10" rx="1" stroke="currentColor" strokeWidth="1.2" />
-        <path d="M1 6h14" stroke="currentColor" strokeWidth="1.2" />
-        <path d="M4 10h3M11 10h1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-  {
-    label: "Analytics",
-    href: "/admin/analytics",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M2 14l3-4 3 2 3-5 3 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    ),
-  },
-  {
-    label: "Settings",
-    href: "/admin/settings",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="2.5" stroke="currentColor" strokeWidth="1.2" />
-        <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M2.93 2.93l1.06 1.06M12.01 12.01l1.06 1.06M2.93 13.07l1.06-1.06M12.01 3.99l1.06-1.06"
-          stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      </svg>
-    ),
-  },
+  { label: "Dashboard", href: "/admin", icon: IconGrid },
+  { label: "Products", href: "/admin/products", icon: IconShirt },
+  { label: "Orders", href: "/admin/orders", icon: IconReceipt },
+  { label: "Customers", href: "/admin/customers", icon: IconUsers },
+  { label: "Payments", href: "/admin/payments", icon: IconCard },
+  { label: "Analytics", href: "/admin/analytics", icon: IconChartBar },
+  { label: "Content", href: "/admin/content", icon: IconLayout },
+  { label: "Settings", href: "/admin/settings", icon: IconGear },
 ];
 
 export default function AdminShell({
@@ -97,48 +45,59 @@ export default function AdminShell({
   const isActive = (href: string) =>
     href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
 
+  const activeLabel = NAV.find((item) => isActive(item.href))?.label ?? "Admin";
+
   return (
     <div className="flex min-h-screen bg-zinc-50">
       {mobileOpen && (
-        <div className="fixed inset-0 z-20 bg-black/40 lg:hidden" onClick={() => setMobileOpen(false)} />
+        <div className="fixed inset-0 z-20 bg-black/50 lg:hidden" onClick={() => setMobileOpen(false)} />
       )}
 
       {/* Sidebar */}
       <aside
         className={[
-          "fixed left-0 top-0 z-30 flex h-full flex-col bg-black text-white transition-all duration-200",
-          collapsed ? "w-16" : "w-56",
+          "fixed left-0 top-0 z-30 flex h-full flex-col bg-zinc-950 text-white transition-all duration-200",
+          collapsed ? "w-16" : "w-60",
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         ].join(" ")}
       >
         {/* Logo */}
-        <div className={["flex items-center gap-3 border-b border-white/10 px-4 py-5", collapsed ? "justify-center" : ""].join(" ")}>
-          <div className="h-6 w-6 shrink-0 bg-white" />
+        <Link
+          href="/admin"
+          className={["flex flex-col items-center gap-3 border-b border-white/10 px-4 py-5", collapsed ? "justify-center" : ""].join(" ")}
+        >
+          <Image
+            src="/white-logo.png"
+            alt="Outlxx"
+            width={120}
+            height={32}
+            priority
+            className={collapsed ? "h-4 w-auto object-contain" : "h-6 w-auto object-contain"}
+          />
           {!collapsed && (
-            <div>
-              <span className="block font-heading text-sm font-semibold tracking-widest">Outlxx</span>
-              <span className="block text-[9px] font-medium uppercase tracking-widest text-white/40">Admin</span>
-            </div>
+            <span className="block text-[9px] font-medium uppercase tracking-widest text-white/40">Admin Console</span>
           )}
-        </div>
+        </Link>
 
         <nav className="flex-1 overflow-y-auto py-4">
           {NAV.map((item) => {
             const active = isActive(item.href);
+            const Icon = item.icon;
             return (
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => setMobileOpen(false)}
                 className={[
-                  "flex items-center gap-3 px-4 py-3 text-xs font-medium transition-colors",
+                  "relative flex items-center gap-3 px-4 py-3 text-xs font-medium transition-colors",
                   collapsed ? "justify-center" : "",
-                  active ? "bg-white/10 text-white" : "text-white/50 hover:bg-white/5 hover:text-white",
+                  active ? "bg-white/[0.07] text-white" : "text-white/50 hover:bg-white/[0.04] hover:text-white",
                 ].join(" ")}
                 title={collapsed ? item.label : undefined}
               >
-                <span className="shrink-0">{item.icon}</span>
+                {active && <span className="absolute left-0 top-0 h-full w-0.5 bg-white" />}
+                <Icon className={active ? "h-4 w-4 text-white" : "h-4 w-4 text-white/50"} />
                 {!collapsed && <span className="uppercase tracking-wider">{item.label}</span>}
-                {!collapsed && active && <span className="ml-auto h-1 w-1 rounded-full bg-white/60" />}
               </Link>
             );
           })}
@@ -147,40 +106,36 @@ export default function AdminShell({
         <div className="border-t border-white/10 p-3">
           <Link
             href="/"
-            className={["flex items-center gap-2 rounded px-2 py-2 text-xs text-white/40 hover:text-white transition-colors", collapsed ? "justify-center" : ""].join(" ")}
+            className={["flex items-center gap-2 px-2 py-2 text-xs text-white/40 transition-colors hover:text-white", collapsed ? "justify-center" : ""].join(" ")}
             title={collapsed ? "Back to Store" : undefined}
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M9 2L4 7l5 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <IconArrowLeft className="h-3.5 w-3.5" />
             {!collapsed && <span>Back to Store</span>}
           </Link>
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="mt-1 flex w-full items-center justify-center py-2 text-white/30 hover:text-white transition-colors"
+            className="mt-1 flex w-full items-center justify-center py-2 text-white/30 transition-colors hover:text-white"
             aria-label="Toggle sidebar"
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className={`transition-transform ${collapsed ? "rotate-180" : ""}`}>
-              <path d="M9 2L4 7l5 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <IconChevronLeft className={`h-3.5 w-3.5 transition-transform ${collapsed ? "rotate-180" : ""}`} />
           </button>
         </div>
       </aside>
 
       {/* Main */}
-      <div className={["flex flex-1 flex-col transition-all duration-200", collapsed ? "lg:ml-16" : "lg:ml-56"].join(" ")}>
-        <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b border-black/10 bg-white px-4 lg:px-6">
-          <button className="lg:hidden" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Open menu">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
+      <div className={["flex flex-1 flex-col transition-all duration-200", collapsed ? "lg:ml-16" : "lg:ml-60"].join(" ")}>
+        <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b border-zinc-200 bg-white px-4 lg:px-6">
+          <button className="text-zinc-500 lg:hidden" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Open menu">
+            <IconMenu className="h-5 w-5" />
           </button>
           <div className="hidden lg:block">
-            <span className="text-sm font-medium text-zinc-500">Outlxx Admin</span>
+            <span className="text-sm font-medium text-zinc-400">
+              Admin <span className="mx-1.5 text-zinc-300">/</span> <span className="text-zinc-700">{activeLabel}</span>
+            </span>
           </div>
-          <div className="flex items-center gap-4 ml-auto">
+          <div className="ml-auto flex items-center gap-3">
             <span className="hidden text-xs text-zinc-400 sm:inline">{adminEmail ?? "Admin"}</span>
-            <div className="flex h-8 w-8 items-center justify-center bg-black text-xs font-semibold text-white">
+            <div className="flex h-8 w-8 items-center justify-center border border-zinc-200 bg-zinc-950 text-xs font-semibold text-white">
               {(adminName?.[0] ?? "A").toUpperCase()}
             </div>
           </div>

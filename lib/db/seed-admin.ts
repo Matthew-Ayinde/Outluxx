@@ -5,6 +5,7 @@
  * Credentials can be overridden via env:
  *   ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_FIRST_NAME, ADMIN_LAST_NAME
  */
+
 import "dotenv/config";
 import path from "path";
 import { config } from "dotenv";

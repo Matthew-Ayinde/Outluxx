@@ -2,6 +2,26 @@ import connectDB from "@/lib/db/mongoose";
 import { Order } from "@/lib/db/models/Order";
 import { Product } from "@/lib/db/models/Product";
 import { formatMoney } from "@/lib/utils/format";
+import { IconCard, IconChartBar, IconReceipt, IconShirt, IconTag } from "@/components/admin/icons";
+import { Panel, SectionHeader, StatCard } from "@/components/admin/ui";
+
+// Fixed categorical identity colours (never cycled/reassigned by rank) —
+// keeps each product category the same hue everywhere it appears.
+const CATEGORY_COLORS: Record<string, string> = {
+  tshirts: "#2a78d6",
+  pants: "#eb6834",
+  armless: "#1baf7a",
+  "tank-tops": "#eda100",
+};
+const CATEGORY_LABELS: Record<string, string> = {
+  tshirts: "T-Shirts",
+  pants: "Pants",
+  armless: "Armless",
+  "tank-tops": "Tank Tops",
+};
+function categoryColor(category: string) {
+  return CATEGORY_COLORS[category] ?? "#a1a1aa";
+}
 
 export const metadata = { title: "Analytics" };
 export const dynamic = "force-dynamic";
@@ -76,72 +96,73 @@ export default async function AdminAnalyticsPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold">Analytics</h1>
-        <p className="mt-1 text-sm text-zinc-500">Performance overview for {now.getFullYear()}</p>
-      </div>
+      <SectionHeader title="Analytics" subtitle={`Performance overview for ${now.getFullYear()}`} />
 
       {/* Key metrics */}
       <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {[
-          { label: "Total Revenue", value: formatMoney(totalRevenue) },
-          { label: "Paid Orders", value: paidOrders.length.toString() },
-          { label: "Avg Order Value", value: formatMoney(avgOrderValue) },
-          { label: "Items Sold", value: itemsSold.toString() },
-        ].map((m) => (
-          <div key={m.label} className="border border-black/10 bg-white p-5">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">{m.label}</p>
-            <p className="mt-2 text-2xl font-semibold">{m.value}</p>
-          </div>
-        ))}
+        <StatCard label="Total Revenue" value={formatMoney(totalRevenue)} icon={<IconCard className="h-3.5 w-3.5" />} />
+        <StatCard label="Paid Orders" value={paidOrders.length.toString()} icon={<IconReceipt className="h-3.5 w-3.5" />} />
+        <StatCard label="Avg Order Value" value={formatMoney(avgOrderValue)} icon={<IconChartBar className="h-3.5 w-3.5" />} />
+        <StatCard label="Items Sold" value={itemsSold.toString()} icon={<IconShirt className="h-3.5 w-3.5" />} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Monthly revenue bar chart */}
-        <div className="border border-black/10 bg-white p-5">
-          <h2 className="mb-5 text-sm font-semibold">Monthly Revenue (last 6 months)</h2>
-          <div className="flex items-end gap-3 h-40">
-            {months.map((m, i) => {
-              const height = (monthlyRevenue[i] / maxRevenue) * 100;
-              return (
-                <div key={`${m.label}-${m.year}`} className="flex flex-1 flex-col items-center gap-1">
-                  <span className="text-[9px] font-semibold text-zinc-400">
-                    {monthlyRevenue[i] === 0 ? "—" : `${(monthlyRevenue[i] / 1000).toFixed(1)}k`}
-                  </span>
-                  <div
-                    className="w-full bg-black transition-all"
-                    style={{ height: `${Math.max(height, monthlyRevenue[i] > 0 ? 2 : 0)}%` }}
-                  />
-                  <span className="text-[10px] text-zinc-500">{m.label}</span>
-                </div>
-              );
-            })}
+        <Panel title="Monthly Revenue" icon={<IconChartBar className="h-4 w-4" />} bodyClassName="p-5">
+          <div className="relative h-40">
+            {[0, 25, 50, 75].map((pct) => (
+              <div key={pct} className="absolute inset-x-0 border-t border-zinc-100" style={{ top: `${100 - pct}%` }} />
+            ))}
+            <div className="relative flex h-full items-end gap-3">
+              {months.map((m, i) => {
+                const height = (monthlyRevenue[i] / maxRevenue) * 100;
+                return (
+                  <div key={`${m.label}-${m.year}`} className="flex flex-1 flex-col items-center gap-1">
+                    <span className="text-[9px] font-semibold text-zinc-500 tabular-nums">
+                      {monthlyRevenue[i] === 0 ? "—" : `${(monthlyRevenue[i] / 1000).toFixed(1)}k`}
+                    </span>
+                    <div
+                      title={formatMoney(monthlyRevenue[i])}
+                      className="w-full max-w-9 rounded-t-sm bg-zinc-900 transition-all hover:bg-zinc-700"
+                      style={{ height: `${Math.max(height, monthlyRevenue[i] > 0 ? 2 : 0)}%` }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-1 flex gap-3 border-t border-zinc-200 pt-1.5">
+              {months.map((m) => (
+                <span key={`${m.label}-${m.year}`} className="flex-1 text-center text-[10px] text-zinc-400">{m.label}</span>
+              ))}
+            </div>
           </div>
-        </div>
+        </Panel>
 
         {/* Order status breakdown */}
-        <div className="border border-black/10 bg-white p-5">
-          <h2 className="mb-5 text-sm font-semibold">Order Status Breakdown</h2>
+        <Panel title="Order Status Breakdown" icon={<IconReceipt className="h-4 w-4" />} bodyClassName="p-5">
           {allOrders.length === 0 ? (
             <p className="text-xs text-zinc-400">No orders yet.</p>
           ) : (
             <div className="space-y-3">
               {Object.entries(statusBreakdown).map(([status, count]) => {
                 const pct = Math.round((count / allOrders.length) * 100);
-                const colors: Record<string, string> = {
-                  delivered: "bg-green-500", shipped: "bg-blue-500",
-                  processing: "bg-yellow-500", pending: "bg-zinc-400",
-                  cancelled: "bg-red-500", returned: "bg-purple-500",
+                const dot: Record<string, string> = {
+                  delivered: "bg-emerald-500", shipped: "bg-sky-500",
+                  processing: "bg-amber-500", pending: "bg-zinc-400",
+                  cancelled: "bg-rose-500", returned: "bg-violet-500",
                 };
                 return (
                   <div key={status}>
-                    <div className="mb-1 flex justify-between text-xs">
-                      <span className="font-medium capitalize">{status}</span>
-                      <span className="text-zinc-500">{count} ({pct}%)</span>
+                    <div className="mb-1 flex items-center justify-between text-xs">
+                      <span className="flex items-center gap-1.5 font-medium capitalize">
+                        <span className={`h-1.5 w-1.5 rounded-full ${dot[status] ?? "bg-zinc-400"}`} />
+                        {status}
+                      </span>
+                      <span className="text-zinc-500 tabular-nums">{count} ({pct}%)</span>
                     </div>
-                    <div className="h-2 w-full bg-zinc-100">
+                    <div className="h-1.5 w-full bg-zinc-100">
                       <div
-                        className={`h-full ${colors[status] ?? "bg-zinc-400"}`}
+                        className={`h-full rounded-r-sm ${dot[status] ?? "bg-zinc-400"}`}
                         style={{ width: `${pct}%` }}
                       />
                     </div>
@@ -150,11 +171,10 @@ export default async function AdminAnalyticsPage() {
               })}
             </div>
           )}
-        </div>
+        </Panel>
 
         {/* Revenue by category */}
-        <div className="border border-black/10 bg-white p-5">
-          <h2 className="mb-5 text-sm font-semibold">Revenue by Category</h2>
+        <Panel title="Revenue by Category" icon={<IconTag className="h-4 w-4" />} bodyClassName="p-5">
           {Object.keys(categoryRevenue).length === 0 ? (
             <p className="text-xs text-zinc-400">No paid orders yet.</p>
           ) : (
@@ -163,14 +183,18 @@ export default async function AdminAnalyticsPage() {
                 .sort(([, a], [, b]) => b - a)
                 .map(([category, revenue]) => {
                   const pct = totalRevenue > 0 ? Math.round((revenue / totalRevenue) * 100) : 0;
+                  const color = categoryColor(category);
                   return (
                     <div key={category}>
-                      <div className="mb-1.5 flex justify-between text-xs">
-                        <span className="font-medium capitalize">{category}</span>
-                        <span className="font-semibold">{formatMoney(revenue)}</span>
+                      <div className="mb-1.5 flex items-center justify-between text-xs">
+                        <span className="flex items-center gap-1.5 font-medium">
+                          <span className="h-2 w-2 rounded-full" style={{ backgroundColor: color }} />
+                          {CATEGORY_LABELS[category] ?? category}
+                        </span>
+                        <span className="font-semibold tabular-nums">{formatMoney(revenue)}</span>
                       </div>
-                      <div className="h-2 w-full bg-zinc-100">
-                        <div className="h-full bg-black" style={{ width: `${pct}%` }} />
+                      <div className="h-1.5 w-full bg-zinc-100">
+                        <div className="h-full rounded-r-sm" style={{ width: `${pct}%`, backgroundColor: color }} />
                       </div>
                       <p className="mt-1 text-[11px] text-zinc-400">{pct}% of total revenue</p>
                     </div>
@@ -178,28 +202,29 @@ export default async function AdminAnalyticsPage() {
                 })}
             </div>
           )}
-        </div>
+        </Panel>
 
         {/* Top products by revenue */}
-        <div className="border border-black/10 bg-white p-5">
-          <h2 className="mb-5 text-sm font-semibold">Top Products by Revenue</h2>
+        <Panel title="Top Products by Revenue" icon={<IconCard className="h-4 w-4" />} bodyClassName="p-5">
           {topProducts.length === 0 ? (
             <p className="text-xs text-zinc-400">No paid orders yet.</p>
           ) : (
             <div className="space-y-3">
               {topProducts.map(([title, data], i) => (
                 <div key={title} className="flex items-center gap-3">
-                  <span className="w-5 text-[10px] font-bold text-zinc-300">0{i + 1}</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center border border-zinc-200 text-[9px] font-bold text-zinc-400">
+                    {i + 1}
+                  </span>
                   <div className="flex-1 min-w-0">
                     <p className="truncate text-xs font-medium">{title}</p>
                     <p className="text-[11px] text-zinc-400">{data.brand} · {data.units} sold</p>
                   </div>
-                  <span className="text-xs font-semibold">{formatMoney(data.revenue)}</span>
+                  <span className="text-xs font-semibold tabular-nums">{formatMoney(data.revenue)}</span>
                 </div>
               ))}
             </div>
           )}
-        </div>
+        </Panel>
       </div>
     </div>
   );

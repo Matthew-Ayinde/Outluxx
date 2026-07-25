@@ -3,6 +3,8 @@ import { Order } from "@/lib/db/models/Order";
 import { Product } from "@/lib/db/models/Product";
 import { Customer } from "@/lib/db/models/Customer";
 import { formatMoney } from "@/lib/utils/format";
+import { IconCard, IconReceipt, IconAlertTriangle, IconUsers, IconPackageAlert } from "@/components/admin/icons";
+import { Panel, SectionHeader, StatCard, StatusBadge, ORDER_STATUS_TONES } from "@/components/admin/ui";
 
 export const metadata = { title: "Dashboard" };
 export const dynamic = "force-dynamic";
@@ -53,52 +55,42 @@ export default async function AdminDashboard() {
 
   const totalRevenue = revenueAgg[0]?.total ?? 0;
 
-  const statusStyles: Record<string, string> = {
-    delivered: "bg-green-50 text-green-700",
-    shipped: "bg-blue-50 text-blue-700",
-    processing: "bg-yellow-50 text-yellow-700",
-    pending: "bg-zinc-100 text-zinc-600",
-    cancelled: "bg-red-50 text-red-700",
-    returned: "bg-purple-50 text-purple-700",
-  };
+  const stats = [
+    { label: "Total Revenue", value: formatMoney(totalRevenue), change: "Paid orders, all time", trend: "flat" as const, icon: <IconCard className="h-3.5 w-3.5" /> },
+    { label: "Total Orders", value: totalOrders.toString(), change: `+${ordersThisWeek} this week`, trend: ordersThisWeek > 0 ? "up" as const : "flat" as const, icon: <IconReceipt className="h-3.5 w-3.5" /> },
+    { label: "Pending", value: pendingOrders.toString(), change: pendingOrders > 0 ? "Needs attention" : "All clear", trend: pendingOrders === 0 ? "up" as const : "down" as const, icon: <IconAlertTriangle className="h-3.5 w-3.5" /> },
+    { label: "Customers", value: customerCount.toString(), change: `+${newCustomersThisWeek} this week`, trend: newCustomersThisWeek > 0 ? "up" as const : "flat" as const, icon: <IconUsers className="h-3.5 w-3.5" /> },
+  ];
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
-        <p className="mt-1 text-sm text-zinc-500">Welcome back. Here's what's happening today.</p>
-      </div>
+      <SectionHeader title="Dashboard" subtitle="Welcome back. Here's what's happening today." />
 
       {/* Stats */}
       <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {[
-          { label: "Total Revenue", value: formatMoney(totalRevenue), change: "Paid orders, all time", up: true },
-          { label: "Total Orders", value: totalOrders.toString(), change: `+${ordersThisWeek} this week`, up: ordersThisWeek > 0 },
-          { label: "Pending", value: pendingOrders.toString(), change: pendingOrders > 0 ? "Needs attention" : "All clear", up: pendingOrders === 0 },
-          { label: "Customers", value: customerCount.toString(), change: `+${newCustomersThisWeek} this week`, up: newCustomersThisWeek > 0 },
-        ].map((stat) => (
-          <div key={stat.label} className="border border-black/10 bg-white p-5">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">{stat.label}</p>
-            <p className="mt-2 text-2xl font-semibold">{stat.value}</p>
-            <p className={`mt-1 text-xs ${stat.up ? "text-green-600" : "text-red-600"}`}>{stat.change}</p>
-          </div>
+        {stats.map((stat) => (
+          <StatCard key={stat.label} label={stat.label} value={stat.value} sub={stat.change} trend={stat.trend} icon={stat.icon} />
         ))}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
         {/* Recent orders */}
-        <div className="border border-black/10 bg-white">
-          <div className="flex items-center justify-between border-b border-black/10 px-5 py-4">
-            <h2 className="text-sm font-semibold">Recent Orders</h2>
-            <a href="/admin/orders" className="text-xs text-zinc-400 hover:text-black">View all →</a>
-          </div>
+        <Panel
+          title="Recent Orders"
+          icon={<IconReceipt className="h-4 w-4" />}
+          action={
+            <a href="/admin/orders" className="text-xs font-medium text-zinc-400 hover:text-zinc-900 transition-colors">
+              View all →
+            </a>
+          }
+        >
           <div className="overflow-x-auto">
             {recentOrders.length === 0 ? (
               <p className="px-5 py-8 text-center text-sm text-zinc-400">No orders yet.</p>
             ) : (
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-black/5 bg-zinc-50">
+                  <tr className="border-b border-zinc-100 bg-zinc-50">
                     {["Order", "Customer", "Items", "Status", "Total"].map((h) => (
                       <th key={h} className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
                         {h}
@@ -106,18 +98,16 @@ export default async function AdminDashboard() {
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-black/5">
+                <tbody className="divide-y divide-zinc-100">
                   {recentOrders.map((order) => (
-                    <tr key={order._id.toString()} className="hover:bg-zinc-50 transition-colors">
+                    <tr key={order._id.toString()} className="transition-colors hover:bg-zinc-50/80">
                       <td className="px-5 py-3 font-medium">{order.orderNumber}</td>
                       <td className="px-5 py-3 text-zinc-600">
                         {order.shippingAddress?.firstName} {order.shippingAddress?.lastName}
                       </td>
                       <td className="px-5 py-3 text-zinc-500">{order.items.length}</td>
                       <td className="px-5 py-3">
-                        <span className={`px-2.5 py-1 text-[10px] font-semibold uppercase ${statusStyles[order.status] ?? statusStyles.pending}`}>
-                          {order.status}
-                        </span>
+                        <StatusBadge label={order.status} tone={ORDER_STATUS_TONES[order.status] ?? "neutral"} />
                       </td>
                       <td className="px-5 py-3 font-semibold">{formatMoney(order.total)}</td>
                     </tr>
@@ -126,36 +116,34 @@ export default async function AdminDashboard() {
               </table>
             )}
           </div>
-        </div>
+        </Panel>
 
         {/* Quick stats sidebar */}
         <div className="space-y-4">
-          <div className="border border-black/10 bg-white p-5">
-            <h2 className="mb-4 text-sm font-semibold">Inventory Alerts</h2>
+          <Panel title="Inventory Alerts" icon={<IconPackageAlert className="h-4 w-4" />} bodyClassName="p-5">
             <div className="space-y-3">
               {outOfStock.map((p) => (
                 <div key={p._id.toString()} className="flex items-start justify-between gap-2">
                   <p className="text-xs font-medium leading-tight">{p.title}</p>
-                  <span className="shrink-0 border border-red-200 bg-red-50 px-2 py-0.5 text-[9px] font-semibold uppercase text-red-600">
-                    Out
-                  </span>
+                  <StatusBadge label="Out" tone="danger" className="shrink-0" />
                 </div>
               ))}
               {outOfStock.length === 0 && (
                 <p className="text-xs text-zinc-400">No alerts — all products in stock.</p>
               )}
             </div>
-          </div>
+          </Panel>
 
-          <div className="border border-black/10 bg-white p-5">
-            <h2 className="mb-4 text-sm font-semibold">Top Products</h2>
+          <Panel title="Top Products" icon={<IconCard className="h-4 w-4" />} bodyClassName="p-5">
             <div className="space-y-3">
               {topProductsAgg.length === 0 ? (
                 <p className="text-xs text-zinc-400">No sales yet.</p>
               ) : (
                 topProductsAgg.map((p, i) => (
                   <div key={p._id} className="flex items-center gap-3">
-                    <span className="text-[10px] font-bold text-zinc-300">0{i + 1}</span>
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center border border-zinc-200 text-[9px] font-bold text-zinc-400">
+                      {i + 1}
+                    </span>
                     <div className="flex-1 min-w-0">
                       <p className="truncate text-xs font-medium">{p._id}</p>
                       <p className="text-[11px] text-zinc-400">
@@ -166,7 +154,7 @@ export default async function AdminDashboard() {
                 ))
               )}
             </div>
-          </div>
+          </Panel>
         </div>
       </div>
     </div>

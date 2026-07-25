@@ -42,11 +42,18 @@ export default function Footer() {
           <div>
             <Link href="/" aria-label="Outlxx home">
               <Image
-                src="/logo.jpg"
+                src="/black-logo.png"
                 alt="Outlxx"
                 width={120}
                 height={32}
-                className="h-8 w-auto"
+                className="h-8 w-auto dark:hidden"
+              />
+              <Image
+                src="/white-logo.png"
+                alt="Outlxx"
+                width={120}
+                height={32}
+                className="hidden h-8 w-auto dark:block"
               />
             </Link>
             <p className="mt-5 text-sm leading-7 text-muted">
