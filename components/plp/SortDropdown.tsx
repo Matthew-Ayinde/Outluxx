@@ -21,7 +21,7 @@ export default function SortDropdown({ value, onChange }: SortDropdownProps) {
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="appearance-none border border-border bg-background py-2 pl-4 pr-8 text-[11px] font-medium uppercase tracking-wider text-foreground focus:border-foreground focus:outline-none"
+        className="cursor-pointer appearance-none border border-hairline bg-background py-2.5 pl-4 pr-9 text-[10px] font-medium uppercase tracking-[0.18em] text-foreground transition-colors duration-300 hover:border-foreground focus:border-foreground focus:outline-none"
       >
         {sortOptions.map((opt) => (
           <option key={opt.value} value={opt.value}>{opt.label}</option>

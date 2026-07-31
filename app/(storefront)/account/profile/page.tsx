@@ -114,15 +114,15 @@ export default function ProfilePage() {
   }
 
   if (loading) {
-    return <p className="py-8 text-sm text-zinc-400">Loading your profile…</p>;
+    return <p className="py-8 text-sm text-faint">Loading your profile…</p>;
   }
 
   return (
     <div className="max-w-md">
-      <h2 className="mb-6 text-xl font-semibold">Profile Information</h2>
+      <h2 className="mb-6 font-heading text-xl font-light">Profile Information</h2>
 
       {error && (
-        <div className="mb-4 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+        <div className="mb-4 border border-red-700/30 px-4 py-3 text-sm font-light text-red-700">
           {error}
         </div>
       )}
@@ -139,24 +139,24 @@ export default function ProfilePage() {
           <button
             type="submit"
             disabled={saving}
-            className="flex h-11 items-center justify-center bg-black px-8 text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors disabled:opacity-60"
+            className="flex h-11 items-center justify-center border border-foreground bg-foreground px-8 text-[10px] font-medium uppercase tracking-[0.26em] text-background transition-all duration-300 hover:bg-transparent hover:text-foreground disabled:opacity-60"
           >
             {saving ? "Saving…" : "Save Changes"}
           </button>
-          {saved && <p className="text-xs text-green-700">Saved successfully.</p>}
+          {saved && <p className="text-xs font-light text-emerald-700 dark:text-emerald-500">Saved successfully.</p>}
         </div>
       </form>
 
-      <hr className="my-8 border-black/10" />
+      <hr className="my-8 border-border" />
 
-      <h3 className="mb-4 text-sm font-semibold">Change Password</h3>
+      <h3 className="mb-4 text-sm font-medium">Change Password</h3>
 
       {pwMessage && (
         <div
           className={`mb-4 border px-4 py-3 text-sm ${
             pwMessage.type === "ok"
-              ? "border-green-200 bg-green-50 text-green-700"
-              : "border-red-200 bg-red-50 text-red-600"
+              ? "border-emerald-700/30 text-emerald-700 dark:text-emerald-500"
+              : "border-red-700/30 text-red-700"
           }`}
         >
           {pwMessage.text}
@@ -170,7 +170,7 @@ export default function ProfilePage() {
         <button
           type="submit"
           disabled={pwSaving}
-          className="mt-1 w-fit border border-black/20 px-6 py-2.5 text-xs font-semibold uppercase tracking-widest hover:border-black transition-colors disabled:opacity-60"
+          className="mt-1 w-fit border border-hairline px-6 py-2.5 text-[10px] font-medium uppercase tracking-[0.24em] text-foreground hover:border-foreground transition-colors disabled:opacity-60"
         >
           {pwSaving ? "Updating…" : "Update Password"}
         </button>
@@ -184,13 +184,13 @@ function Field({ label, value, onChange, type = "text", disabled = false }: {
 }) {
   return (
     <div>
-      <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">{label}</label>
+      <label className="mb-1 block text-[10px] font-medium uppercase tracking-[0.22em] text-foreground">{label}</label>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black disabled:bg-zinc-50 disabled:text-zinc-400"
+        className="w-full border border-hairline px-3 py-2.5 text-sm outline-none focus:border-foreground disabled:bg-surface disabled:text-faint"
       />
     </div>
   );

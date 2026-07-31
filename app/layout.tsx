@@ -6,7 +6,8 @@ import "./globals.css";
 const headingFont = Cormorant_Garamond({
   variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -19,11 +20,11 @@ const bodyFont = Jost({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Outluxx",
-    default: "Outluxx — Premium Fashion House",
+    template: "%s — Outluxx",
+    default: "Outluxx — Maison of Considered Luxury",
   },
   description:
-    "Curated luxury fashion for the modern wardrobe. Discover timeless tailoring, elevated essentials, and editorial pieces.",
+    "Curated luxury fashion for the modern wardrobe. Timeless tailoring, elevated essentials, and editorial pieces — made to be worn for decades, not seasons.",
 };
 
 export default function RootLayout({

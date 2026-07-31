@@ -2,13 +2,13 @@ export const metadata = { title: "Privacy Policy" };
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
+    <div className="mx-auto max-w-3xl px-5 py-16 lg:px-8">
       <div className="mb-10">
-        <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">Legal</p>
-        <h1 className="text-4xl font-semibold">Privacy Policy</h1>
-        <p className="mt-3 text-sm text-zinc-500">Last updated: 1 June 2026</p>
+        <p className="eyebrow mb-3">Legal</p>
+        <h1 className="section-title text-4xl sm:text-5xl">Privacy Policy</h1>
+        <p className="mt-3 text-sm text-muted">Last updated: 1 June 2026</p>
       </div>
-      <div className="space-y-6 text-sm leading-relaxed text-zinc-700">
+      <div className="space-y-6 text-sm leading-relaxed text-muted">
         {[
           ["1. Data We Collect", "We collect information you provide directly (name, email, address, payment details) and information collected automatically (browsing data, device information) when you use our services."],
           ["2. How We Use Your Data", "We use your data to process orders, provide customer support, send transactional emails, and improve our platform. We do not sell your personal data to third parties."],
@@ -19,7 +19,7 @@ export default function PrivacyPolicyPage() {
           ["7. Contact", "For privacy-related enquiries, contact our Data Protection Officer at privacy@outluxx.com or write to us at Outluxx Ltd, 14 Savile Row, London W1S 3JN."],
         ].map(([title, body]) => (
           <div key={title as string}>
-            <h2 className="mb-2 font-semibold text-black">{title}</h2>
+            <h2 className="mb-2 font-medium text-foreground">{title}</h2>
             <p>{body}</p>
           </div>
         ))}

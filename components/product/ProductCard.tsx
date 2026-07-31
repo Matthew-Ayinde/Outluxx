@@ -23,8 +23,8 @@ export default function ProductCard({ product }: { product: Product }) {
             alt={image.alt}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className={`object-cover transition-all duration-500 ease-out group-hover:scale-[1.03] ${
-              hover ? "group-hover:opacity-0" : ""
+            className={`img-zoom object-cover ${
+              hover ? "transition-opacity duration-700 group-hover:opacity-0" : ""
             }`}
           />
           {/* Hover image crossfade */}
@@ -34,14 +34,14 @@ export default function ProductCard({ product }: { product: Product }) {
               alt={hover.alt}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              className="object-cover opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+              className="object-cover opacity-0 transition-opacity duration-700 ease-out group-hover:opacity-100"
             />
           )}
 
           {/* NEW badge */}
           {product.isNew && (
             <div className="absolute left-3 top-3">
-              <span className="bg-foreground px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-background">
+              <span className="bg-background px-2.5 py-1 text-[8px] font-medium uppercase tracking-[0.26em] text-foreground">
                 New
               </span>
             </div>
@@ -50,7 +50,7 @@ export default function ProductCard({ product }: { product: Product }) {
           {/* Wishlist button */}
           <button
             onClick={(e) => { e.preventDefault(); toggle(product); }}
-            className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center bg-background opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+            className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center bg-background opacity-0 transition-opacity duration-300 hover:opacity-100! group-hover:opacity-90"
             aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
           >
             <svg width="14" height="13" viewBox="0 0 24 22" fill="none">
@@ -65,33 +65,33 @@ export default function ProductCard({ product }: { product: Product }) {
           </button>
 
           {/* Quick view */}
-          <div className="absolute inset-x-0 bottom-0 translate-y-full bg-foreground py-3 text-center text-[9px] font-semibold uppercase tracking-[0.22em] text-background transition-transform duration-200 ease-out group-hover:translate-y-0">
+          <div className="absolute inset-x-0 bottom-0 translate-y-full bg-background/95 py-3.5 text-center text-[9px] font-medium uppercase tracking-[0.26em] text-foreground transition-transform duration-300 ease-out group-hover:translate-y-0">
             Quick View
           </div>
         </div>
       </Link>
 
       {/* Info */}
-      <div className="mt-4 space-y-1">
-        <p className="text-[9px] font-medium uppercase tracking-[0.22em] text-muted">
+      <div className="mt-5 space-y-1.5">
+        <p className="text-[9px] font-medium uppercase tracking-[0.26em] text-faint">
           {product.brand}
         </p>
         <Link href={`/products/${product.slug}`}>
-          <h3 className="font-heading text-base font-light leading-snug text-foreground transition-opacity hover:opacity-60">
+          <h3 className="font-heading text-lg font-light leading-snug text-foreground transition-opacity duration-300 hover:opacity-60">
             {product.title}
           </h3>
         </Link>
-        <div className="flex items-baseline gap-2 pt-0.5">
-          <span className="text-sm font-medium text-foreground">
+        <div className="flex items-baseline gap-2.5 pt-0.5">
+          <span className="text-sm font-normal text-foreground">
             {formatMoney(product.price)}
           </span>
           {product.compareAtPrice && (
-            <span className="text-xs text-muted line-through">
+            <span className="text-xs font-light text-muted line-through">
               {formatMoney(product.compareAtPrice)}
             </span>
           )}
           {product.isSale && (
-            <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-muted">
+            <span className="text-[9px] font-medium uppercase tracking-[0.2em] text-muted">
               Sale
             </span>
           )}

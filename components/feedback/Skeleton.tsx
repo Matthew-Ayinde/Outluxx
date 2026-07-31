@@ -1,3 +1,8 @@
-export default function Skeleton() {
-  return <div aria-hidden="true">Loading...</div>;
+export default function Skeleton({ className = "h-4 w-full" }: { className?: string }) {
+  return (
+    <div
+      className={["animate-pulse bg-surface", className].join(" ")}
+      aria-hidden="true"
+    />
+  );
 }

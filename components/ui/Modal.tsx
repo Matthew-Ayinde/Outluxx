@@ -34,13 +34,13 @@ export function Modal({ open, onClose, title, children, size = "md" }: ModalProp
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-black/50"
+        className="animate-fade-in absolute inset-0 bg-black/60"
         onClick={onClose}
         aria-hidden="true"
       />
       <div
         className={[
-          "relative w-full bg-white shadow-xl",
+          "animate-fade-up relative w-full border border-hairline bg-background text-foreground",
           sizes[size],
         ].join(" ")}
         role="dialog"
@@ -48,21 +48,26 @@ export function Modal({ open, onClose, title, children, size = "md" }: ModalProp
         aria-labelledby={title ? "modal-title" : undefined}
       >
         {title && (
-          <div className="flex items-center justify-between border-b border-black/10 px-6 py-4">
-            <h2 id="modal-title" className="text-base font-semibold">{title}</h2>
+          <div className="flex items-center justify-between border-b border-border px-7 py-5">
+            <h2
+              id="modal-title"
+              className="font-heading text-2xl font-light text-foreground"
+            >
+              {title}
+            </h2>
             <button
               onClick={onClose}
-              className="text-zinc-400 hover:text-black transition-colors"
+              className="text-faint transition-colors duration-300 hover:text-foreground"
               aria-label="Close"
             >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
                 <path d="M4 4l12 12M16 4L4 16" stroke="currentColor"
-                  strokeWidth="1.5" strokeLinecap="round" />
+                  strokeWidth="1.2" strokeLinecap="round" />
               </svg>
             </button>
           </div>
         )}
-        <div className="p-6">{children}</div>
+        <div className="p-7">{children}</div>
       </div>
     </div>
   );

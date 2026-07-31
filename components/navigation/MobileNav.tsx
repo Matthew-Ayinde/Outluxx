@@ -51,17 +51,17 @@ export default function MobileNav({ open, onClose, nav }: MobileNavProps) {
         aria-label="Navigation menu"
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-border px-6 py-4">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-foreground">
-            Menu
-          </p>
+        <div className="flex items-center justify-between border-b border-border px-6 py-5">
+          <span className="font-heading text-base font-medium uppercase tracking-[0.32em] text-foreground">
+            Outluxx
+          </span>
           <button
             onClick={onClose}
-            className="p-1 text-muted transition-opacity hover:opacity-100"
+            className="p-1 text-muted transition-colors duration-300 hover:text-foreground"
             aria-label="Close menu"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+              <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
             </svg>
           </button>
         </div>
@@ -75,7 +75,7 @@ export default function MobileNav({ open, onClose, nav }: MobileNavProps) {
                   <Link
                     href={item.href}
                     onClick={onClose}
-                    className="block py-3 font-heading text-2xl font-light leading-tight text-foreground border-b border-border transition-opacity hover:opacity-60"
+                    className="block border-b border-border py-3.5 font-heading text-[26px] font-light leading-tight text-foreground transition-opacity duration-300 hover:opacity-60"
                   >
                     {item.label}
                   </Link>
@@ -86,16 +86,14 @@ export default function MobileNav({ open, onClose, nav }: MobileNavProps) {
 
           {/* Account */}
           <div className="border-t border-border px-6 py-5">
-            <p className="mb-3 text-[9px] font-semibold uppercase tracking-[0.22em] text-muted">
-              Account
-            </p>
+            <p className="eyebrow mb-3">Account</p>
             <ul className="space-y-1">
               {utilityLinks.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
                     onClick={onClose}
-                    className="block py-2 text-sm text-foreground opacity-70 transition-opacity hover:opacity-100"
+                    className="block py-2 text-sm font-light text-foreground opacity-70 transition-opacity duration-300 hover:opacity-100"
                   >
                     {link.label}
                   </Link>
@@ -106,16 +104,14 @@ export default function MobileNav({ open, onClose, nav }: MobileNavProps) {
 
           {/* Help */}
           <div className="border-t border-border px-6 py-5">
-            <p className="mb-3 text-[9px] font-semibold uppercase tracking-[0.22em] text-muted">
-              Help
-            </p>
+            <p className="eyebrow mb-3">Client Care</p>
             <ul className="space-y-1">
               {helpLinks.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
                     onClick={onClose}
-                    className="block py-2 text-sm text-muted transition-opacity hover:opacity-100"
+                    className="block py-2 text-sm font-light text-muted transition-colors duration-300 hover:text-foreground"
                   >
                     {link.label}
                   </Link>
@@ -127,8 +123,8 @@ export default function MobileNav({ open, onClose, nav }: MobileNavProps) {
 
         {/* Footer strip */}
         <div className="border-t border-border px-6 py-4">
-          <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-muted">
-            Free global shipping on orders over $250
+          <p className="text-[9px] font-medium uppercase tracking-[0.24em] text-muted">
+            Complimentary shipping over $250
           </p>
         </div>
       </aside>

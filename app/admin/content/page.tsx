@@ -2,8 +2,30 @@
 
 import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
+import {
+  GalleryHorizontal,
+  Plus,
+  X,
+  Pencil,
+  Trash2,
+  Eye,
+  EyeOff,
+  CheckCircle2,
+  Loader2,
+  ImageOff,
+  UploadCloud,
+  Save,
+  AlertCircle,
+} from "lucide-react";
 
 export const dynamic = "force-dynamic";
+
+const TYPE_COLORS: Record<string, string> = {
+  hero: "bg-indigo-500/10 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-400",
+  editorial: "bg-violet-500/10 text-violet-700 dark:bg-violet-500/15 dark:text-violet-400",
+  banner: "bg-amber-500/10 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
+  carousel: "bg-sky-500/10 text-sky-700 dark:bg-sky-500/15 dark:text-sky-400",
+};
 
 interface ContentBlock {
   _id: string;
@@ -70,69 +92,86 @@ export default function AdminContentPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Content</h1>
-          <p className="mt-1 text-sm text-zinc-500">Manage banners, announcements, and homepage modules.</p>
+        <div className="flex items-center gap-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400">
+            <GalleryHorizontal size={18} strokeWidth={1.75} />
+          </span>
+          <div>
+            <h1 className="font-heading text-2xl font-light">Content</h1>
+            <p className="mt-1 text-sm text-muted">Manage banners, announcements, and homepage modules.</p>
+          </div>
         </div>
         <button
           onClick={() => { setEditing(null); setShowModal(true); }}
-          className="bg-black px-5 py-2.5 text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors"
+          className="flex items-center gap-1.5 rounded-lg bg-foreground px-5 py-2.5 text-[10px] font-medium uppercase tracking-[0.22em] text-background hover:opacity-90 transition-colors"
         >
-          + Add Block
+          <Plus size={14} strokeWidth={2} />
+          Add Block
         </button>
       </div>
 
       {loading ? (
-        <div className="border border-black/10 bg-white p-8 text-center">
-          <p className="text-sm text-zinc-400">Loading…</p>
+        <div className="rounded-xl border border-border bg-background p-8 text-center">
+          <div className="flex items-center justify-center gap-2 text-sm text-faint">
+            <Loader2 size={16} className="animate-spin" /> Loading…
+          </div>
         </div>
       ) : blocks.length === 0 ? (
-        <div className="border border-black/10 bg-white p-8 text-center">
-          <p className="text-sm text-zinc-400">No content blocks configured yet.</p>
-          <button onClick={() => setShowModal(true)} className="mt-3 text-xs font-semibold uppercase tracking-widest underline">
+        <div className="rounded-xl border border-border bg-background p-8 text-center">
+          <ImageOff size={24} strokeWidth={1.5} className="mx-auto mb-2 text-faint" />
+          <p className="text-sm text-faint">No content blocks configured yet.</p>
+          <button onClick={() => setShowModal(true)} className="mt-3 text-[10px] font-medium uppercase tracking-[0.22em] text-rose-600 dark:text-rose-400 underline">
             Add your first block
           </button>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {blocks.map((block) => (
-            <div key={block._id} className="border border-black/10 bg-white overflow-hidden">
-              <div className="relative aspect-video bg-zinc-100">
+            <div key={block._id} className="rounded-xl border border-border bg-background overflow-hidden">
+              <div className="relative aspect-video bg-surface">
                 {block.mediaType === "video" ? (
                   <video src={block.mediaUrl} className="h-full w-full object-cover" muted />
                 ) : (
                   <Image src={block.mediaUrl} alt={block.title} fill className="object-cover" sizes="400px" />
                 )}
-                <div className="absolute inset-0 bg-black/30 flex items-end p-3">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-white/70 border border-white/40 px-2 py-0.5">
+                <div className="absolute left-3 top-3">
+                  <span className={`rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.2em] ${TYPE_COLORS[block.type] ?? "bg-surface text-muted"}`}>
                     {block.type}
                   </span>
                 </div>
               </div>
               <div className="p-4">
                 <div className="mb-1 flex items-start justify-between gap-2">
-                  <h3 className="text-sm font-semibold leading-tight">{block.title}</h3>
-                  <span className={`shrink-0 text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 ${block.active ? "bg-green-100 text-green-700" : "bg-zinc-100 text-zinc-500"}`}>
+                  <h3 className="text-sm font-medium leading-tight">{block.title}</h3>
+                  <span className={`inline-flex shrink-0 items-center gap-1 rounded-full text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 ${
+                    block.active
+                      ? "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400"
+                      : "bg-surface text-muted"
+                  }`}>
+                    {block.active ? <CheckCircle2 size={10} /> : <EyeOff size={10} />}
                     {block.active ? "Live" : "Off"}
                   </span>
                 </div>
-                {block.subtitle && <p className="text-xs text-zinc-500 mb-2 line-clamp-2">{block.subtitle}</p>}
-                <p className="text-[10px] text-zinc-400 mb-3">Key: <code className="font-mono">{block.key}</code></p>
+                {block.subtitle && <p className="text-xs text-muted mb-2 line-clamp-2">{block.subtitle}</p>}
+                <p className="text-[10px] text-faint mb-3">Key: <code className="font-mono">{block.key}</code></p>
                 <div className="flex gap-2">
                   <button
                     onClick={() => { setEditing(block); setShowModal(true); }}
-                    className="border border-black/15 px-3 py-1.5 text-[11px] font-medium hover:border-black transition-colors"
-                  >Edit</button>
+                    className="flex items-center gap-1 rounded-lg border border-hairline px-3 py-1.5 text-[11px] font-medium hover:border-foreground transition-colors"
+                  ><Pencil size={12} strokeWidth={1.75} /> Edit</button>
                   <button
                     onClick={() => toggleActive(block)}
                     disabled={toggling === block._id}
-                    className="border border-black/15 px-3 py-1.5 text-[11px] font-medium hover:border-black transition-colors disabled:opacity-50"
-                  >{toggling === block._id ? "…" : block.active ? "Deactivate" : "Activate"}</button>
+                    className="flex items-center gap-1 rounded-lg border border-hairline px-3 py-1.5 text-[11px] font-medium hover:border-foreground transition-colors disabled:opacity-50"
+                  >
+                    {toggling === block._id ? <Loader2 size={12} className="animate-spin" /> : block.active ? <EyeOff size={12} strokeWidth={1.75} /> : <Eye size={12} strokeWidth={1.75} />}
+                    {block.active ? "Deactivate" : "Activate"}
+                  </button>
                   <button
                     onClick={() => handleDelete(block)}
                     disabled={deleting === block._id}
-                    className="border border-red-200 px-3 py-1.5 text-[11px] font-medium text-red-500 hover:border-red-400 transition-colors disabled:opacity-50 ml-auto"
-                  >{deleting === block._id ? "…" : "Delete"}</button>
+                    className="flex items-center gap-1 rounded-lg border border-red-200 px-3 py-1.5 text-[11px] font-medium text-red-500 hover:border-red-400 transition-colors disabled:opacity-50 ml-auto dark:border-red-500/20"
+                  >{deleting === block._id ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} strokeWidth={1.75} />}</button>
                 </div>
               </div>
             </div>
@@ -230,20 +269,27 @@ function ContentModal({ block, onClose, onSaved }: {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 pt-10 pb-10">
-      <div className="w-full max-w-lg bg-white mx-4">
-        <div className="flex items-center justify-between border-b border-black/10 px-6 py-4">
-          <h2 className="text-sm font-semibold uppercase tracking-widest">{isEdit ? "Edit Block" : "Add Content Block"}</h2>
-          <button onClick={onClose} className="text-zinc-400 hover:text-black">✕</button>
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-foreground/40 pt-10 pb-10">
+      <div className="w-full max-w-lg rounded-xl bg-background mx-4">
+        <div className="flex items-center justify-between border-b border-border px-6 py-4">
+          <h2 className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.24em] text-foreground">
+            <GalleryHorizontal size={14} strokeWidth={1.75} className="text-rose-500" />
+            {isEdit ? "Edit Block" : "Add Content Block"}
+          </h2>
+          <button onClick={onClose} className="text-faint hover:text-foreground"><X size={16} strokeWidth={1.75} /></button>
         </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-6">
-          {error && <div className="border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-600">{error}</div>}
+          {error && (
+            <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-600 dark:border-red-500/20 dark:bg-red-500/10">
+              <AlertCircle size={14} strokeWidth={1.75} /> {error}
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
             <CF label="Key *" value={form.key} onChange={(v) => setForm((f) => ({ ...f, key: v }))} required disabled={isEdit} />
             <div>
-              <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Type *</label>
-              <select value={form.type} onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as ContentBlock["type"] }))} className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black">
+              <label className="mb-1 block text-[9px] font-medium uppercase tracking-[0.22em] text-muted">Type *</label>
+              <select value={form.type} onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as ContentBlock["type"] }))} className="w-full rounded-lg border border-hairline px-3 py-2.5 text-sm outline-none focus:border-foreground">
                 {["hero", "editorial", "banner", "carousel"].map((t) => <option key={t}>{t}</option>)}
               </select>
             </div>
@@ -254,23 +300,27 @@ function ContentModal({ block, onClose, onSaved }: {
 
           {/* Media upload */}
           <div>
-            <label className="mb-2 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
-              Media {uploading && <span className="text-zinc-400">(uploading…)</span>}
+            <label className="mb-2 block text-[9px] font-medium uppercase tracking-[0.22em] text-muted">
+              Media {uploading && <span className="text-faint">(uploading…)</span>}
             </label>
             {form.mediaUrl && (
-              <div className="relative mb-2 aspect-video w-full overflow-hidden bg-zinc-100">
+              <div className="relative mb-2 aspect-video w-full overflow-hidden rounded-lg bg-surface">
                 {form.mediaType === "video"
                   ? <video src={form.mediaUrl} className="h-full w-full object-cover" muted />
                   : <Image src={form.mediaUrl} alt="Preview" fill className="object-cover" sizes="400px" />
                 }
               </div>
             )}
-            <input
-              type="file"
-              accept="image/*,video/*"
-              onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])}
-              className="text-sm text-zinc-500"
-            />
+            <label className="mb-2 flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-hairline px-4 py-3 text-xs text-muted hover:border-foreground transition-colors">
+              <UploadCloud size={16} strokeWidth={1.75} />
+              Upload image or video
+              <input
+                type="file"
+                accept="image/*,video/*"
+                onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])}
+                className="hidden"
+              />
+            </label>
             <CF label="Or paste a URL" value={form.mediaUrl} onChange={(v) => setForm((f) => ({ ...f, mediaUrl: v }))} />
           </div>
 
@@ -281,15 +331,16 @@ function ContentModal({ block, onClose, onSaved }: {
 
           <div className="flex items-center gap-4">
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={form.active} onChange={(e) => setForm((f) => ({ ...f, active: e.target.checked }))} className="accent-black" />
+              <input type="checkbox" checked={form.active} onChange={(e) => setForm((f) => ({ ...f, active: e.target.checked }))} className="accent-rose-600" />
               Active (visible on site)
             </label>
             <CF label="Display order" value={form.order} onChange={(v) => setForm((f) => ({ ...f, order: v }))} type="number" />
           </div>
 
-          <div className="flex justify-end gap-3 pt-2 border-t border-black/10">
-            <button type="button" onClick={onClose} className="border border-black/20 px-6 py-2.5 text-xs font-semibold uppercase tracking-widest hover:border-black transition-colors">Cancel</button>
-            <button type="submit" disabled={loading || uploading} className="bg-black px-6 py-2.5 text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors disabled:opacity-60">
+          <div className="flex justify-end gap-3 pt-2 border-t border-border">
+            <button type="button" onClick={onClose} className="rounded-lg border border-hairline px-6 py-2.5 text-[10px] font-medium uppercase tracking-[0.22em] text-foreground hover:border-foreground transition-colors">Cancel</button>
+            <button type="submit" disabled={loading || uploading} className="flex items-center gap-1.5 rounded-lg bg-foreground px-6 py-2.5 text-[10px] font-medium uppercase tracking-[0.22em] text-background hover:opacity-90 transition-colors disabled:opacity-60">
+              {loading ? <Loader2 size={13} className="animate-spin" /> : <Save size={13} strokeWidth={1.75} />}
               {loading ? "Saving…" : isEdit ? "Update" : "Add Block"}
             </button>
           </div>
@@ -304,14 +355,14 @@ function CF({ label, value, onChange, type = "text", required, disabled }: {
 }) {
   return (
     <div>
-      <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">{label}</label>
+      <label className="mb-1 block text-[9px] font-medium uppercase tracking-[0.22em] text-muted">{label}</label>
       <input
         type={type}
         value={value}
         onChange={onChange ? (e) => onChange(e.target.value) : undefined}
         required={required}
         disabled={disabled}
-        className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black disabled:bg-zinc-50"
+        className="w-full rounded-lg border border-hairline px-3 py-2.5 text-sm outline-none focus:border-foreground disabled:bg-surface"
       />
     </div>
   );

@@ -6,19 +6,17 @@ export default async function FeaturedProducts() {
   const products = (await getFeaturedProducts(4));
 
   return (
-    <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
-      <div className="mb-10 flex items-end justify-between border-b border-border pb-6">
+    <section className="mx-auto max-w-7xl px-5 py-24 lg:px-8 lg:py-28">
+      <div className="mb-14 flex items-end justify-between border-b border-border pb-8">
         <div>
-          <p className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.28em] text-muted">
-            Outluxx Selection
-          </p>
-          <h2 className="font-heading text-4xl font-light sm:text-5xl">Featured Pieces</h2>
+          <p className="eyebrow mb-3">The Selection</p>
+          <h2 className="section-title text-4xl sm:text-5xl">Featured Pieces</h2>
         </div>
         <Link
           href="/new-arrivals"
-          className="shrink-0 text-[11px] font-medium uppercase tracking-[0.18em] text-foreground opacity-50 transition-opacity hover:opacity-100"
+          className="nav-link shrink-0 text-[10px] font-medium uppercase tracking-[0.24em] text-muted transition-colors duration-300 hover:text-foreground"
         >
-          View All →
+          View All
         </Link>
       </div>
 

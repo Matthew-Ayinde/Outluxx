@@ -41,23 +41,23 @@ const FAQ = [
 
 export default function FAQPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
+    <div className="mx-auto max-w-3xl px-5 py-16 lg:px-8">
       <div className="mb-10">
-        <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">Help Centre</p>
-        <h1 className="text-4xl font-semibold">Frequently Asked Questions</h1>
+        <p className="eyebrow mb-3">Help Centre</p>
+        <h1 className="section-title text-4xl sm:text-5xl">Frequently Asked Questions</h1>
       </div>
 
       <div className="space-y-12">
         {FAQ.map((section) => (
           <div key={section.id} id={section.id}>
-            <h2 className="mb-5 border-b border-black/10 pb-3 text-sm font-semibold uppercase tracking-widest">
+            <h2 className="mb-5 border-b border-border pb-3 text-[11px] font-medium uppercase tracking-[0.26em] text-foreground">
               {section.section}
             </h2>
             <div className="space-y-5">
               {section.items.map((item) => (
                 <div key={item.q}>
-                  <h3 className="mb-2 text-sm font-semibold">{item.q}</h3>
-                  <p className="text-sm leading-relaxed text-zinc-600">{item.a}</p>
+                  <h3 className="mb-2 text-sm font-medium">{item.q}</h3>
+                  <p className="text-sm leading-relaxed text-muted">{item.a}</p>
                 </div>
               ))}
             </div>

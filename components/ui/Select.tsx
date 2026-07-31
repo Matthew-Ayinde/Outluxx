@@ -13,11 +13,11 @@ export function Select({
   const inputId = id ?? label?.toLowerCase().replace(/\s+/g, "-");
 
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-2">
       {label && (
         <label
           htmlFor={inputId}
-          className="text-[11px] font-medium uppercase tracking-[0.14em] text-black"
+          className="text-[10px] font-medium uppercase tracking-[0.22em] text-foreground"
         >
           {label}
         </label>
@@ -27,9 +27,9 @@ export function Select({
           id={inputId}
           {...props}
           className={[
-            "w-full appearance-none border px-4 py-3 pr-10 text-sm text-black",
-            "transition-colors outline-none bg-white cursor-pointer",
-            error ? "border-red-500" : "border-black/20 focus:border-black",
+            "w-full appearance-none border bg-background px-4 py-3.5 pr-10 text-sm font-light text-foreground",
+            "transition-colors duration-300 outline-none cursor-pointer",
+            error ? "border-red-600" : "border-hairline focus:border-foreground",
             className,
           ].join(" ")}
         >
@@ -45,14 +45,14 @@ export function Select({
           ))}
         </select>
         <svg
-          className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-black/40"
-          width="12" height="12" viewBox="0 0 12 12" fill="none"
+          className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-faint"
+          width="11" height="11" viewBox="0 0 12 12" fill="none"
         >
-          <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5"
+          <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.2"
             strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className="text-xs font-light text-red-700">{error}</p>}
     </div>
   );
 }

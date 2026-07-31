@@ -2,13 +2,13 @@ export const metadata = { title: "Terms of Service" };
 
 export default function TermsPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
+    <div className="mx-auto max-w-3xl px-5 py-16 lg:px-8">
       <div className="mb-10">
-        <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">Legal</p>
-        <h1 className="text-4xl font-semibold">Terms of Service</h1>
-        <p className="mt-3 text-sm text-zinc-500">Last updated: 1 June 2026</p>
+        <p className="eyebrow mb-3">Legal</p>
+        <h1 className="section-title text-4xl sm:text-5xl">Terms of Service</h1>
+        <p className="mt-3 text-sm text-muted">Last updated: 1 June 2026</p>
       </div>
-      <div className="space-y-6 text-sm leading-relaxed text-zinc-700">
+      <div className="space-y-6 text-sm leading-relaxed text-muted">
         {[
           ["1. Acceptance of Terms", "By accessing or using the Outluxx platform, you agree to be bound by these Terms of Service. If you do not agree to all terms, you may not use our services."],
           ["2. Products and Pricing", "All prices are displayed in the currency of your region and include applicable taxes where required by law. Prices are subject to change without notice. We reserve the right to cancel or refuse any order at our discretion."],
@@ -19,7 +19,7 @@ export default function TermsPage() {
           ["7. Governing Law", "These Terms are governed by the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales."],
         ].map(([title, body]) => (
           <div key={title as string}>
-            <h2 className="mb-2 font-semibold text-black">{title}</h2>
+            <h2 className="mb-2 font-medium text-foreground">{title}</h2>
             <p>{body}</p>
           </div>
         ))}

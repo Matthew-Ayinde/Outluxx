@@ -17,18 +17,18 @@ export default async function AddressesPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Saved Addresses</h2>
+        <h2 className="font-heading text-xl font-light">Saved Addresses</h2>
       </div>
 
       {addresses.length === 0 ? (
-        <div className="border border-black/10 p-8 text-center">
+        <div className="border border-border p-8 text-center">
           <p className="text-sm font-medium">No saved addresses yet</p>
-          <p className="mt-1 text-xs text-zinc-500">
+          <p className="mt-1 text-xs text-muted">
             Addresses you use at checkout will appear here for faster ordering.
           </p>
           <Link
             href="/new-arrivals"
-            className="mt-4 inline-block border border-black px-5 py-2 text-[10px] font-semibold uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+            className="mt-4 inline-block border border-foreground px-5 py-2 text-[10px] font-medium uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors"
           >
             Start Shopping
           </Link>
@@ -36,14 +36,14 @@ export default async function AddressesPage() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {addresses.map((addr) => (
-            <div key={addr.id} className="relative border border-black/10 p-5">
+            <div key={addr.id} className="relative border border-border p-5">
               {addr.isDefault && (
-                <span className="absolute right-3 top-3 border border-black px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest">
+                <span className="absolute right-3 top-3 border border-foreground px-2 py-0.5 text-[9px] font-medium uppercase tracking-widest">
                   Default
                 </span>
               )}
               <p className="font-medium">{addr.label}</p>
-              <div className="mt-2 text-sm text-zinc-600">
+              <div className="mt-2 text-sm text-muted">
                 <p>{addr.firstName} {addr.lastName}</p>
                 <p>{addr.line1}</p>
                 {addr.line2 && <p>{addr.line2}</p>}

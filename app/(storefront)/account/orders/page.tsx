@@ -14,15 +14,15 @@ export default async function OrdersPage() {
 
   return (
     <div>
-      <h2 className="mb-6 text-xl font-semibold">Order History</h2>
+      <h2 className="mb-6 font-heading text-xl font-light">Order History</h2>
 
       {orders.length === 0 ? (
-        <div className="border border-black/10 p-8 text-center">
+        <div className="border border-border p-8 text-center">
           <p className="text-sm font-medium">You have no orders yet</p>
-          <p className="mt-1 text-xs text-zinc-500">When you place an order, it will show up here.</p>
+          <p className="mt-1 text-xs text-muted">When you place an order, it will show up here.</p>
           <Link
             href="/new-arrivals"
-            className="mt-4 inline-block border border-black px-5 py-2 text-[10px] font-semibold uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+            className="mt-4 inline-block border border-foreground px-5 py-2 text-[10px] font-medium uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors"
           >
             Start Shopping
           </Link>
@@ -33,19 +33,19 @@ export default async function OrdersPage() {
             <Link
               key={order.id}
               href={`/account/orders/${order.id}`}
-              className="block border border-black/10 p-5 hover:border-black transition-colors"
+              className="block border border-border p-5 hover:border-foreground transition-colors"
             >
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <p className="font-semibold">{order.orderNumber}</p>
-                  <p className="mt-1 text-xs text-zinc-500">
+                  <p className="font-medium">{order.orderNumber}</p>
+                  <p className="mt-1 text-xs text-muted">
                     {new Date(order.placedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
                   <StatusPill status={order.status} />
-                  <span className="font-semibold">{formatMoney(order.total)}</span>
-                  <svg width="6" height="10" viewBox="0 0 6 10" fill="none" className="text-zinc-300">
+                  <span className="font-medium">{formatMoney(order.total)}</span>
+                  <svg width="6" height="10" viewBox="0 0 6 10" fill="none" className="text-faint">
                     <path d="M1 1l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
@@ -53,7 +53,7 @@ export default async function OrdersPage() {
 
               <div className="mt-3 flex flex-wrap gap-2">
                 {order.items.map((item, i) => (
-                  <div key={`${item.productId}-${i}`} className="text-xs text-zinc-500">
+                  <div key={`${item.productId}-${i}`} className="text-xs text-muted">
                     {item.productTitle}
                     {i < order.items.length - 1 ? "," : ""}
                   </div>
@@ -69,15 +69,15 @@ export default async function OrdersPage() {
 
 function StatusPill({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    delivered: "bg-green-50 text-green-700 border-green-200",
-    shipped: "bg-blue-50 text-blue-700 border-blue-200",
-    processing: "bg-yellow-50 text-yellow-700 border-yellow-200",
-    pending: "bg-zinc-50 text-zinc-600 border-zinc-200",
-    cancelled: "bg-red-50 text-red-700 border-red-200",
-    returned: "bg-purple-50 text-purple-700 border-purple-200",
+    delivered: "border-emerald-700/40 text-emerald-700 dark:border-emerald-500/40 dark:text-emerald-500",
+    shipped: "border-sky-700/40 text-sky-700 dark:border-sky-500/40 dark:text-sky-500",
+    processing: "border-amber-600/40 text-amber-700 dark:border-amber-500/40 dark:text-amber-500",
+    pending: "border-hairline text-muted",
+    cancelled: "border-red-700/40 text-red-700 dark:border-red-500/40 dark:text-red-500",
+    returned: "border-hairline text-muted",
   };
   return (
-    <span className={`border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest ${styles[status] ?? styles.pending}`}>
+    <span className={`border px-2.5 py-1 text-[10px] font-medium uppercase tracking-widest ${styles[status] ?? styles.pending}`}>
       {status}
     </span>
   );

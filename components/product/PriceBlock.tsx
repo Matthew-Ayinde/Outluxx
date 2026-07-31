@@ -20,7 +20,7 @@ export default function PriceBlock({ price, compareAtPrice, size = "md" }: Price
         </span>
       )}
       {compareAtPrice && (
-        <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted">
+        <span className="text-[9px] font-medium uppercase tracking-[0.2em] text-muted">
           {Math.round((1 - price / compareAtPrice) * 100)}% off
         </span>
       )}

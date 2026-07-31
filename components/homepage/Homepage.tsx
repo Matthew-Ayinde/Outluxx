@@ -31,129 +31,192 @@ const categories = [
 ];
 
 const trustItems = [
-  { label: "Authenticated Luxury", sub: "Every piece verified" },
-  { label: "Global Shipping",      sub: "Complimentary over $250" },
-  { label: "30-Day Returns",       sub: "Free, no questions asked" },
+  {
+    n: "01",
+    label: "Authenticated Luxury",
+    sub: "Every piece verified by our atelier before it ships",
+  },
+  {
+    n: "02",
+    label: "Global Shipping",
+    sub: "Complimentary on all orders over $250, worldwide",
+  },
+  {
+    n: "03",
+    label: "30-Day Returns",
+    sub: "Free and unconditional, arranged from your door",
+  },
 ];
 
 export default function Homepage() {
   return (
     <div className="bg-background">
-      {/* -- Hero ------------------------------------------------------------ */}
-      <section className="relative h-screen overflow-hidden bg-black">
+      {/* ── Hero ─────────────────────────────────────────────────────────── */}
+      <section className="relative h-[calc(100svh-6.5rem)] min-h-[540px] overflow-hidden bg-black">
         <Image
           src="https://picsum.photos/seed/olx-hero-main/1600/900"
-          alt="Outluxx hero"
+          alt="Outluxx — the current collection"
           fill
           priority
           sizes="100vw"
-          className="object-cover opacity-70"
+          className="object-cover opacity-60"
         />
-        {/* Subtle dark vignette at bottom only */}
-        <div className="absolute inset-x-0 bottom-0 h-2/5 bg-black/50" style={{ maskImage: "linear-gradient(to bottom, transparent, black)" }} />
 
         <div className="absolute inset-0 flex flex-col items-center justify-center px-5 text-center text-white">
-          <p className="animate-fade-up-delay-1 text-[10px] font-medium uppercase tracking-[0.35em] text-white/60">
-            Outluxx · Premium Fashion House
+          <p className="animate-fade-up-delay-1 text-[10px] font-medium uppercase tracking-[0.4em] text-white/60">
+            Maison Outluxx
           </p>
-          <h1 className="animate-fade-up-delay-2 mt-4 font-heading text-6xl font-light leading-[1.05] tracking-[-0.01em] sm:text-7xl lg:text-8xl xl:text-9xl">
+          <h1 className="animate-fade-up-delay-2 mt-6 font-heading text-6xl font-light leading-[1.04] tracking-[-0.015em] sm:text-7xl lg:text-8xl xl:text-9xl">
             Refined.
             <br />
             Restrained.
             <br />
-            Resolute.
+            <span className="italic">Resolute.</span>
           </h1>
-          <p className="animate-fade-up-delay-3 mt-8 max-w-sm text-sm font-light leading-7 text-white/60 sm:max-w-md">
-            Considered apparel built on exceptional material and precise construction. For wardrobes that outlast trends.
+          <p className="animate-fade-up-delay-3 mt-8 max-w-sm text-sm font-light leading-7 text-white/65 sm:max-w-md">
+            Considered apparel built on exceptional material and precise
+            construction. For wardrobes that outlast trends.
           </p>
-          <div className="animate-fade-up-delay-4 mt-10 flex items-center gap-6">
+          <div className="animate-fade-up-delay-4 mt-12 flex items-center gap-4">
             <Link
               href="/new-arrivals"
-              className="border border-white px-8 py-3 text-[11px] font-medium uppercase tracking-[0.2em] text-white transition-all duration-300 hover:bg-white hover:text-black"
+              className="bg-white px-9 py-4 text-[10px] font-medium uppercase tracking-[0.26em] text-black transition-colors duration-300 hover:bg-white/85"
             >
               Shop New Arrivals
+            </Link>
+            <Link
+              href="/about"
+              className="border border-white/60 px-9 py-4 text-[10px] font-medium uppercase tracking-[0.26em] text-white transition-colors duration-300 hover:border-white hover:bg-white hover:text-black"
+            >
+              The House
             </Link>
           </div>
         </div>
 
         {/* Scroll indicator */}
-        <div className="animate-fade-in absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <div className="h-10 w-px bg-white/30" />
-          <p className="text-[9px] font-medium uppercase tracking-[0.28em] text-white/40">Scroll</p>
+        <div className="animate-fade-in absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-3">
+          <div className="h-12 w-px bg-white/30" />
+          <p className="text-[9px] font-medium uppercase tracking-[0.32em] text-white/40">
+            Scroll
+          </p>
         </div>
       </section>
 
-      {/* -- Category Grid --------------------------------------------------─ */}
-      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
-        <div className="mb-12 flex items-end justify-between border-b border-border pb-6">
+      {/* ── Category Grid ────────────────────────────────────────────────── */}
+      <section className="mx-auto max-w-7xl px-5 py-24 lg:px-8 lg:py-28">
+        <div className="mb-14 flex items-end justify-between border-b border-border pb-8">
           <div>
-            <p className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.28em] text-muted">
-              Collections
-            </p>
-            <h2 className="font-heading text-4xl font-light sm:text-5xl">
+            <p className="eyebrow mb-3">Collections</p>
+            <h2 className="section-title text-4xl sm:text-5xl">
               Shop by Category
             </h2>
           </div>
+          <Link
+            href="/new-arrivals"
+            className="nav-link hidden shrink-0 text-[10px] font-medium uppercase tracking-[0.24em] text-muted transition-colors duration-300 hover:text-foreground sm:inline-block"
+          >
+            View All
+          </Link>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
-          {categories.map((cat, i) => (
-            <Link
-              key={cat.href}
-              href={cat.href}
-              className="group relative overflow-hidden bg-surface"
-              style={{ animationDelay: `${i * 80}ms` }}
-            >
-              <div className="relative aspect-[3/4] w-full overflow-hidden">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4 lg:gap-x-5">
+          {categories.map((cat) => (
+            <Link key={cat.href} href={cat.href} className="group block">
+              <div className="relative aspect-[3/4] w-full overflow-hidden bg-surface">
                 <Image
                   src={`https://picsum.photos/seed/${cat.seed}/600/800`}
                   alt={cat.label}
                   fill
                   sizes="(max-width: 640px) 50vw, 25vw"
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                  className="img-zoom object-cover"
                 />
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/20 transition-opacity duration-500 group-hover:bg-black/30" />
+                <div className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/10" />
               </div>
 
-              {/* Caption */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 text-white sm:p-5">
-                <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/60">
+              {/* Gallery caption */}
+              <div className="mt-5">
+                <p className="text-[9px] font-medium uppercase tracking-[0.24em] text-faint">
                   {cat.sub}
                 </p>
-                <p className="mt-1 font-heading text-xl font-light sm:text-2xl">
-                  {cat.label}
-                </p>
-                <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-white/50 transition-opacity duration-300 group-hover:text-white/80">
-                  Explore →
-                </p>
+                <div className="mt-1.5 flex items-baseline justify-between">
+                  <p className="font-heading text-xl font-light text-foreground sm:text-2xl">
+                    {cat.label}
+                  </p>
+                  <span className="text-[9px] font-medium uppercase tracking-[0.2em] text-faint transition-colors duration-300 group-hover:text-foreground">
+                    Explore
+                  </span>
+                </div>
               </div>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* -- Featured Products ------------------------------------------------ */}
+      {/* ── Featured Products ────────────────────────────────────────────── */}
       <div className="border-t border-border">
         <FeaturedProducts />
       </div>
 
-      {/* -- Brand Statement -------------------------------------------------- */}
-      <BrandStatement />
-
-      {/* -- Trust Strip ----------------------------------------------------─ */}
-      <section className="border-y border-border bg-surface">
-        <div className="mx-auto max-w-7xl px-5 py-10 lg:px-8">
-          <div className="grid gap-6 sm:grid-cols-3">
-            {trustItems.map((item) => (
-              <div key={item.label} className="flex flex-col items-center text-center gap-1 py-2">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground">
-                  {item.label}
-                </p>
-                <p className="text-xs text-muted">{item.sub}</p>
-              </div>
-            ))}
+      {/* ── Editorial split ──────────────────────────────────────────────── */}
+      <section className="border-t border-border">
+        <div className="mx-auto grid max-w-7xl lg:grid-cols-2">
+          <div className="relative aspect-[4/5] overflow-hidden bg-surface lg:aspect-auto">
+            <Image
+              src="https://picsum.photos/seed/olx-atelier/900/1100"
+              alt="Inside the Outluxx atelier"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
+            />
           </div>
+          <div className="flex flex-col justify-center px-5 py-20 lg:px-20 lg:py-32">
+            <p className="eyebrow">The Atelier</p>
+            <h2 className="section-title mt-4 text-4xl sm:text-5xl">
+              Material before <span className="italic">everything</span>
+            </h2>
+            <p className="mt-7 max-w-md text-sm font-light leading-7 text-muted">
+              We begin with cloth — Supima cotton, traceable merino, linen from
+              generational mills — and let it dictate the silhouette. Nothing is
+              added that the garment does not need; nothing essential is
+              engineered away.
+            </p>
+            <Link
+              href="/about"
+              className="mt-10 inline-block w-fit border border-foreground px-9 py-4 text-[10px] font-medium uppercase tracking-[0.26em] text-foreground transition-all duration-300 hover:bg-foreground hover:text-background"
+            >
+              Our Philosophy
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Brand Statement ──────────────────────────────────────────────── */}
+      <div className="border-t border-border">
+        <BrandStatement />
+      </div>
+
+      {/* ── Trust Strip ──────────────────────────────────────────────────── */}
+      <section className="border-t border-border">
+        <div className="mx-auto grid max-w-7xl sm:grid-cols-3">
+          {trustItems.map((item, i) => (
+            <div
+              key={item.label}
+              className={[
+                "flex flex-col gap-3 px-5 py-12 lg:px-10",
+                i > 0 ? "border-t border-border sm:border-t-0 sm:border-l" : "",
+              ].join(" ")}
+            >
+              <p className="font-heading text-2xl font-light italic text-faint">
+                {item.n}
+              </p>
+              <p className="text-[10px] font-medium uppercase tracking-[0.24em] text-foreground">
+                {item.label}
+              </p>
+              <p className="text-sm font-light leading-6 text-muted">
+                {item.sub}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
     </div>

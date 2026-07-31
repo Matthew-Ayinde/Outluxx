@@ -29,19 +29,26 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="mx-auto max-w-6xl px-4 py-10">
-        <h1 className="mb-8 border-b border-black/10 pb-6 text-4xl font-semibold">Your Bag</h1>
-        <div className="py-24 text-center">
-          <svg className="mx-auto mb-6 text-zinc-200" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+      <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
+        <p className="eyebrow mb-3">Shopping Bag</p>
+        <h1 className="section-title border-b border-border pb-8 text-4xl sm:text-5xl">
+          Your Bag
+        </h1>
+        <div className="py-28 text-center">
+          <svg className="mx-auto mb-8 text-faint" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8">
             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
             <line x1="3" y1="6" x2="21" y2="6" />
             <path d="M16 10a4 4 0 0 1-8 0" />
           </svg>
-          <h2 className="mb-3 text-xl font-semibold">Your bag is empty</h2>
-          <p className="mb-8 text-sm text-zinc-500">Add items to your bag to see them here.</p>
+          <h2 className="font-heading text-3xl font-light text-foreground">
+            Your bag is empty
+          </h2>
+          <p className="mt-3 text-sm font-light text-muted">
+            Pieces you add will be kept here for you.
+          </p>
           <Link
             href="/tshirts"
-            className="inline-block border border-black px-8 py-3 text-xs font-semibold uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+            className="mt-10 inline-block border border-foreground px-10 py-4 text-[10px] font-medium uppercase tracking-[0.26em] text-foreground transition-all duration-300 hover:bg-foreground hover:text-background"
           >
             Continue Shopping
           </Link>
@@ -51,27 +58,28 @@ export default function CartPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
-      <h1 className="mb-8 border-b border-black/10 pb-6 text-4xl font-semibold">
+    <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
+      <p className="eyebrow mb-3">Shopping Bag</p>
+      <h1 className="section-title mb-10 border-b border-border pb-8 text-4xl sm:text-5xl">
         Your Bag{" "}
-        <span className="text-2xl font-normal text-zinc-400">
+        <span className="text-2xl text-faint">
           ({items.reduce((n, i) => n + i.quantity, 0)})
         </span>
       </h1>
 
-      <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_380px]">
+      <div className="grid grid-cols-1 gap-14 lg:grid-cols-[1fr_380px]">
         {/* Items */}
-        <div className="divide-y divide-black/10">
+        <div className="divide-y divide-border">
           {items.map((item) => (
-            <div key={`${item.product.id}-${item.selectedSize}-${item.selectedColor}`} className="flex gap-5 py-6">
+            <div key={`${item.product.id}-${item.selectedSize}-${item.selectedColor}`} className="flex gap-6 py-8">
               <Link href={`/products/${item.product.slug}`} className="shrink-0">
-                <div className="relative h-28 w-20 overflow-hidden bg-zinc-50">
+                <div className="relative h-32 w-24 overflow-hidden bg-surface">
                   <Image
                     src={item.product.images[0].src}
                     alt={item.product.title}
                     fill
                     className="object-cover"
-                    sizes="80px"
+                    sizes="96px"
                   />
                 </div>
               </Link>
@@ -79,43 +87,45 @@ export default function CartPage() {
               <div className="flex flex-1 flex-col justify-between">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+                    <p className="text-[9px] font-medium uppercase tracking-[0.24em] text-faint">
                       {item.product.brand}
                     </p>
                     <Link
                       href={`/products/${item.product.slug}`}
-                      className="mt-0.5 block text-sm font-medium opacity-80 hover:opacity-100 transition-opacity"
+                      className="mt-1 block font-heading text-lg font-light text-foreground transition-opacity duration-300 hover:opacity-60"
                     >
                       {item.product.title}
                     </Link>
-                    <p className="mt-1 text-xs text-zinc-500">
+                    <p className="mt-1.5 text-xs font-light text-muted">
                       {item.selectedSize && `Size: ${item.selectedSize}`}
                       {item.selectedSize && item.selectedColor && " · "}
                       {item.selectedColor && `Colour: ${item.selectedColor}`}
                     </p>
                   </div>
-                  <p className="shrink-0 text-sm font-semibold">
+                  <p className="shrink-0 text-sm font-normal text-foreground">
                     {formatMoney(item.product.price * item.quantity)}
                   </p>
                 </div>
 
                 <div className="flex items-center justify-between">
                   {/* Quantity */}
-                  <div className="flex h-8 w-24 items-center border border-black/15">
+                  <div className="flex h-9 w-28 items-center border border-hairline">
                     <button
                       onClick={() => updateQuantity(item.product.id, item.selectedSize, item.selectedColor, item.quantity - 1)}
-                      className="flex h-full w-8 items-center justify-center text-sm hover:bg-zinc-50"
+                      className="flex h-full w-9 items-center justify-center text-sm text-foreground transition-colors duration-300 hover:bg-surface"
+                      aria-label="Decrease quantity"
                     >–</button>
-                    <span className="flex-1 text-center text-xs font-medium">{item.quantity}</span>
+                    <span className="flex-1 text-center text-xs font-normal">{item.quantity}</span>
                     <button
                       onClick={() => updateQuantity(item.product.id, item.selectedSize, item.selectedColor, item.quantity + 1)}
-                      className="flex h-full w-8 items-center justify-center text-sm hover:bg-zinc-50"
+                      className="flex h-full w-9 items-center justify-center text-sm text-foreground transition-colors duration-300 hover:bg-surface"
+                      aria-label="Increase quantity"
                     >+</button>
                   </div>
 
                   <button
                     onClick={() => removeItem(item.product.id, item.selectedSize, item.selectedColor)}
-                    className="text-[11px] text-zinc-400 underline underline-offset-2 hover:text-black transition-colors"
+                    className="text-[11px] font-light text-muted underline underline-offset-4 transition-colors duration-300 hover:text-foreground"
                   >
                     Remove
                   </button>
@@ -126,73 +136,79 @@ export default function CartPage() {
         </div>
 
         {/* Order summary */}
-        <div className="border border-black/10 p-6 h-fit">
-          <h2 className="mb-6 text-sm font-semibold uppercase tracking-widest">Order Summary</h2>
+        <div className="h-fit border border-border p-8">
+          <h2 className="mb-7 text-[11px] font-medium uppercase tracking-[0.26em] text-foreground">
+            Order Summary
+          </h2>
 
           {/* Promo code */}
           {!promoCode && (
-            <form onSubmit={handlePromo} className="mb-5 flex gap-2">
+            <form onSubmit={handlePromo} className="mb-6 flex gap-2">
               <input
                 type="text"
                 value={promoInput}
                 onChange={(e) => setPromoInput(e.target.value)}
                 placeholder="Promo code"
-                className="flex-1 border border-black/15 px-3 py-2 text-xs outline-none focus:border-black"
+                className="flex-1 border border-hairline bg-transparent px-3.5 py-2.5 text-xs font-light text-foreground placeholder:text-faint outline-none transition-colors duration-300 focus:border-foreground"
               />
               <button
                 type="submit"
-                className="border border-black px-4 py-2 text-[10px] font-semibold uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+                className="border border-foreground px-5 py-2.5 text-[9px] font-medium uppercase tracking-[0.22em] text-foreground transition-all duration-300 hover:bg-foreground hover:text-background"
               >
                 Apply
               </button>
             </form>
           )}
-          {promoError && <p className="mb-3 text-xs text-foreground opacity-60">{promoError}</p>}
+          {promoError && <p className="mb-4 text-xs font-light text-red-700">{promoError}</p>}
           {promoSuccess && (
-            <p className="mb-3 text-xs text-green-700">
+            <p className="mb-4 text-xs font-light text-emerald-700 dark:text-emerald-500">
               Code applied: {promoCode} ({Math.round(discount * 100)}% off)
             </p>
           )}
 
-          <div className="space-y-3 border-t border-black/10 pt-4 text-sm">
+          <div className="space-y-3.5 border-t border-border pt-5 text-sm">
             <div className="flex justify-between">
-              <span className="text-zinc-500">Subtotal</span>
-              <span className="font-medium">{formatMoney(subtotal)}</span>
+              <span className="font-light text-muted">Subtotal</span>
+              <span className="font-normal text-foreground">{formatMoney(subtotal)}</span>
             </div>
             {discount > 0 && (
-              <div className="flex justify-between text-foreground opacity-60">
+              <div className="flex justify-between font-light text-muted">
                 <span>Discount ({Math.round(discount * 100)}%)</span>
                 <span>–{formatMoney(subtotal * discount)}</span>
               </div>
             )}
             <div className="flex justify-between">
-              <span className="text-zinc-500">Shipping</span>
-              <span className={shipping === 0 ? "text-green-700" : ""}>
-                {shipping === 0 ? "Free" : formatMoney(shipping)}
+              <span className="font-light text-muted">Shipping</span>
+              <span className="font-light text-foreground">
+                {shipping === 0 ? "Complimentary" : formatMoney(shipping)}
               </span>
             </div>
             {subtotal < 500 && (
-              <p className="text-[11px] text-zinc-400">
-                Spend {formatMoney(500 - subtotal)} more for free shipping
+              <p className="text-[11px] font-light text-faint">
+                Spend {formatMoney(500 - subtotal)} more for complimentary shipping
               </p>
             )}
           </div>
 
-          <div className="mt-4 flex justify-between border-t border-black/10 pt-4">
-            <span className="font-semibold">Total</span>
-            <span className="font-semibold">{formatMoney(total + shipping)}</span>
+          <div className="mt-5 flex justify-between border-t border-border pt-5">
+            <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-foreground">
+              Total
+            </span>
+            <span className="text-base font-normal text-foreground">
+              {formatMoney(total + shipping)}
+            </span>
           </div>
 
           <Link
             href="/checkout/shipping"
-            className="mt-6 flex h-12 w-full items-center justify-center bg-black text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors"
+            className="mt-7 flex h-13 w-full items-center justify-center border border-foreground bg-foreground text-[10px] font-medium uppercase tracking-[0.26em] text-background transition-all duration-300 hover:bg-transparent hover:text-foreground"
           >
             Proceed to Checkout
           </Link>
 
           <Link
             href="/tshirts"
-            className="mt-3 flex items-center justify-center text-xs text-muted underline underline-offset-2 hover:opacity-100 transition-opacity"
+            className="mt-4 flex items-center justify-center text-xs font-light text-muted underline underline-offset-4 transition-colors duration-300 hover:text-foreground"
           >
             Continue Shopping
           </Link>

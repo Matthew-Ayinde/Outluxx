@@ -11,21 +11,21 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-black text-white border border-black hover:bg-zinc-800 active:bg-zinc-900",
+    "bg-foreground text-background border border-foreground hover:bg-transparent hover:text-foreground",
   secondary:
-    "bg-white text-black border border-black/20 hover:border-black active:bg-zinc-50",
+    "bg-transparent text-foreground border border-hairline hover:border-foreground",
   ghost:
-    "bg-transparent text-black border border-transparent hover:border-black/20 active:bg-zinc-50",
+    "bg-transparent text-foreground border border-transparent hover:border-hairline",
   danger:
-    "bg-red-600 text-white border border-red-600 hover:bg-red-700 active:bg-red-800",
+    "bg-red-700 text-white border border-red-700 hover:bg-transparent hover:text-red-700",
   "outline-red":
-    "bg-transparent text-red-600 border border-red-600 hover:bg-red-600 hover:text-white active:bg-red-700",
+    "bg-transparent text-red-700 border border-red-700/60 hover:border-red-700 hover:bg-red-700 hover:text-white",
 };
 
 const sizes: Record<Size, string> = {
-  sm: "px-4 py-2 text-xs tracking-[0.1em]",
-  md: "px-6 py-3 text-xs tracking-[0.12em]",
-  lg: "px-8 py-4 text-sm tracking-[0.14em]",
+  sm: "px-5 py-2.5 text-[10px] tracking-[0.22em]",
+  md: "px-7 py-3.5 text-[11px] tracking-[0.24em]",
+  lg: "px-10 py-4 text-xs tracking-[0.26em]",
 };
 
 export function Button({
@@ -42,7 +42,7 @@ export function Button({
       {...props}
       disabled={disabled}
       className={[
-        "inline-flex items-center justify-center gap-2 font-medium uppercase transition-colors",
+        "inline-flex items-center justify-center gap-2 font-medium uppercase transition-all duration-300",
         variants[variant],
         sizes[size],
         fullWidth ? "w-full" : "",

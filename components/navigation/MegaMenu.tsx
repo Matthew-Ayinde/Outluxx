@@ -77,19 +77,17 @@ export default function MegaMenu({ category }: { category: string }) {
 
   return (
     <div className="absolute left-1/2 top-full z-50 mt-1 -translate-x-1/2">
-      <div className="border border-black/10 bg-white p-6 shadow-lg min-w-48">
-        <div className="flex gap-10">
+      <div className="min-w-48 border border-border bg-background p-7">
+        <div className="flex gap-12">
           {sections.map((section) => (
             <div key={section.heading}>
-              <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-400">
-                {section.heading}
-              </p>
-              <ul className="space-y-2.5">
+              <p className="eyebrow mb-4">{section.heading}</p>
+              <ul className="space-y-3">
                 {section.links.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="block text-[13px] text-black hover:text-red-600 transition-colors whitespace-nowrap"
+                      className="block whitespace-nowrap text-[13px] font-light text-muted transition-colors duration-300 hover:text-foreground"
                     >
                       {link.label}
                     </Link>

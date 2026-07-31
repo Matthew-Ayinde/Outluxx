@@ -94,9 +94,12 @@ export default function ShippingPage() {
 
   if (items.length === 0) {
     return (
-      <div className="py-20 text-center">
-        <p className="text-zinc-500">Your cart is empty.</p>
-        <a href="/" className="mt-4 inline-block text-xs font-semibold uppercase tracking-widest underline">
+      <div className="py-24 text-center">
+        <p className="font-heading text-2xl font-light text-foreground">Your bag is empty.</p>
+        <a
+          href="/"
+          className="mt-6 inline-block text-[10px] font-medium uppercase tracking-[0.24em] text-muted underline underline-offset-4 transition-colors duration-300 hover:text-foreground"
+        >
           Continue Shopping
         </a>
       </div>
@@ -104,15 +107,15 @@ export default function ShippingPage() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_360px]">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+    <div className="grid grid-cols-1 gap-14 lg:grid-cols-[1fr_360px]">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-10">
         <div>
-          <h1 className="mb-1 text-2xl font-semibold">Shipping Address</h1>
-          <p className="text-sm text-zinc-500">Step 1 of 3</p>
+          <p className="eyebrow mb-2">Step 1 of 3</p>
+          <h1 className="font-heading text-3xl font-light sm:text-4xl">Shipping Address</h1>
         </div>
 
         {error && (
-          <div className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>
+          <div className="border border-red-700/30 px-4 py-3 text-sm font-light text-red-700">{error}</div>
         )}
 
         <section className="flex flex-col gap-4">
@@ -131,11 +134,11 @@ export default function ShippingPage() {
           <div className="grid grid-cols-2 gap-4">
             <Field label="Postcode / ZIP" value={form.postalCode} onChange={(v) => set("postalCode", v)} required />
             <div>
-              <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Country</label>
+              <label className="mb-2 block text-[10px] font-medium uppercase tracking-[0.22em] text-foreground">Country</label>
               <select
                 value={form.country}
                 onChange={(e) => set("country", e.target.value)}
-                className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black"
+                className="w-full cursor-pointer border border-hairline bg-background px-3.5 py-3 text-sm font-light text-foreground outline-none transition-colors duration-300 focus:border-foreground"
               >
                 {["United Kingdom", "United States", "France", "Germany", "Italy", "Japan", "Australia", "Canada"].map((c) => (
                   <option key={c}>{c}</option>
@@ -146,27 +149,33 @@ export default function ShippingPage() {
         </section>
 
         <section>
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest">Delivery Method</h2>
+          <h2 className="mb-5 text-[11px] font-medium uppercase tracking-[0.26em] text-foreground">Delivery Method</h2>
           <div className="space-y-3">
             {([
               { id: "standard" as const, label: "Standard Delivery", time: "3–5 business days", price: subtotal >= 500 ? "Free" : formatMoney(15) },
               { id: "express" as const, label: "Express Delivery", time: "1–2 business days", price: formatMoney(25) },
             ]).map((opt) => (
-              <label key={opt.id} className="flex cursor-pointer items-center justify-between border border-black/15 p-4 hover:border-black transition-colors">
-                <div className="flex items-center gap-3">
+              <label
+                key={opt.id}
+                className={[
+                  "flex cursor-pointer items-center justify-between border p-5 transition-colors duration-300",
+                  deliveryMethod === opt.id ? "border-foreground" : "border-hairline hover:border-foreground",
+                ].join(" ")}
+              >
+                <div className="flex items-center gap-4">
                   <input
                     type="radio"
                     name="delivery"
                     checked={deliveryMethod === opt.id}
                     onChange={() => setDeliveryMethod(opt.id)}
-                    className="accent-black"
+                    className="accent-current"
                   />
                   <div>
-                    <p className="text-sm font-medium">{opt.label}</p>
-                    <p className="text-xs text-zinc-500">{opt.time}</p>
+                    <p className="text-sm font-normal text-foreground">{opt.label}</p>
+                    <p className="mt-0.5 text-xs font-light text-muted">{opt.time}</p>
                   </div>
                 </div>
-                <span className="text-sm font-semibold">{opt.price}</span>
+                <span className="text-sm font-normal text-foreground">{opt.price}</span>
               </label>
             ))}
           </div>
@@ -175,7 +184,7 @@ export default function ShippingPage() {
         <button
           type="submit"
           disabled={loading}
-          className="mt-2 flex h-12 w-full items-center justify-center bg-black text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors disabled:opacity-60"
+          className="mt-2 flex h-13 w-full items-center justify-center border border-foreground bg-foreground text-[10px] font-medium uppercase tracking-[0.26em] text-background transition-all duration-300 hover:bg-transparent hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
         >
           {loading ? "Please wait…" : "Continue to Payment"}
         </button>
@@ -193,7 +202,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+      <label className="mb-2 block text-[10px] font-medium uppercase tracking-[0.22em] text-foreground">
         {label}{required && " *"}
       </label>
       <input
@@ -201,7 +210,7 @@ function Field({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required={required}
-        className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black"
+        className="w-full border border-hairline bg-transparent px-3.5 py-3 text-sm font-light text-foreground outline-none transition-colors duration-300 focus:border-foreground"
       />
     </div>
   );
@@ -214,39 +223,39 @@ function OrderSummary({
   subtotal: number; total: number; discount: number; shipping: number;
 }) {
   return (
-    <div className="border border-black/10 p-6 h-fit">
-      <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest">Your Order</h2>
-      <div className="space-y-4 border-b border-black/10 pb-4">
+    <div className="h-fit border border-border p-7">
+      <h2 className="mb-6 text-[11px] font-medium uppercase tracking-[0.26em] text-foreground">Your Order</h2>
+      <div className="space-y-5 border-b border-border pb-5">
         {items.map((item) => (
-          <div key={`${item.product.id}-${item.selectedSize}-${item.selectedColor}`} className="flex gap-3">
-            <div className="relative h-16 w-12 shrink-0 overflow-hidden bg-zinc-50">
+          <div key={`${item.product.id}-${item.selectedSize}-${item.selectedColor}`} className="flex gap-3.5">
+            <div className="relative h-16 w-12 shrink-0 overflow-hidden bg-surface">
               <Image src={item.product.images[0].src} alt={item.product.title} fill className="object-cover" sizes="48px" />
-              <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
+              <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-[10px] font-medium text-background">
                 {item.quantity}
               </span>
             </div>
             <div className="flex-1">
-              <p className="text-xs font-medium leading-tight">{item.product.title}</p>
-              <p className="mt-0.5 text-[11px] text-zinc-500">{item.selectedSize} · {item.selectedColor}</p>
+              <p className="text-xs font-normal leading-tight text-foreground">{item.product.title}</p>
+              <p className="mt-1 text-[11px] font-light text-muted">{item.selectedSize} · {item.selectedColor}</p>
             </div>
-            <p className="text-xs font-semibold">{formatMoney(item.product.price * item.quantity)}</p>
+            <p className="text-xs font-normal text-foreground">{formatMoney(item.product.price * item.quantity)}</p>
           </div>
         ))}
       </div>
-      <div className="mt-4 space-y-2 text-sm">
-        <div className="flex justify-between text-zinc-500">
+      <div className="mt-5 space-y-2.5 text-sm">
+        <div className="flex justify-between font-light text-muted">
           <span>Subtotal</span><span>{formatMoney(subtotal)}</span>
         </div>
         {discount > 0 && (
-          <div className="flex justify-between text-red-600">
+          <div className="flex justify-between font-light text-muted">
             <span>Discount</span><span>–{formatMoney(subtotal * discount)}</span>
           </div>
         )}
-        <div className="flex justify-between text-zinc-500">
+        <div className="flex justify-between font-light text-muted">
           <span>Shipping</span>
-          <span>{shipping === 0 ? "Free" : formatMoney(shipping)}</span>
+          <span>{shipping === 0 ? "Complimentary" : formatMoney(shipping)}</span>
         </div>
-        <div className="flex justify-between border-t border-black/10 pt-3 font-semibold">
+        <div className="flex justify-between border-t border-border pt-4 font-normal text-foreground">
           <span>Total</span><span>{formatMoney(total + shipping)}</span>
         </div>
       </div>

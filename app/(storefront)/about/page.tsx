@@ -5,20 +5,20 @@ export const metadata = { title: "About Outluxx" };
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
+    <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
       {/* Header */}
       <div className="mb-14 max-w-2xl">
-        <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">Our Story</p>
-        <h1 className="font-heading text-5xl font-semibold leading-tight">
+        <p className="eyebrow mb-3">Our Story</p>
+        <h1 className="font-heading text-5xl font-light leading-[1.1] tracking-[-0.01em]">
           Luxury, without compromise.
         </h1>
-        <p className="mt-5 text-base leading-relaxed text-zinc-600">
+        <p className="mt-5 text-base leading-relaxed text-muted">
           Outluxx was founded on a single conviction: that exceptional fashion should be accessible to those who know what they are looking for. We are not a marketplace. We are a considered edit — a small portfolio of the world's most rigorous fashion houses, brought together under one roof.
         </p>
       </div>
 
       {/* Image */}
-      <div className="relative mb-14 h-[400px] overflow-hidden bg-zinc-50">
+      <div className="relative mb-14 h-[400px] overflow-hidden bg-surface">
         <Image
           src="https://picsum.photos/seed/olx-about1/1200/400"
           alt="Outluxx atelier"
@@ -45,31 +45,31 @@ export default function AboutPage() {
           },
         ].map((v) => (
           <div key={v.title}>
-            <h3 className="mb-3 text-sm font-semibold">{v.title}</h3>
-            <p className="text-sm leading-relaxed text-zinc-600">{v.body}</p>
+            <h3 className="mb-3 text-sm font-medium">{v.title}</h3>
+            <p className="text-sm leading-relaxed text-muted">{v.body}</p>
           </div>
         ))}
       </div>
 
       {/* Team quote */}
-      <div className="mb-14 border-l-4 border-black pl-8">
-        <blockquote className="font-heading text-2xl font-medium leading-relaxed text-zinc-700">
+      <div className="mb-14 border-l-4 border-foreground pl-8">
+        <blockquote className="font-heading text-2xl font-medium leading-relaxed text-muted">
           "We built Outluxx because we were tired of choosing between accessibility and quality. The two should not be in opposition."
         </blockquote>
-        <cite className="mt-4 block text-sm text-zinc-500">— Founders, Outluxx</cite>
+        <cite className="mt-4 block text-sm text-muted">— Founders, Outluxx</cite>
       </div>
 
       {/* CTA */}
       <div className="flex flex-wrap gap-4">
         <Link
           href="/new-arrivals"
-          className="inline-block border border-black px-8 py-3 text-xs font-semibold uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+          className="inline-block border border-foreground px-8 py-3 text-[10px] font-medium uppercase tracking-[0.24em] text-foreground hover:bg-foreground hover:text-background transition-colors"
         >
           Shop New Arrivals
         </Link>
         <Link
           href="/tshirts"
-          className="inline-block border border-black/20 px-8 py-3 text-xs font-semibold uppercase tracking-widest hover:border-black transition-colors"
+          className="inline-block border border-hairline px-8 py-3 text-[10px] font-medium uppercase tracking-[0.24em] text-foreground hover:border-foreground transition-colors"
         >
           Explore T-Shirts
         </Link>

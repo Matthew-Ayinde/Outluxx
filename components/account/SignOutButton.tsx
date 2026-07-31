@@ -21,7 +21,7 @@ export default function SignOutButton() {
     <button
       onClick={handleSignOut}
       disabled={signingOut}
-      className="block py-1.5 text-left text-sm text-zinc-400 hover:text-black transition-colors disabled:opacity-60"
+      className="block py-2 text-left text-sm font-light text-faint transition-colors duration-300 hover:text-foreground disabled:opacity-60"
     >
       {signingOut ? "Signing out…" : "Sign Out"}
     </button>

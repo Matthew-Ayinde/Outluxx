@@ -1,6 +1,23 @@
 "use client";
 
 import { useState } from "react";
+import {
+  Settings,
+  Store,
+  CreditCard,
+  Search,
+  Bell,
+  Save,
+  CheckCircle2,
+  Plug,
+} from "lucide-react";
+
+const SECTION_ICONS: Record<string, { icon: React.ElementType; chip: string }> = {
+  General: { icon: Store, chip: "bg-teal-500/10 text-teal-600 dark:bg-teal-500/15 dark:text-teal-400" },
+  Commerce: { icon: CreditCard, chip: "bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400" },
+  "SEO & Metadata": { icon: Search, chip: "bg-sky-500/10 text-sky-600 dark:bg-sky-500/15 dark:text-sky-400" },
+  Notifications: { icon: Bell, chip: "bg-amber-500/10 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400" },
+};
 
 export default function AdminSettingsPage() {
   const [saved, setSaved] = useState(false);
@@ -12,9 +29,14 @@ export default function AdminSettingsPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold">Settings</h1>
-        <p className="mt-1 text-sm text-zinc-500">Manage your store configuration.</p>
+      <div className="mb-8 flex items-center gap-3">
+        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-500/10 text-teal-600 dark:bg-teal-500/15 dark:text-teal-400">
+          <Settings size={18} strokeWidth={1.75} />
+        </span>
+        <div>
+          <h1 className="font-heading text-2xl font-light">Settings</h1>
+          <p className="mt-1 text-sm text-muted">Manage your store configuration.</p>
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
@@ -39,13 +61,13 @@ export default function AdminSettingsPage() {
           <Section title="SEO & Metadata">
             <Field label="Meta Title" defaultValue="Outluxx — Premium Fashion House" />
             <div>
-              <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+              <label className="mb-1 block text-[9px] font-medium uppercase tracking-[0.22em] text-muted">
                 Meta Description
               </label>
               <textarea
                 defaultValue="Curated luxury fashion for the modern wardrobe. Discover timeless tailoring, elevated essentials, and editorial pieces."
                 rows={3}
-                className="w-full resize-none border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black"
+                className="w-full resize-none rounded-lg border border-hairline px-3 py-2.5 text-sm outline-none focus:border-foreground"
               />
             </div>
           </Section>
@@ -61,7 +83,7 @@ export default function AdminSettingsPage() {
                 { label: "Weekly revenue summary", checked: true },
               ].map((item) => (
                 <label key={item.label} className="flex items-center gap-3 cursor-pointer">
-                  <input type="checkbox" defaultChecked={item.checked} className="accent-black" />
+                  <input type="checkbox" defaultChecked={item.checked} className="accent-teal-600" />
                   <span className="text-sm">{item.label}</span>
                 </label>
               ))}
@@ -71,18 +93,23 @@ export default function AdminSettingsPage() {
           <div className="flex items-center gap-4 pt-2">
             <button
               onClick={handleSave}
-              className="flex h-11 items-center justify-center bg-black px-8 text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors"
+              className="flex h-11 items-center justify-center gap-2 rounded-lg bg-foreground px-8 text-[10px] font-medium uppercase tracking-[0.22em] text-background hover:opacity-90 transition-colors"
             >
+              <Save size={14} strokeWidth={1.75} />
               Save Settings
             </button>
-            {saved && <p className="text-xs text-green-700">Settings saved successfully.</p>}
+            {saved && (
+              <p className="flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400">
+                <CheckCircle2 size={14} strokeWidth={1.75} /> Settings saved successfully.
+              </p>
+            )}
           </div>
         </div>
 
         {/* Status sidebar */}
         <div className="space-y-4">
-          <div className="border border-black/10 bg-white p-5">
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest">Store Status</h3>
+          <div className="rounded-xl border border-border bg-background p-5">
+            <h3 className="mb-4 text-[10px] font-medium uppercase tracking-[0.22em] text-foreground">Store Status</h3>
             <div className="space-y-3 text-sm">
               {[
                 { label: "Store", status: "Live", ok: true },
@@ -91,8 +118,13 @@ export default function AdminSettingsPage() {
                 { label: "SSL", status: "Valid", ok: true },
               ].map((item) => (
                 <div key={item.label} className="flex items-center justify-between">
-                  <span className="text-zinc-600">{item.label}</span>
-                  <span className={`text-xs font-semibold ${item.ok ? "text-green-600" : "text-red-600"}`}>
+                  <span className="text-muted">{item.label}</span>
+                  <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-medium ${
+                    item.ok
+                      ? "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400"
+                      : "bg-red-500/10 text-red-700 dark:bg-red-500/15 dark:text-red-400"
+                  }`}>
+                    <span className={`h-1.5 w-1.5 rounded-full ${item.ok ? "bg-emerald-500" : "bg-red-500"}`} />
                     {item.status}
                   </span>
                 </div>
@@ -100,8 +132,13 @@ export default function AdminSettingsPage() {
             </div>
           </div>
 
-          <div className="border border-black/10 bg-white p-5">
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest">Integrations</h3>
+          <div className="rounded-xl border border-border bg-background p-5">
+            <div className="mb-4 flex items-center gap-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400">
+                <Plug size={14} strokeWidth={1.75} />
+              </span>
+              <h3 className="text-[10px] font-medium uppercase tracking-[0.22em] text-foreground">Integrations</h3>
+            </div>
             <div className="space-y-3">
               {[
                 { name: "Stripe", connected: true },
@@ -112,9 +149,11 @@ export default function AdminSettingsPage() {
                 <div key={int.name} className="flex items-center justify-between">
                   <span className="text-sm">{int.name}</span>
                   {int.connected ? (
-                    <span className="text-[10px] font-semibold text-green-600">Connected</span>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400">
+                      <CheckCircle2 size={10} strokeWidth={2} /> Connected
+                    </span>
                   ) : (
-                    <button className="text-[10px] font-semibold text-zinc-400 underline hover:text-black">Connect</button>
+                    <button className="text-[10px] font-medium text-faint underline hover:text-foreground">Connect</button>
                   )}
                 </div>
               ))}
@@ -127,9 +166,18 @@ export default function AdminSettingsPage() {
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  const meta = SECTION_ICONS[title];
+  const Icon = meta?.icon;
   return (
-    <div className="border border-black/10 bg-white p-6">
-      <h2 className="mb-5 text-xs font-semibold uppercase tracking-widest">{title}</h2>
+    <div className="rounded-xl border border-border bg-background p-6">
+      <div className="mb-5 flex items-center gap-2">
+        {Icon && (
+          <span className={`flex h-7 w-7 items-center justify-center rounded-lg ${meta.chip}`}>
+            <Icon size={14} strokeWidth={1.75} />
+          </span>
+        )}
+        <h2 className="text-[10px] font-medium uppercase tracking-[0.22em] text-foreground">{title}</h2>
+      </div>
       <div className="space-y-4">{children}</div>
     </div>
   );
@@ -138,13 +186,13 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Field({ label, defaultValue }: { label: string; defaultValue: string }) {
   return (
     <div>
-      <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+      <label className="mb-1 block text-[9px] font-medium uppercase tracking-[0.22em] text-muted">
         {label}
       </label>
       <input
         type="text"
         defaultValue={defaultValue}
-        className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black"
+        className="w-full rounded-lg border border-hairline px-3 py-2.5 text-sm outline-none focus:border-foreground"
       />
     </div>
   );

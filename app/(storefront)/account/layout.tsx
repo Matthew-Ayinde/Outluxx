@@ -12,32 +12,32 @@ const NAV = [
 
 export default function AccountLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
-      <div className="mb-8 border-b border-black/10 pb-6">
-        <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">My Account</p>
-        <h1 className="text-4xl font-semibold">Account</h1>
+    <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
+      <div className="mb-12 border-b border-border pb-8">
+        <p className="eyebrow mb-3">My Account</p>
+        <h1 className="section-title text-4xl sm:text-5xl">Account</h1>
       </div>
 
-      <div className="flex flex-col gap-10 md:flex-row md:gap-16">
+      <div className="flex flex-col gap-12 md:flex-row md:gap-20">
         {/* Sidebar */}
         <aside className="w-full shrink-0 md:w-44">
-          <nav className="flex flex-row flex-wrap gap-2 md:flex-col md:gap-1">
+          <nav className="flex flex-row flex-wrap gap-x-5 gap-y-1 md:flex-col md:gap-0">
             {NAV.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="block py-1.5 text-sm text-zinc-600 hover:text-black transition-colors"
+                className="block py-2 text-sm font-light text-muted transition-colors duration-300 hover:text-foreground"
               >
                 {item.label}
               </Link>
             ))}
-            <hr className="my-2 border-black/10 hidden md:block" />
+            <hr className="my-3 hidden border-border md:block" />
             <SignOutButton />
           </nav>
         </aside>
 
         {/* Content */}
-        <div className="flex-1 min-w-0">{children}</div>
+        <div className="min-w-0 flex-1">{children}</div>
       </div>
     </div>
   );

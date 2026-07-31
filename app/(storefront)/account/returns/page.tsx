@@ -15,15 +15,15 @@ export default async function ReturnsPage() {
 
   return (
     <div>
-      <h2 className="mb-2 text-xl font-semibold">Returns & Refunds</h2>
-      <p className="mb-6 text-sm text-zinc-500">
+      <h2 className="mb-2 font-heading text-xl font-light">Returns & Refunds</h2>
+      <p className="mb-6 text-sm text-muted">
         Returns are accepted within 14 days of delivery. Items must be in original condition.
       </p>
 
-      <div className="mb-6 border border-black/10 p-5">
-        <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest">Eligible for Return</h3>
+      <div className="mb-6 border border-border p-5">
+        <h3 className="mb-3 text-[10px] font-medium uppercase tracking-[0.24em] text-foreground">Eligible for Return</h3>
         {eligibleOrders.length === 0 ? (
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-muted">
             No delivered orders yet. Once an order is delivered, it will appear here and can be returned within 14 days.
           </p>
         ) : (
@@ -32,20 +32,20 @@ export default async function ReturnsPage() {
               <div key={order.id} className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium">{order.orderNumber}</p>
-                  <p className="text-xs text-zinc-500">
+                  <p className="text-xs text-muted">
                     {order.items.map((i) => i.productTitle).join(", ")}
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-sm font-semibold">{formatMoney(order.total)}</span>
+                  <span className="text-sm font-medium">{formatMoney(order.total)}</span>
                   {order.status === "returned" ? (
-                    <span className="border border-purple-200 bg-purple-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-purple-700">
+                    <span className="border border-hairline px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-muted">
                       Returned
                     </span>
                   ) : (
                     <Link
                       href="/support/contact"
-                      className="border border-black px-4 py-1.5 text-[10px] font-semibold uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+                      className="border border-foreground px-4 py-1.5 text-[10px] font-medium uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors"
                     >
                       Start Return
                     </Link>
@@ -57,29 +57,29 @@ export default async function ReturnsPage() {
         )}
       </div>
 
-      <div className="border border-black/10 p-5">
-        <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest">Returns Policy</h3>
-        <ul className="space-y-2 text-sm text-zinc-600">
+      <div className="border border-border p-5">
+        <h3 className="mb-4 text-[10px] font-medium uppercase tracking-[0.24em] text-foreground">Returns Policy</h3>
+        <ul className="space-y-2 text-sm text-muted">
           <li className="flex gap-2">
-            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-black" />
+            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-foreground" />
             Returns accepted within 14 days of delivery
           </li>
           <li className="flex gap-2">
-            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-black" />
+            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-foreground" />
             Items must be unworn, with all original tags attached
           </li>
           <li className="flex gap-2">
-            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-black" />
+            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-foreground" />
             Refunds are processed within 5–7 business days
           </li>
           <li className="flex gap-2">
-            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-black" />
+            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-foreground" />
             Final sale items are non-returnable
           </li>
         </ul>
         <Link
           href="/returns-refunds"
-          className="mt-4 inline-block text-xs text-zinc-400 underline underline-offset-2 hover:text-black"
+          className="mt-4 inline-block text-xs text-faint underline underline-offset-4 hover:text-foreground"
         >
           Full returns policy →
         </Link>

@@ -13,21 +13,21 @@ const TOPICS = [
 
 export default function SupportPage() {
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10">
+    <div className="mx-auto max-w-5xl px-5 py-16 lg:px-8">
       <div className="mb-10 text-center">
-        <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">We're here to help</p>
-        <h1 className="text-4xl font-semibold">Customer Support</h1>
-        <p className="mt-3 text-sm text-zinc-500">How can we help you today?</p>
+        <p className="eyebrow mb-3">We're here to help</p>
+        <h1 className="section-title text-4xl sm:text-5xl">Customer Support</h1>
+        <p className="mt-3 text-sm text-muted">How can we help you today?</p>
       </div>
 
       {/* Search */}
-      <div className="mb-10 flex items-center border-b-2 border-black">
+      <div className="mb-10 flex items-center border-b border-foreground">
         <input
           type="search"
           placeholder="Search for help articles…"
-          className="flex-1 bg-transparent py-3 text-sm outline-none placeholder:text-zinc-400"
+          className="flex-1 bg-transparent py-3 text-sm outline-none placeholder:text-faint"
         />
-        <button className="px-4 py-3 text-xs font-semibold uppercase tracking-widest hover:text-red-600 transition-colors">
+        <button className="px-4 py-3 text-[10px] font-medium uppercase tracking-[0.24em] text-foreground hover:opacity-60 transition-colors">
           Search
         </button>
       </div>
@@ -38,24 +38,24 @@ export default function SupportPage() {
           <Link
             key={t.title}
             href={t.href}
-            className="group flex gap-4 border border-black/10 p-5 hover:border-black transition-colors"
+            className="group flex gap-4 border border-border p-5 hover:border-foreground transition-colors"
           >
             <span className="text-2xl">{t.icon}</span>
             <div>
-              <h3 className="font-semibold group-hover:text-red-600 transition-colors">{t.title}</h3>
-              <p className="mt-1 text-xs text-zinc-500">{t.desc}</p>
+              <h3 className="font-medium group-hover:opacity-60 transition-colors">{t.title}</h3>
+              <p className="mt-1 text-xs text-muted">{t.desc}</p>
             </div>
           </Link>
         ))}
       </div>
 
       {/* CTA */}
-      <div className="border border-black/10 p-8 text-center">
-        <h3 className="mb-2 text-lg font-semibold">Can't find what you're looking for?</h3>
-        <p className="mb-6 text-sm text-zinc-500">Our team is available Monday–Friday, 9am–6pm GMT.</p>
+      <div className="border border-border p-8 text-center">
+        <h3 className="mb-2 font-heading text-lg font-light">Can't find what you're looking for?</h3>
+        <p className="mb-6 text-sm text-muted">Our team is available Monday–Friday, 9am–6pm GMT.</p>
         <Link
           href="/support/contact"
-          className="inline-block bg-black px-8 py-3 text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors"
+          className="inline-block bg-foreground px-8 py-3 text-[10px] font-medium uppercase tracking-[0.24em] text-foreground text-background hover:opacity-90 transition-colors"
         >
           Contact Us
         </Link>

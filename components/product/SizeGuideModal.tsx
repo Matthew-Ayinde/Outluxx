@@ -19,22 +19,25 @@ export default function SizeGuideModal() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="text-xs font-medium underline underline-offset-2 text-zinc-500 hover:text-black transition-colors"
+        className="text-xs font-light text-muted underline underline-offset-4 transition-colors duration-300 hover:text-foreground"
       >
         Size Guide
       </button>
 
       <Modal open={open} onClose={() => setOpen(false)} title="Size Guide" size="lg">
-        <div className="space-y-4">
-          <p className="text-xs text-zinc-500">
+        <div className="space-y-5">
+          <p className="text-xs font-light leading-5 text-muted">
             All measurements are in centimetres. Model is 178cm and wears a size S.
           </p>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-black/10">
+                <tr className="border-b border-hairline">
                   {["Size", "UK", "EU", "US", "Bust", "Waist", "Hips"].map((h) => (
-                    <th key={h} className="pb-3 text-left font-semibold uppercase tracking-widest text-black pr-4">
+                    <th
+                      key={h}
+                      className="pb-3 pr-4 text-left text-[9px] font-medium uppercase tracking-[0.22em] text-foreground"
+                    >
                       {h}
                     </th>
                   ))}
@@ -42,22 +45,22 @@ export default function SizeGuideModal() {
               </thead>
               <tbody>
                 {sizeChart.map((row) => (
-                  <tr key={row.size} className="border-b border-black/5">
-                    <td className="py-3 pr-4 font-semibold">{row.size}</td>
-                    <td className="py-3 pr-4 text-zinc-600">{row.uk}</td>
-                    <td className="py-3 pr-4 text-zinc-600">{row.eu}</td>
-                    <td className="py-3 pr-4 text-zinc-600">{row.us}</td>
-                    <td className="py-3 pr-4 text-zinc-600">{row.bust}</td>
-                    <td className="py-3 pr-4 text-zinc-600">{row.waist}</td>
-                    <td className="py-3 pr-4 text-zinc-600">{row.hips}</td>
+                  <tr key={row.size} className="border-b border-border">
+                    <td className="py-3.5 pr-4 font-medium text-foreground">{row.size}</td>
+                    <td className="py-3.5 pr-4 font-light text-muted">{row.uk}</td>
+                    <td className="py-3.5 pr-4 font-light text-muted">{row.eu}</td>
+                    <td className="py-3.5 pr-4 font-light text-muted">{row.us}</td>
+                    <td className="py-3.5 pr-4 font-light text-muted">{row.bust}</td>
+                    <td className="py-3.5 pr-4 font-light text-muted">{row.waist}</td>
+                    <td className="py-3.5 pr-4 font-light text-muted">{row.hips}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-zinc-500">
-            If you are between sizes, we recommend sizing up. For garments with detailed fit
-            notes, please refer to the product description.
+          <p className="text-xs font-light leading-5 text-muted">
+            If you are between sizes, we recommend sizing up. For garments with
+            detailed fit notes, please refer to the product description.
           </p>
         </div>
       </Modal>

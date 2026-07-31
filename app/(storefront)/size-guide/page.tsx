@@ -18,41 +18,41 @@ const MEN_SIZES = [
 
 export default function SizeGuidePage() {
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10">
+    <div className="mx-auto max-w-5xl px-5 py-16 lg:px-8">
       <div className="mb-10">
-        <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+        <p className="eyebrow mb-3">
           Find Your Fit
         </p>
-        <h1 className="text-4xl font-semibold">Size Guide</h1>
-        <p className="mt-3 text-sm text-zinc-500">
+        <h1 className="section-title text-4xl sm:text-5xl">Size Guide</h1>
+        <p className="mt-3 text-sm text-muted">
           All measurements are in centimetres unless stated. If you're between sizes, we recommend sizing up.
         </p>
       </div>
 
       {/* Women */}
       <section className="mb-12">
-        <h2 className="mb-4 text-lg font-semibold">Women</h2>
+        <h2 className="mb-4 font-heading text-lg font-light">Women</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-black/10">
+              <tr className="border-b border-border">
                 {["Size", "UK", "EU", "US", "Bust (cm)", "Waist (cm)", "Hips (cm)"].map((h) => (
-                  <th key={h} className="pb-3 pr-6 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+                  <th key={h} className="pb-3 pr-6 text-left text-[10px] font-medium uppercase tracking-[0.28em] text-faint">
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-black/5">
+            <tbody className="divide-y divide-border">
               {WOMEN_SIZES.map((row) => (
                 <tr key={row.size}>
-                  <td className="py-3 pr-6 font-semibold">{row.size}</td>
-                  <td className="py-3 pr-6 text-zinc-600">{row.uk}</td>
-                  <td className="py-3 pr-6 text-zinc-600">{row.eu}</td>
-                  <td className="py-3 pr-6 text-zinc-600">{row.us}</td>
-                  <td className="py-3 pr-6 text-zinc-600">{row.bust}</td>
-                  <td className="py-3 pr-6 text-zinc-600">{row.waist}</td>
-                  <td className="py-3 pr-6 text-zinc-600">{row.hips}</td>
+                  <td className="py-3 pr-6 font-medium">{row.size}</td>
+                  <td className="py-3 pr-6 text-muted">{row.uk}</td>
+                  <td className="py-3 pr-6 text-muted">{row.eu}</td>
+                  <td className="py-3 pr-6 text-muted">{row.us}</td>
+                  <td className="py-3 pr-6 text-muted">{row.bust}</td>
+                  <td className="py-3 pr-6 text-muted">{row.waist}</td>
+                  <td className="py-3 pr-6 text-muted">{row.hips}</td>
                 </tr>
               ))}
             </tbody>
@@ -62,28 +62,28 @@ export default function SizeGuidePage() {
 
       {/* Men */}
       <section className="mb-12">
-        <h2 className="mb-4 text-lg font-semibold">Men</h2>
+        <h2 className="mb-4 font-heading text-lg font-light">Men</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-black/10">
+              <tr className="border-b border-border">
                 {["Size", "UK", "EU", "US", "Chest (cm)", "Waist (cm)", "Hips (cm)"].map((h) => (
-                  <th key={h} className="pb-3 pr-6 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+                  <th key={h} className="pb-3 pr-6 text-left text-[10px] font-medium uppercase tracking-[0.28em] text-faint">
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-black/5">
+            <tbody className="divide-y divide-border">
               {MEN_SIZES.map((row) => (
                 <tr key={row.size}>
-                  <td className="py-3 pr-6 font-semibold">{row.size}</td>
-                  <td className="py-3 pr-6 text-zinc-600">{row.uk}</td>
-                  <td className="py-3 pr-6 text-zinc-600">{row.eu}</td>
-                  <td className="py-3 pr-6 text-zinc-600">{row.us}</td>
-                  <td className="py-3 pr-6 text-zinc-600">{row.chest}</td>
-                  <td className="py-3 pr-6 text-zinc-600">{row.waist}</td>
-                  <td className="py-3 pr-6 text-zinc-600">{row.hips}</td>
+                  <td className="py-3 pr-6 font-medium">{row.size}</td>
+                  <td className="py-3 pr-6 text-muted">{row.uk}</td>
+                  <td className="py-3 pr-6 text-muted">{row.eu}</td>
+                  <td className="py-3 pr-6 text-muted">{row.us}</td>
+                  <td className="py-3 pr-6 text-muted">{row.chest}</td>
+                  <td className="py-3 pr-6 text-muted">{row.waist}</td>
+                  <td className="py-3 pr-6 text-muted">{row.hips}</td>
                 </tr>
               ))}
             </tbody>
@@ -92,19 +92,19 @@ export default function SizeGuidePage() {
       </section>
 
       {/* How to measure */}
-      <section className="border border-black/10 p-6">
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest">How to Measure</h2>
-        <div className="grid gap-6 sm:grid-cols-3 text-sm text-zinc-600">
+      <section className="border border-border p-6">
+        <h2 className="mb-4 text-[11px] font-medium uppercase tracking-[0.26em] text-foreground">How to Measure</h2>
+        <div className="grid gap-6 sm:grid-cols-3 text-sm text-muted">
           <div>
-            <p className="mb-1 font-semibold text-black">Chest / Bust</p>
+            <p className="mb-1 font-medium text-foreground">Chest / Bust</p>
             <p>Measure around the fullest part of your chest, keeping the tape level and parallel to the floor.</p>
           </div>
           <div>
-            <p className="mb-1 font-semibold text-black">Waist</p>
+            <p className="mb-1 font-medium text-foreground">Waist</p>
             <p>Measure around your natural waistline — the narrowest part of your torso, above your belly button.</p>
           </div>
           <div>
-            <p className="mb-1 font-semibold text-black">Hips</p>
+            <p className="mb-1 font-medium text-foreground">Hips</p>
             <p>Measure around the fullest part of your hips, approximately 20cm below your natural waist.</p>
           </div>
         </div>

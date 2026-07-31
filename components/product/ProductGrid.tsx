@@ -15,15 +15,20 @@ const colMap = {
 export default function ProductGrid({ products, columns = 4 }: ProductGridProps) {
   if (products.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 text-center">
-        <p className="text-sm font-medium text-black">No products found</p>
-        <p className="mt-1 text-xs text-zinc-500">Try adjusting your filters or search</p>
+      <div className="flex flex-col items-center justify-center border border-border py-28 text-center">
+        <p className="eyebrow">The Edit</p>
+        <p className="mt-4 font-heading text-2xl font-light text-foreground">
+          No pieces found
+        </p>
+        <p className="mt-2 text-sm font-light text-muted">
+          Try adjusting your filters or search
+        </p>
       </div>
     );
   }
 
   return (
-    <div className={["grid gap-x-4 gap-y-10", colMap[columns]].join(" ")}>
+    <div className={["grid gap-x-4 gap-y-12 lg:gap-x-5", colMap[columns]].join(" ")}>
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}

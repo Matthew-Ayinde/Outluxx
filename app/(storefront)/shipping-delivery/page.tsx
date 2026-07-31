@@ -2,23 +2,23 @@ export const metadata = { title: "Shipping & Delivery" };
 
 export default function ShippingDeliveryPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
+    <div className="mx-auto max-w-3xl px-5 py-16 lg:px-8">
       <div className="mb-10">
-        <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">Delivery Information</p>
-        <h1 className="text-4xl font-semibold">Shipping & Delivery</h1>
+        <p className="eyebrow mb-3">Delivery Information</p>
+        <h1 className="section-title text-4xl sm:text-5xl">Shipping & Delivery</h1>
       </div>
 
-      <div className="space-y-10 text-sm leading-relaxed text-zinc-700">
+      <div className="space-y-10 text-sm leading-relaxed text-muted">
         <Section title="Delivery Options">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-black/10">
+              <tr className="border-b border-border">
                 {["Method", "Timeframe", "Cost"].map((h) => (
-                  <th key={h} className="pb-3 pr-8 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">{h}</th>
+                  <th key={h} className="pb-3 pr-8 text-left text-[10px] font-medium uppercase tracking-[0.28em] text-faint">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-black/5">
+            <tbody className="divide-y divide-border">
               {[
                 { method: "Standard (UK)", time: "3–5 business days", cost: "Free over £500 · £15 otherwise" },
                 { method: "Express (UK)", time: "1–2 business days", cost: "£25" },
@@ -28,8 +28,8 @@ export default function ShippingDeliveryPage() {
               ].map((row) => (
                 <tr key={row.method}>
                   <td className="py-3 pr-8 font-medium">{row.method}</td>
-                  <td className="py-3 pr-8 text-zinc-600">{row.time}</td>
-                  <td className="py-3 text-zinc-600">{row.cost}</td>
+                  <td className="py-3 pr-8 text-muted">{row.time}</td>
+                  <td className="py-3 text-muted">{row.cost}</td>
                 </tr>
               ))}
             </tbody>
@@ -58,7 +58,7 @@ export default function ShippingDeliveryPage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h2 className="mb-4 text-base font-semibold">{title}</h2>
+      <h2 className="mb-4 text-base font-medium">{title}</h2>
       {children}
     </div>
   );
