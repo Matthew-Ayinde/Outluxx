@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
   }
 
   const discountAmount = subtotal * discountRate;
-  const shipping = deliveryMethod === "express" ? 25 : subtotal >= 500 ? 0 : 15;
+  const shipping = 0;
   const total = subtotal - discountAmount + shipping;
   const totalInPence = Math.round(total * 100);
 

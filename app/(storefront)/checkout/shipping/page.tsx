@@ -19,7 +19,7 @@ export default function ShippingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const shipping = deliveryMethod === "express" ? 25 : subtotal >= 500 ? 0 : 15;
+  const shipping = 0;
 
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "", phone: "",
@@ -149,8 +149,8 @@ export default function ShippingPage() {
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest">Delivery Method</h2>
           <div className="space-y-3">
             {([
-              { id: "standard" as const, label: "Standard Delivery", time: "3–5 business days", price: subtotal >= 500 ? "Free" : formatMoney(15) },
-              { id: "express" as const, label: "Express Delivery", time: "1–2 business days", price: formatMoney(25) },
+              { id: "standard" as const, label: "Standard Delivery", time: "3–5 business days", price: "Free" },
+              { id: "express" as const, label: "Express Delivery", time: "1–2 business days", price: "Free" },
             ]).map((opt) => (
               <label key={opt.id} className="flex cursor-pointer items-center justify-between border border-black/15 p-4 hover:border-black transition-colors">
                 <div className="flex items-center gap-3">

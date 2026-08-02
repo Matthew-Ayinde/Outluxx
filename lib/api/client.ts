@@ -1,5 +1,3 @@
-const BASE = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-
 export class ApiError extends Error {
   constructor(
     public status: number,
@@ -15,8 +13,7 @@ export async function apiFetch<T>(
   path: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const url = path.startsWith("http") ? path : `${BASE}${path}`;
-  const res = await fetch(url, {
+  const res = await fetch(path, {
     ...options,
     headers: {
       "Content-Type": "application/json",
