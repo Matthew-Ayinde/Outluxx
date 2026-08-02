@@ -19,6 +19,7 @@ import {
 } from "./icons";
 import { ACCENT_CHIP, ACCENT_CHIP_DARK, type Accent } from "./ui";
 
+
 const NAV: { label: string; href: string; icon: typeof IconGrid; accent: Accent }[] = [
   { label: "Dashboard", href: "/admin", icon: IconGrid, accent: "gold" },
   { label: "Products", href: "/admin/products", icon: IconShirt, accent: "blue" },
