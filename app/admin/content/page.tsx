@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
 import { IconClose, IconLayout, IconPencil, IconPlus, IconTrash, IconUpload } from "@/components/admin/icons";
-import { IconButton, SectionHeader, StatusBadge, Tag } from "@/components/admin/ui";
+import { IconButton, SectionHeader, StatusBadge, Tag, Button } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -74,32 +74,33 @@ export default function AdminContentPage() {
       <SectionHeader
         title="Content"
         subtitle="Manage banners, announcements, and homepage modules."
+        icon={<IconLayout className="h-5 w-5" />}
+        accent="orange"
         action={
-          <button
-            onClick={() => { setEditing(null); setShowModal(true); }}
-            className="flex items-center gap-2 bg-zinc-900 px-5 py-2.5 text-xs font-semibold uppercase tracking-widest text-white transition-colors hover:bg-zinc-800"
-          >
-            <IconPlus className="h-3.5 w-3.5" /> Add Block
-          </button>
+          <Button icon={<IconPlus className="h-3.5 w-3.5" />} onClick={() => { setEditing(null); setShowModal(true); }}>
+            Add Block
+          </Button>
         }
       />
 
       {loading ? (
-        <div className="border border-zinc-200 bg-white p-8 text-center">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-8 text-center shadow-sm">
           <p className="text-sm text-zinc-400">Loading…</p>
         </div>
       ) : blocks.length === 0 ? (
-        <div className="border border-zinc-200 bg-white p-8 text-center">
-          <IconLayout className="mx-auto mb-2 h-5 w-5 text-zinc-300" />
+        <div className="rounded-2xl border border-zinc-200 bg-white p-8 text-center shadow-sm">
+          <span className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 text-orange-500">
+            <IconLayout className="h-5 w-5" />
+          </span>
           <p className="text-sm text-zinc-400">No content blocks configured yet.</p>
-          <button onClick={() => setShowModal(true)} className="mt-3 text-xs font-semibold uppercase tracking-widest text-zinc-600 underline underline-offset-2 hover:text-zinc-900">
+          <button onClick={() => setShowModal(true)} className="mt-3 text-xs font-semibold uppercase tracking-widest text-orange-600 underline underline-offset-2 hover:text-orange-700">
             Add your first block
           </button>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {blocks.map((block) => (
-            <div key={block._id} className="border border-zinc-200 bg-white overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+            <div key={block._id} className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
               <div className="relative aspect-video bg-zinc-100">
                 {block.mediaType === "video" ? (
                   <video src={block.mediaUrl} className="h-full w-full object-cover" muted />
@@ -122,7 +123,7 @@ export default function AdminContentPage() {
                   <button
                     onClick={() => toggleActive(block)}
                     disabled={toggling === block._id}
-                    className="border border-zinc-200 px-3 py-1.5 text-[11px] font-medium text-zinc-600 hover:border-zinc-900 hover:text-zinc-900 transition-colors disabled:opacity-50"
+                    className="rounded-lg border border-zinc-200 px-3 py-1.5 text-[11px] font-medium text-zinc-600 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-700 transition-colors disabled:opacity-50"
                   >{toggling === block._id ? "…" : block.active ? "Deactivate" : "Activate"}</button>
                   <IconButton
                     icon={<IconTrash className="h-3.5 w-3.5" />}
@@ -229,21 +230,24 @@ function ContentModal({ block, onClose, onSaved }: {
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 pt-10 pb-10">
-      <div className="w-full max-w-lg bg-white mx-4">
+      <div className="w-full max-w-lg rounded-2xl bg-white mx-4 shadow-xl">
         <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-4">
-          <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest">
-            <IconLayout className="h-4 w-4 text-zinc-400" /> {isEdit ? "Edit Block" : "Add Content Block"}
+          <h2 className="flex items-center gap-2.5 text-sm font-semibold uppercase tracking-widest">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-50 text-orange-600">
+              <IconLayout className="h-4 w-4" />
+            </span>
+            {isEdit ? "Edit Block" : "Add Content Block"}
           </h2>
           <IconButton icon={<IconClose className="h-4 w-4" />} label="Close" onClick={onClose} />
         </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-6">
-          {error && <div className="border border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700">{error}</div>}
+          {error && <div className="rounded-xl bg-rose-50 px-4 py-2 text-sm text-rose-700 ring-1 ring-inset ring-rose-200">{error}</div>}
 
           <div className="grid grid-cols-2 gap-4">
             <CF label="Key *" value={form.key} onChange={(v) => setForm((f) => ({ ...f, key: v }))} required disabled={isEdit} />
             <div>
               <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Type *</label>
-              <select value={form.type} onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as ContentBlock["type"] }))} className="w-full border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-zinc-900">
+              <select value={form.type} onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as ContentBlock["type"] }))} className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100">
                 {["hero", "editorial", "banner", "carousel"].map((t) => <option key={t}>{t}</option>)}
               </select>
             </div>
@@ -258,14 +262,14 @@ function ContentModal({ block, onClose, onSaved }: {
               Media {uploading && <span className="text-zinc-400">(uploading…)</span>}
             </label>
             {form.mediaUrl && (
-              <div className="relative mb-2 aspect-video w-full overflow-hidden border border-zinc-100 bg-zinc-50">
+              <div className="relative mb-2 aspect-video w-full overflow-hidden rounded-xl border border-zinc-100 bg-zinc-50">
                 {form.mediaType === "video"
                   ? <video src={form.mediaUrl} className="h-full w-full object-cover" muted />
                   : <Image src={form.mediaUrl} alt="Preview" fill className="object-cover" sizes="400px" />
                 }
               </div>
             )}
-            <label className="flex cursor-pointer items-center gap-2 border border-dashed border-zinc-300 px-3 py-2.5 text-xs text-zinc-500 hover:border-zinc-500 hover:text-zinc-600 transition-colors">
+            <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-dashed border-zinc-300 px-3 py-2.5 text-xs text-zinc-500 hover:border-orange-400 hover:text-orange-600 transition-colors">
               <IconUpload className="h-3.5 w-3.5" />
               Choose a file to upload
               <input
@@ -287,17 +291,17 @@ function ContentModal({ block, onClose, onSaved }: {
 
           <div className="flex items-center gap-4">
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={form.active} onChange={(e) => setForm((f) => ({ ...f, active: e.target.checked }))} className="accent-zinc-900" />
+              <input type="checkbox" checked={form.active} onChange={(e) => setForm((f) => ({ ...f, active: e.target.checked }))} className="h-4 w-4 rounded accent-orange-500" />
               Active (visible on site)
             </label>
             <CF label="Display order" value={form.order} onChange={(v) => setForm((f) => ({ ...f, order: v }))} type="number" />
           </div>
 
           <div className="flex justify-end gap-3 pt-2 border-t border-zinc-100">
-            <button type="button" onClick={onClose} className="border border-zinc-200 px-6 py-2.5 text-xs font-semibold uppercase tracking-widest text-zinc-600 hover:border-zinc-900 hover:text-zinc-900 transition-colors">Cancel</button>
-            <button type="submit" disabled={loading || uploading} className="bg-zinc-900 px-6 py-2.5 text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors disabled:opacity-60">
+            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+            <Button type="submit" disabled={loading || uploading}>
               {loading ? "Saving…" : isEdit ? "Update" : "Add Block"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -317,7 +321,7 @@ function CF({ label, value, onChange, type = "text", required, disabled }: {
         onChange={onChange ? (e) => onChange(e.target.value) : undefined}
         required={required}
         disabled={disabled}
-        className="w-full border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-zinc-900 disabled:bg-zinc-50"
+        className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 disabled:bg-zinc-50"
       />
     </div>
   );

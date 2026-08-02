@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from "react";
 import { formatMoney } from "@/lib/utils/format";
 import { ApiError } from "@/lib/api/client";
 import { IconPlus, IconSearch, IconPencil, IconTrash, IconClose, IconShirt, IconStar, IconUpload } from "@/components/admin/icons";
-import { SectionHeader, Panel, IconButton, Tag } from "@/components/admin/ui";
+import { SectionHeader, Panel, IconButton, Tag, Button, FilterTab } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -83,17 +83,16 @@ export default function AdminProductsPage() {
       <SectionHeader
         title="Products"
         subtitle={`${displayProducts.length} products in catalogue`}
+        icon={<IconShirt className="h-5 w-5" />}
+        accent="blue"
         action={
-          <button
-            onClick={() => { setEditing(null); setShowModal(true); }}
-            className="flex items-center gap-2 bg-zinc-900 px-5 py-2.5 text-xs font-semibold uppercase tracking-widest text-white transition-colors hover:bg-zinc-800"
-          >
-            <IconPlus className="h-3.5 w-3.5" /> Add Product
-          </button>
+          <Button icon={<IconPlus className="h-3.5 w-3.5" />} onClick={() => { setEditing(null); setShowModal(true); }}>
+            Add Product
+          </Button>
         }
       />
 
-      {error && <div className="mb-4 border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div>}
+      {error && <div className="mb-4 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700 ring-1 ring-inset ring-rose-200">{error}</div>}
 
       {/* Filters */}
       <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -104,22 +103,11 @@ export default function AdminProductsPage() {
             placeholder="Search products…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full border border-zinc-200 py-2 pl-9 pr-3 text-sm outline-none focus:border-zinc-900"
+            className="w-full rounded-xl border border-zinc-200 py-2 pl-9 pr-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
           />
         </div>
         {CATEGORY_FILTERS.map((f) => (
-          <button
-            key={f}
-            onClick={() => setActiveFilter(f)}
-            className={[
-              "border px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider transition-colors",
-              f === activeFilter
-                ? "border-zinc-900 bg-zinc-900 text-white"
-                : "border-zinc-200 text-zinc-600 hover:border-zinc-900 hover:text-zinc-900",
-            ].join(" ")}
-          >
-            {f}
-          </button>
+          <FilterTab key={f} label={f} active={f === activeFilter} onClick={() => setActiveFilter(f)} />
         ))}
       </div>
 
@@ -128,7 +116,7 @@ export default function AdminProductsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-zinc-100 bg-zinc-50">
+              <tr className="border-b border-zinc-100 bg-zinc-50/60">
                 {["Product", "Category", "Price", "Stock", "Status", "Actions"].map((h) => (
                   <th key={h} className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">{h}</th>
                 ))}
@@ -143,7 +131,7 @@ export default function AdminProductsPage() {
                 <tr key={product._id} className="transition-colors hover:bg-zinc-50/80">
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="relative flex h-12 w-9 shrink-0 items-center justify-center overflow-hidden border border-zinc-100 bg-zinc-50">
+                      <div className="relative flex h-12 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-zinc-100 bg-zinc-50">
                         {product.images[0] ? (
                           <Image src={product.images[0].src} alt={product.title} fill className="object-cover" sizes="36px" />
                         ) : (
@@ -164,14 +152,14 @@ export default function AdminProductsPage() {
                     )}
                   </td>
                   <td className="px-5 py-3">
-                    <span className={`text-xs font-semibold ${product.stock > 0 ? "text-emerald-600" : "text-zinc-400"}`}>
+                    <span className={`text-xs font-semibold ${product.stock > 0 ? "text-emerald-600" : "text-rose-500"}`}>
                       {product.stock > 0 ? `${product.stock} in stock` : "Out of Stock"}
                     </span>
                   </td>
                   <td className="px-5 py-3">
                     <div className="flex flex-wrap gap-1">
-                      {product.isNew && <Tag label="New" variant="solid" />}
-                      {product.isSale && <Tag label="Sale" />}
+                      {product.isNew && <Tag label="New" variant="gold" />}
+                      {product.isSale && <Tag label="Sale" variant="solid" />}
                       {product.isFeatured && <Tag label="Featured" icon={<IconStar className="h-2.5 w-2.5" />} />}
                     </div>
                   </td>
@@ -312,15 +300,18 @@ function ProductModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 pt-10 pb-10">
-      <div className="w-full max-w-2xl bg-white mx-4">
+      <div className="w-full max-w-2xl rounded-2xl bg-white mx-4 shadow-xl">
         <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-4">
-          <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest">
-            <IconShirt className="h-4 w-4 text-zinc-400" /> {isEdit ? "Edit Product" : "Add Product"}
+          <h2 className="flex items-center gap-2.5 text-sm font-semibold uppercase tracking-widest">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+              <IconShirt className="h-4 w-4" />
+            </span>
+            {isEdit ? "Edit Product" : "Add Product"}
           </h2>
           <IconButton icon={<IconClose className="h-4 w-4" />} label="Close" onClick={onClose} />
         </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-6">
-          {error && <div className="border border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700">{error}</div>}
+          {error && <div className="rounded-xl bg-rose-50 px-4 py-2 text-sm text-rose-700 ring-1 ring-inset ring-rose-200">{error}</div>}
 
           <div className="grid grid-cols-2 gap-4">
             <F label="Title *" value={form.title} onChange={(v) => setForm((f) => ({ ...f, title: v }))} required />
@@ -333,7 +324,7 @@ function ProductModal({
               <select
                 value={form.category}
                 onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
-                className="w-full border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-zinc-900"
+                className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
               >
                 {["tshirts", "pants", "armless", "tank-tops"].map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
@@ -348,7 +339,7 @@ function ProductModal({
           <div className="flex gap-6">
             {(["isNew", "isSale", "isFeatured"] as const).map((key) => (
               <label key={key} className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={form[key]} onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.checked }))} className="accent-zinc-900" />
+                <input type="checkbox" checked={form[key]} onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.checked }))} className="h-4 w-4 rounded accent-blue-600" />
                 {key === "isNew" ? "New" : key === "isSale" ? "On Sale" : "Featured"}
               </label>
             ))}
@@ -361,7 +352,7 @@ function ProductModal({
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               rows={3}
               required
-              className="w-full border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-zinc-900 resize-none"
+              className="w-full resize-none rounded-xl border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
@@ -379,19 +370,19 @@ function ProductModal({
             </label>
             <div className="flex flex-wrap gap-2 mb-2">
               {form.images.map((img, i) => (
-                <div key={i} className="relative h-16 w-12 overflow-hidden border border-zinc-100 bg-zinc-50">
+                <div key={i} className="relative h-16 w-12 overflow-hidden rounded-lg border border-zinc-100 bg-zinc-50">
                   <Image src={img.src} alt={img.alt} fill className="object-cover" sizes="48px" />
                   <button
                     type="button"
                     onClick={() => setForm((f) => ({ ...f, images: f.images.filter((_, j) => j !== i) }))}
-                    className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center bg-black/70 text-white"
+                    className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-black/70 text-white"
                     aria-label="Remove image"
                   >
                     <IconClose className="h-2.5 w-2.5" />
                   </button>
                 </div>
               ))}
-              <label className="flex h-16 w-12 cursor-pointer flex-col items-center justify-center gap-1 border border-dashed border-zinc-300 text-zinc-400 hover:border-zinc-500 hover:text-zinc-600 transition-colors">
+              <label className="flex h-16 w-12 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-zinc-300 text-zinc-400 hover:border-blue-400 hover:text-blue-500 transition-colors">
                 <IconUpload className="h-4 w-4" />
                 <input
                   type="file"
@@ -418,7 +409,7 @@ function ProductModal({
                       sizes[i] = { ...sizes[i], available: e.target.checked };
                       setForm((f) => ({ ...f, sizes }));
                     }}
-                    className="accent-zinc-900"
+                    className="h-4 w-4 rounded accent-blue-600"
                   />
                   {s.label}
                 </label>
@@ -427,16 +418,10 @@ function ProductModal({
           </div>
 
           <div className="flex justify-end gap-3 pt-2 border-t border-zinc-100">
-            <button type="button" onClick={onClose} className="border border-zinc-200 px-6 py-2.5 text-xs font-semibold uppercase tracking-widest text-zinc-600 hover:border-zinc-900 hover:text-zinc-900 transition-colors">
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading || uploadingImages}
-              className="bg-zinc-900 px-6 py-2.5 text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors disabled:opacity-60"
-            >
+            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+            <Button type="submit" disabled={loading || uploadingImages}>
               {loading ? "Saving…" : isEdit ? "Update Product" : "Add Product"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -456,7 +441,7 @@ function F({ label, value, onChange, type = "text", required, disabled }: {
         onChange={onChange ? (e) => onChange(e.target.value) : undefined}
         required={required}
         disabled={disabled}
-        className="w-full border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-zinc-900 disabled:bg-zinc-50 disabled:text-zinc-400"
+        className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-zinc-50 disabled:text-zinc-400"
       />
     </div>
   );

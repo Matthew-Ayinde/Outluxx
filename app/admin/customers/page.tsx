@@ -8,11 +8,12 @@ import { IconButton, Panel, SectionHeader } from "@/components/admin/ui";
 export const dynamic = "force-dynamic";
 
 const AVATAR_TONES = [
-  "bg-zinc-100 text-zinc-600",
-  "bg-sky-50 text-sky-700",
+  "bg-blue-50 text-blue-700",
   "bg-emerald-50 text-emerald-700",
-  "bg-amber-50 text-amber-800",
-  "bg-violet-50 text-violet-700",
+  "bg-amber-100 text-amber-700",
+  "bg-rose-50 text-rose-700",
+  "bg-teal-50 text-teal-700",
+  "bg-sky-50 text-sky-700",
 ];
 
 function avatarTone(seed: string) {
@@ -68,7 +69,7 @@ export default function AdminCustomersPage() {
 
   return (
     <div>
-      <SectionHeader title="Customers" subtitle={`${total} registered customers`} />
+      <SectionHeader title="Customers" subtitle={`${total} registered customers`} icon={<IconUsers className="h-5 w-5" />} accent="sky" />
 
       <div className="mb-4">
         <div className="relative w-64">
@@ -78,7 +79,7 @@ export default function AdminCustomersPage() {
             placeholder="Search by name or email…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full border border-zinc-200 py-2 pl-9 pr-3 text-sm outline-none focus:border-zinc-900"
+            className="w-full rounded-xl border border-zinc-200 py-2 pl-9 pr-3 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
           />
         </div>
       </div>
@@ -87,7 +88,7 @@ export default function AdminCustomersPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-zinc-100 bg-zinc-50">
+              <tr className="border-b border-zinc-100 bg-zinc-50/60">
                 {["Customer", "Email", "Orders", "Total Spent", "Joined", "Actions"].map((h) => (
                   <th key={h} className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">{h}</th>
                 ))}
@@ -109,7 +110,7 @@ export default function AdminCustomersPage() {
                 <tr key={customer.id} className="transition-colors hover:bg-zinc-50/80">
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
-                      <div className={`flex h-8 w-8 shrink-0 items-center justify-center text-xs font-semibold ${avatarTone(customer.firstName)}`}>
+                      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${avatarTone(customer.firstName)}`}>
                         {customer.firstName[0]}{customer.lastName[0]}
                       </div>
                       <span className="font-medium">{customer.firstName} {customer.lastName}</span>

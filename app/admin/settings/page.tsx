@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { IconCheckCircle, IconGlobe, IconBell, IconCard, IconStore } from "@/components/admin/icons";
-import { Panel, SectionHeader, StatusBadge, Toggle } from "@/components/admin/ui";
+import { IconCheckCircle, IconGlobe, IconBell, IconCard, IconStore, IconGear } from "@/components/admin/icons";
+import { Panel, SectionHeader, StatusBadge, Toggle, Button, IconChip, type Accent } from "@/components/admin/ui";
 
 export default function AdminSettingsPage() {
   const [saved, setSaved] = useState(false);
@@ -14,12 +14,12 @@ export default function AdminSettingsPage() {
 
   return (
     <div>
-      <SectionHeader title="Settings" subtitle="Manage your store configuration." />
+      <SectionHeader title="Settings" subtitle="Manage your store configuration." icon={<IconGear className="h-5 w-5" />} accent="slate" />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
         <div className="space-y-6">
           {/* General */}
-          <Section title="General" icon={<IconStore className="h-4 w-4" />}>
+          <Section title="General" icon={<IconStore className="h-4 w-4" />} accent="blue">
             <Field label="Store Name" defaultValue="Outlxx" />
             <Field label="Store URL" defaultValue="https://outlxx.com" />
             <Field label="Contact Email" defaultValue="hello@outlxx.com" />
@@ -27,7 +27,7 @@ export default function AdminSettingsPage() {
           </Section>
 
           {/* Commerce */}
-          <Section title="Commerce" icon={<IconCard className="h-4 w-4" />}>
+          <Section title="Commerce" icon={<IconCard className="h-4 w-4" />} accent="emerald">
             <Field label="Default Currency" defaultValue="GBP" />
             <Field label="Free Shipping Threshold" defaultValue="500" />
             <Field label="Standard Shipping Price" defaultValue="15" />
@@ -35,7 +35,7 @@ export default function AdminSettingsPage() {
           </Section>
 
           {/* SEO */}
-          <Section title="SEO & Metadata" icon={<IconGlobe className="h-4 w-4" />}>
+          <Section title="SEO & Metadata" icon={<IconGlobe className="h-4 w-4" />} accent="sky">
             <Field label="Meta Title" defaultValue="Outlxx — Premium Fashion House" />
             <div>
               <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
@@ -44,13 +44,13 @@ export default function AdminSettingsPage() {
               <textarea
                 defaultValue="Curated luxury fashion for the modern wardrobe. Discover timeless tailoring, elevated essentials, and editorial pieces."
                 rows={3}
-                className="w-full resize-none border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-zinc-900"
+                className="w-full resize-none rounded-xl border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
               />
             </div>
           </Section>
 
           {/* Notifications */}
-          <Section title="Notifications" icon={<IconBell className="h-4 w-4" />}>
+          <Section title="Notifications" icon={<IconBell className="h-4 w-4" />} accent="orange">
             <div className="space-y-4">
               {[
                 { label: "Order confirmation emails", checked: true },
@@ -68,14 +68,11 @@ export default function AdminSettingsPage() {
           </Section>
 
           <div className="flex items-center gap-4 pt-2">
-            <button
-              onClick={handleSave}
-              className="flex h-11 items-center justify-center bg-zinc-900 px-8 text-xs font-semibold uppercase tracking-widest text-white transition-colors hover:bg-zinc-800"
-            >
+            <Button onClick={handleSave} className="h-11">
               Save Settings
-            </button>
+            </Button>
             {saved && (
-              <p className="flex items-center gap-1.5 text-xs text-emerald-700">
+              <p className="flex items-center gap-1.5 text-xs font-medium text-emerald-600">
                 <IconCheckCircle className="h-3.5 w-3.5" /> Settings saved successfully.
               </p>
             )}
@@ -84,7 +81,7 @@ export default function AdminSettingsPage() {
 
         {/* Status sidebar */}
         <div className="space-y-4">
-          <Panel title="Store Status">
+          <Panel title="Store Status" icon={<IconStore className="h-4 w-4" />} accent="emerald">
             <div className="space-y-3 p-5 text-sm">
               {[
                 { label: "Store", status: "Live" },
@@ -100,7 +97,7 @@ export default function AdminSettingsPage() {
             </div>
           </Panel>
 
-          <Panel title="Integrations">
+          <Panel title="Integrations" icon={<IconCard className="h-4 w-4" />} accent="teal">
             <div className="space-y-3 p-5">
               {[
                 { name: "Stripe", connected: true },
@@ -113,7 +110,7 @@ export default function AdminSettingsPage() {
                   {int.connected ? (
                     <StatusBadge label="Connected" tone="success" />
                   ) : (
-                    <button className="text-[10px] font-semibold uppercase tracking-wide text-zinc-400 underline underline-offset-2 hover:text-zinc-900">Connect</button>
+                    <button className="text-[10px] font-semibold uppercase tracking-wide text-teal-600 underline underline-offset-2 hover:text-teal-800">Connect</button>
                   )}
                 </div>
               ))}
@@ -125,11 +122,11 @@ export default function AdminSettingsPage() {
   );
 }
 
-function Section({ title, icon, children }: { title: string; icon?: React.ReactNode; children: React.ReactNode }) {
+function Section({ title, icon, accent = "slate", children }: { title: string; icon?: React.ReactNode; accent?: Accent; children: React.ReactNode }) {
   return (
-    <div className="border border-zinc-200 bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
-      <h2 className="mb-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-zinc-900">
-        {icon && <span className="text-zinc-400">{icon}</span>}
+    <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+      <h2 className="mb-5 flex items-center gap-2.5 text-xs font-semibold uppercase tracking-widest text-zinc-900">
+        {icon && <IconChip icon={icon} accent={accent} size="sm" />}
         {title}
       </h2>
       <div className="space-y-4">{children}</div>
@@ -146,7 +143,7 @@ function Field({ label, defaultValue }: { label: string; defaultValue: string })
       <input
         type="text"
         defaultValue={defaultValue}
-        className="w-full border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-zinc-900"
+        className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100"
       />
     </div>
   );

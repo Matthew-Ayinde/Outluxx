@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { formatMoney } from "@/lib/utils/format";
-import { IconCard, IconEye, IconExternalLink, IconClose } from "@/components/admin/icons";
-import { IconButton, PAYMENT_STATUS_TONES, Panel, SectionHeader, StatCard, StatusBadge } from "@/components/admin/ui";
+import { IconCard, IconEye, IconExternalLink, IconClose, IconCheckCircle, IconAlertTriangle, IconRefresh } from "@/components/admin/icons";
+import { IconButton, PAYMENT_STATUS_TONES, Panel, SectionHeader, StatCard, StatusBadge, FilterTab, Button } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
 
-const STRIPE_DASHBOARD = "https://dashboard.stripe.com/test/payments";
+const STRIPE_DASHBOARD = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.startsWith("pk_live_")
+  ? "https://dashboard.stripe.com/payments"
+  : "https://dashboard.stripe.com/test/payments";
 
 const FILTERS = ["all", "paid", "failed", "pending", "refunded"] as const;
 type Filter = (typeof FILTERS)[number];
@@ -96,53 +98,45 @@ export default function AdminPaymentsPage() {
 
   return (
     <div>
-      <SectionHeader title="Payments" subtitle="All payment transactions powered by Stripe" />
+      <SectionHeader title="Payments" subtitle="All payment transactions powered by Stripe" icon={<IconCard className="h-5 w-5" />} accent="teal" />
 
       {/* Stats */}
       <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Net Revenue" value={formatMoney(netRevenue)} sub="Paid minus refunded" trend="up" icon={<IconCard className="h-3.5 w-3.5" />} />
+        <StatCard label="Net Revenue" value={formatMoney(netRevenue)} sub="Paid minus refunded" trend="up" icon={<IconCard className="h-4 w-4" />} accent="emerald" />
         <StatCard
           label="Paid"
           value={stats ? `${stats.paid.count}` : "—"}
           sub={stats ? formatMoney(stats.paid.total) : undefined}
           trend="up"
+          icon={<IconCheckCircle className="h-4 w-4" />}
+          accent="blue"
         />
         <StatCard
           label="Failed"
           value={stats ? `${stats.failed.count}` : "—"}
           sub={stats ? `${stats.pending.count} pending` : undefined}
           trend="down"
+          icon={<IconAlertTriangle className="h-4 w-4" />}
+          accent="rose"
         />
         <StatCard
           label="Refunded"
           value={stats ? `${stats.refunded.count}` : "—"}
           sub={stats ? formatMoney(stats.refunded.total) : undefined}
           trend="flat"
+          icon={<IconRefresh className="h-4 w-4" />}
+          accent="teal"
         />
       </div>
 
       {refundError && (
-        <div className="mb-4 border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{refundError}</div>
+        <div className="mb-4 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700 ring-1 ring-inset ring-rose-200">{refundError}</div>
       )}
 
       {/* Filter tabs */}
       <div className="mb-4 flex flex-wrap gap-2">
         {FILTERS.map((f) => (
-          <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={[
-              "px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-colors",
-              f === filter ? "bg-zinc-900 text-white" : "border border-zinc-200 text-zinc-600 hover:border-zinc-900 hover:text-zinc-900",
-            ].join(" ")}
-          >
-            {f}
-            {f !== "all" && stats && (
-              <span className="ml-1.5 opacity-60">
-                {stats[f as keyof Stats]?.count ?? 0}
-              </span>
-            )}
-          </button>
+          <FilterTab key={f} label={f} active={f === filter} onClick={() => setFilter(f)} count={f !== "all" && stats ? stats[f as keyof Stats]?.count ?? 0 : undefined} />
         ))}
       </div>
 
@@ -151,7 +145,7 @@ export default function AdminPaymentsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-zinc-100 bg-zinc-50">
+              <tr className="border-b border-zinc-100 bg-zinc-50/60">
                 {["Order #", "Date", "Customer", "Stripe PI", "Status", "Amount", "Actions"].map((h) => (
                   <th key={h} className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
                     {h}
@@ -180,7 +174,7 @@ export default function AdminPaymentsPage() {
                         href={`${STRIPE_DASHBOARD}/${p.stripePaymentIntentId}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 font-mono text-xs text-zinc-400 hover:text-zinc-900 transition-colors"
+                        className="inline-flex items-center gap-1 font-mono text-xs text-zinc-400 hover:text-teal-600 transition-colors"
                         title={p.stripePaymentIntentId}
                       >
                         {p.stripePaymentIntentId.slice(0, 18)}… <IconExternalLink className="h-3 w-3" />
@@ -200,7 +194,7 @@ export default function AdminPaymentsPage() {
                         <button
                           onClick={() => issueRefund(p)}
                           disabled={refundingId === p._id}
-                          className="text-xs font-medium text-rose-500 hover:text-rose-700 transition-colors disabled:opacity-40"
+                          className="rounded-lg px-2 py-1 text-xs font-medium text-rose-500 hover:bg-rose-50 hover:text-rose-700 transition-colors disabled:opacity-40"
                         >
                           {refundingId === p._id ? "Refunding…" : "Refund"}
                         </button>
@@ -230,8 +224,11 @@ export default function AdminPaymentsPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="sticky top-0 flex items-center justify-between border-b border-zinc-100 bg-white px-6 py-4">
-              <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest">
-                <IconCard className="h-4 w-4 text-zinc-400" /> {detail.orderNumber}
+              <h2 className="flex items-center gap-2.5 text-sm font-semibold uppercase tracking-widest">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
+                  <IconCard className="h-4 w-4" />
+                </span>
+                {detail.orderNumber}
               </h2>
               <IconButton icon={<IconClose className="h-4 w-4" />} label="Close" onClick={() => setDetail(null)} />
             </div>
@@ -261,7 +258,7 @@ export default function AdminPaymentsPage() {
                       href={`${STRIPE_DASHBOARD}/${detail.stripePaymentIntentId}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-1 inline-flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-900 transition-colors"
+                      className="mt-1 inline-flex items-center gap-1 text-xs text-teal-600 hover:text-teal-800 transition-colors"
                     >
                       View in Stripe Dashboard <IconExternalLink className="h-3 w-3" />
                     </a>
@@ -305,13 +302,14 @@ export default function AdminPaymentsPage() {
               {/* Refund action */}
               {detail.paymentStatus === "paid" && detail.stripePaymentIntentId && (
                 <div className="border-t border-zinc-100 pt-4">
-                  <button
-                    onClick={() => issueRefund(detail)}
+                  <Button
+                    variant="danger-outline"
+                    className="h-11 w-full"
                     disabled={refundingId === detail._id}
-                    className="flex h-10 w-full items-center justify-center border border-rose-300 text-xs font-semibold uppercase tracking-widest text-rose-600 hover:bg-rose-50 transition-colors disabled:opacity-40"
+                    onClick={() => issueRefund(detail)}
                   >
                     {refundingId === detail._id ? "Processing Refund…" : `Refund ${formatMoney(detail.total)}`}
-                  </button>
+                  </Button>
                   <p className="mt-2 text-center text-[11px] text-zinc-400">
                     Full refund via Stripe · Cannot be undone
                   </p>

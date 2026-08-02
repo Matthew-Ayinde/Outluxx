@@ -23,6 +23,15 @@ function categoryColor(category: string) {
   return CATEGORY_COLORS[category] ?? "#a1a1aa";
 }
 
+const STATUS_DOT: Record<string, string> = {
+  delivered: "bg-emerald-500",
+  shipped: "bg-blue-500",
+  processing: "bg-orange-500",
+  pending: "bg-slate-400",
+  cancelled: "bg-rose-500",
+  returned: "bg-teal-500",
+};
+
 export const metadata = { title: "Analytics" };
 export const dynamic = "force-dynamic";
 
@@ -96,19 +105,19 @@ export default async function AdminAnalyticsPage() {
 
   return (
     <div>
-      <SectionHeader title="Analytics" subtitle={`Performance overview for ${now.getFullYear()}`} />
+      <SectionHeader title="Analytics" subtitle={`Performance overview for ${now.getFullYear()}`} icon={<IconChartBar className="h-5 w-5" />} accent="rose" />
 
       {/* Key metrics */}
       <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Total Revenue" value={formatMoney(totalRevenue)} icon={<IconCard className="h-3.5 w-3.5" />} />
-        <StatCard label="Paid Orders" value={paidOrders.length.toString()} icon={<IconReceipt className="h-3.5 w-3.5" />} />
-        <StatCard label="Avg Order Value" value={formatMoney(avgOrderValue)} icon={<IconChartBar className="h-3.5 w-3.5" />} />
-        <StatCard label="Items Sold" value={itemsSold.toString()} icon={<IconShirt className="h-3.5 w-3.5" />} />
+        <StatCard label="Total Revenue" value={formatMoney(totalRevenue)} icon={<IconCard className="h-4 w-4" />} accent="emerald" />
+        <StatCard label="Paid Orders" value={paidOrders.length.toString()} icon={<IconReceipt className="h-4 w-4" />} accent="blue" />
+        <StatCard label="Avg Order Value" value={formatMoney(avgOrderValue)} icon={<IconChartBar className="h-4 w-4" />} accent="gold" />
+        <StatCard label="Items Sold" value={itemsSold.toString()} icon={<IconShirt className="h-4 w-4" />} accent="sky" />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Monthly revenue bar chart */}
-        <Panel title="Monthly Revenue" icon={<IconChartBar className="h-4 w-4" />} bodyClassName="p-5">
+        <Panel title="Monthly Revenue" icon={<IconChartBar className="h-4 w-4" />} accent="gold" bodyClassName="p-5">
           <div className="relative h-40">
             {[0, 25, 50, 75].map((pct) => (
               <div key={pct} className="absolute inset-x-0 border-t border-zinc-100" style={{ top: `${100 - pct}%` }} />
@@ -123,7 +132,7 @@ export default async function AdminAnalyticsPage() {
                     </span>
                     <div
                       title={formatMoney(monthlyRevenue[i])}
-                      className="w-full max-w-9 rounded-t-sm bg-zinc-900 transition-all hover:bg-zinc-700"
+                      className="w-full max-w-9 rounded-t-md bg-amber-400 transition-all hover:bg-amber-300"
                       style={{ height: `${Math.max(height, monthlyRevenue[i] > 0 ? 2 : 0)}%` }}
                     />
                   </div>
@@ -139,30 +148,25 @@ export default async function AdminAnalyticsPage() {
         </Panel>
 
         {/* Order status breakdown */}
-        <Panel title="Order Status Breakdown" icon={<IconReceipt className="h-4 w-4" />} bodyClassName="p-5">
+        <Panel title="Order Status Breakdown" icon={<IconReceipt className="h-4 w-4" />} accent="blue" bodyClassName="p-5">
           {allOrders.length === 0 ? (
             <p className="text-xs text-zinc-400">No orders yet.</p>
           ) : (
             <div className="space-y-3">
               {Object.entries(statusBreakdown).map(([status, count]) => {
                 const pct = Math.round((count / allOrders.length) * 100);
-                const dot: Record<string, string> = {
-                  delivered: "bg-emerald-500", shipped: "bg-sky-500",
-                  processing: "bg-amber-500", pending: "bg-zinc-400",
-                  cancelled: "bg-rose-500", returned: "bg-violet-500",
-                };
                 return (
                   <div key={status}>
                     <div className="mb-1 flex items-center justify-between text-xs">
                       <span className="flex items-center gap-1.5 font-medium capitalize">
-                        <span className={`h-1.5 w-1.5 rounded-full ${dot[status] ?? "bg-zinc-400"}`} />
+                        <span className={`h-1.5 w-1.5 rounded-full ${STATUS_DOT[status] ?? "bg-slate-400"}`} />
                         {status}
                       </span>
                       <span className="text-zinc-500 tabular-nums">{count} ({pct}%)</span>
                     </div>
-                    <div className="h-1.5 w-full bg-zinc-100">
+                    <div className="h-1.5 w-full rounded-full bg-zinc-100">
                       <div
-                        className={`h-full rounded-r-sm ${dot[status] ?? "bg-zinc-400"}`}
+                        className={`h-full rounded-full ${STATUS_DOT[status] ?? "bg-slate-400"}`}
                         style={{ width: `${pct}%` }}
                       />
                     </div>
@@ -174,7 +178,7 @@ export default async function AdminAnalyticsPage() {
         </Panel>
 
         {/* Revenue by category */}
-        <Panel title="Revenue by Category" icon={<IconTag className="h-4 w-4" />} bodyClassName="p-5">
+        <Panel title="Revenue by Category" icon={<IconTag className="h-4 w-4" />} accent="orange" bodyClassName="p-5">
           {Object.keys(categoryRevenue).length === 0 ? (
             <p className="text-xs text-zinc-400">No paid orders yet.</p>
           ) : (
@@ -193,8 +197,8 @@ export default async function AdminAnalyticsPage() {
                         </span>
                         <span className="font-semibold tabular-nums">{formatMoney(revenue)}</span>
                       </div>
-                      <div className="h-1.5 w-full bg-zinc-100">
-                        <div className="h-full rounded-r-sm" style={{ width: `${pct}%`, backgroundColor: color }} />
+                      <div className="h-1.5 w-full rounded-full bg-zinc-100">
+                        <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: color }} />
                       </div>
                       <p className="mt-1 text-[11px] text-zinc-400">{pct}% of total revenue</p>
                     </div>
@@ -205,14 +209,14 @@ export default async function AdminAnalyticsPage() {
         </Panel>
 
         {/* Top products by revenue */}
-        <Panel title="Top Products by Revenue" icon={<IconCard className="h-4 w-4" />} bodyClassName="p-5">
+        <Panel title="Top Products by Revenue" icon={<IconCard className="h-4 w-4" />} accent="emerald" bodyClassName="p-5">
           {topProducts.length === 0 ? (
             <p className="text-xs text-zinc-400">No paid orders yet.</p>
           ) : (
             <div className="space-y-3">
               {topProducts.map(([title, data], i) => (
                 <div key={title} className="flex items-center gap-3">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center border border-zinc-200 text-[9px] font-bold text-zinc-400">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-emerald-50 text-[9px] font-bold text-emerald-700">
                     {i + 1}
                   </span>
                   <div className="flex-1 min-w-0">

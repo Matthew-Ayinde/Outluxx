@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { formatMoney } from "@/lib/utils/format";
 import { IconEye, IconClose, IconReceipt } from "@/components/admin/icons";
-import { ORDER_STATUS_TONES, Panel, SectionHeader, StatusBadge, TONE_CLASSES } from "@/components/admin/ui";
+import { ORDER_STATUS_TONES, Panel, SectionHeader, StatusBadge, TONE_CLASSES, FilterTab, IconButton } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -61,21 +61,12 @@ export default function AdminOrdersPage() {
 
   return (
     <div>
-      <SectionHeader title="Orders" subtitle={`${total} total orders`} />
+      <SectionHeader title="Orders" subtitle={`${total} total orders`} icon={<IconReceipt className="h-5 w-5" />} accent="emerald" />
 
       {/* Status filters */}
       <div className="mb-4 flex flex-wrap gap-2">
         {STATUSES.map((s) => (
-          <button
-            key={s}
-            onClick={() => setActiveStatus(s)}
-            className={[
-              "px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-colors",
-              s === activeStatus ? "bg-zinc-900 text-white" : "border border-zinc-200 text-zinc-600 hover:border-zinc-900 hover:text-zinc-900",
-            ].join(" ")}
-          >
-            {s}
-          </button>
+          <FilterTab key={s} label={s} active={s === activeStatus} onClick={() => setActiveStatus(s)} />
         ))}
       </div>
 
@@ -83,7 +74,7 @@ export default function AdminOrdersPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-zinc-100 bg-zinc-50">
+              <tr className="border-b border-zinc-100 bg-zinc-50/60">
                 {["Order #", "Date", "Customer", "Items", "Status", "Payment", "Total", "Actions"].map((h) => (
                   <th key={h} className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">{h}</th>
                 ))}
@@ -110,7 +101,7 @@ export default function AdminOrdersPage() {
                       value={order.status}
                       onChange={(e) => updateStatus(order._id, e.target.value)}
                       disabled={updatingId === order._id}
-                      className={`border px-2.5 py-1 text-[10px] font-semibold uppercase cursor-pointer outline-none disabled:opacity-50 ${TONE_CLASSES[ORDER_STATUS_TONES[order.status] ?? "neutral"]}`}
+                      className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase cursor-pointer outline-none border-0 disabled:opacity-50 ${TONE_CLASSES[ORDER_STATUS_TONES[order.status] ?? "neutral"]}`}
                     >
                       {STATUSES.filter((s) => s !== "All").map((s) => (
                         <option key={s} value={s}>{s}</option>
@@ -127,7 +118,7 @@ export default function AdminOrdersPage() {
                   <td className="px-5 py-3">
                     <button
                       onClick={() => setDetailOrder(order)}
-                      className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-500 hover:text-zinc-900 transition-colors"
+                      className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-medium text-emerald-600 hover:bg-emerald-50 transition-colors"
                     >
                       <IconEye className="h-3.5 w-3.5" /> View
                     </button>
@@ -144,12 +135,13 @@ export default function AdminOrdersPage() {
         <div className="fixed inset-0 z-50 flex items-start justify-end bg-black/40" onClick={() => setDetailOrder(null)}>
           <div className="h-full w-full max-w-md overflow-y-auto bg-white shadow-xl" onClick={(e) => e.stopPropagation()}>
             <div className="sticky top-0 flex items-center justify-between border-b border-zinc-100 bg-white px-6 py-4">
-              <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest">
-                <IconReceipt className="h-4 w-4 text-zinc-400" /> {detailOrder.orderNumber}
+              <h2 className="flex items-center gap-2.5 text-sm font-semibold uppercase tracking-widest">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                  <IconReceipt className="h-4 w-4" />
+                </span>
+                {detailOrder.orderNumber}
               </h2>
-              <button onClick={() => setDetailOrder(null)} className="text-zinc-400 hover:text-zinc-900" aria-label="Close">
-                <IconClose className="h-4 w-4" />
-              </button>
+              <IconButton icon={<IconClose className="h-4 w-4" />} label="Close" onClick={() => setDetailOrder(null)} />
             </div>
             <div className="p-6 space-y-6 text-sm">
               <div className="flex items-center gap-2">
@@ -172,7 +164,7 @@ export default function AdminOrdersPage() {
                 <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400 mb-2">Items ({(detailOrder.items as unknown[]).length})</p>
                 <div className="space-y-2">
                   {(detailOrder.items as Array<{ productTitle: string; quantity: number; selectedSize: string; selectedColor: string; price: number }>).map((item, i) => (
-                    <div key={i} className="flex justify-between border border-zinc-100 p-3">
+                    <div key={i} className="flex justify-between rounded-xl bg-zinc-50 p-3">
                       <div>
                         <p className="font-medium text-xs">{item.productTitle}</p>
                         <p className="text-[11px] text-zinc-400">{item.selectedSize} · {item.selectedColor} · ×{item.quantity}</p>
