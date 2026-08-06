@@ -122,7 +122,7 @@ export default function ProfilePage() {
       <h2 className="mb-6 text-xl font-semibold">Profile Information</h2>
 
       {error && (
-        <div className="mb-4 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+        <div className="mb-4 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-900 dark:bg-red-950 dark:text-red-400">
           {error}
         </div>
       )}
@@ -139,15 +139,15 @@ export default function ProfilePage() {
           <button
             type="submit"
             disabled={saving}
-            className="flex h-11 items-center justify-center bg-black px-8 text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors disabled:opacity-60"
+            className="flex h-11 items-center justify-center bg-black px-8 text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
           >
             {saving ? "Saving…" : "Save Changes"}
           </button>
-          {saved && <p className="text-xs text-green-700">Saved successfully.</p>}
+          {saved && <p className="text-xs text-green-700 dark:text-emerald-400">Saved successfully.</p>}
         </div>
       </form>
 
-      <hr className="my-8 border-black/10" />
+      <hr className="my-8 border-black/10 dark:border-white/10" />
 
       <h3 className="mb-4 text-sm font-semibold">Change Password</h3>
 
@@ -155,8 +155,8 @@ export default function ProfilePage() {
         <div
           className={`mb-4 border px-4 py-3 text-sm ${
             pwMessage.type === "ok"
-              ? "border-green-200 bg-green-50 text-green-700"
-              : "border-red-200 bg-red-50 text-red-600"
+              ? "border-green-200 bg-green-50 text-green-700 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-400"
+              : "border-red-200 bg-red-50 text-red-600 dark:border-red-900 dark:bg-red-950 dark:text-red-400"
           }`}
         >
           {pwMessage.text}
@@ -170,7 +170,7 @@ export default function ProfilePage() {
         <button
           type="submit"
           disabled={pwSaving}
-          className="mt-1 w-fit border border-black/20 px-6 py-2.5 text-xs font-semibold uppercase tracking-widest hover:border-black transition-colors disabled:opacity-60"
+          className="mt-1 w-fit border border-black/20 px-6 py-2.5 text-xs font-semibold uppercase tracking-widest hover:border-black transition-colors disabled:opacity-60 dark:border-white/20 dark:hover:border-white"
         >
           {pwSaving ? "Updating…" : "Update Password"}
         </button>
@@ -184,13 +184,13 @@ function Field({ label, value, onChange, type = "text", disabled = false }: {
 }) {
   return (
     <div>
-      <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">{label}</label>
+      <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">{label}</label>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black disabled:bg-zinc-50 disabled:text-zinc-400"
+        className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black disabled:bg-zinc-50 disabled:text-zinc-400 dark:border-white/20 dark:focus:border-white dark:disabled:bg-zinc-900 dark:disabled:text-zinc-600"
       />
     </div>
   );

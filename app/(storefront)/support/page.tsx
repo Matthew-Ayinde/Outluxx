@@ -1,6 +1,11 @@
 import Link from "next/link";
+import { pageMetadata } from "@/lib/config/seo";
 
-export const metadata = { title: "Customer Support" };
+export const metadata = pageMetadata({
+  title: "Customer Support",
+  description: "Get help with your Outlxx order — shipping, returns, sizing, and more.",
+  path: "/support",
+});
 
 const TOPICS = [
   { icon: "📦", title: "Orders & Delivery", desc: "Track your order, delivery times, and more.", href: "/support/faq#orders" },

@@ -22,16 +22,14 @@ export default function AdminSettingsPage() {
           <Section title="General" icon={<IconStore className="h-4 w-4" />} accent="blue">
             <Field label="Store Name" defaultValue="Outlxx" />
             <Field label="Store URL" defaultValue="https://outlxx.com" />
-            <Field label="Contact Email" defaultValue="hello@outlxx.com" />
+            <Field label="Contact Email" defaultValue="support@outlxx.co.uk" />
             <Field label="Support Phone" defaultValue="+44 (0) 20 7946 0958" />
           </Section>
 
           {/* Commerce */}
           <Section title="Commerce" icon={<IconCard className="h-4 w-4" />} accent="emerald">
             <Field label="Default Currency" defaultValue="GBP" />
-            <Field label="Free Shipping Threshold" defaultValue="500" />
-            <Field label="Standard Shipping Price" defaultValue="15" />
-            <Field label="Express Shipping Price" defaultValue="25" />
+            <Field label="Delivery Fee" defaultValue="3.98" />
           </Section>
 
           {/* SEO */}

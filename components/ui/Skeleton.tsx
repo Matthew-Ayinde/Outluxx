@@ -6,7 +6,7 @@ type SkeletonProps = {
 export function Skeleton({ className = "h-4 w-full" }: SkeletonProps) {
   return (
     <div
-      className={["animate-pulse bg-zinc-100", className].join(" ")}
+      className={["animate-pulse bg-zinc-100 dark:bg-zinc-900", className].join(" ")}
       aria-hidden="true"
     />
   );
@@ -15,7 +15,7 @@ export function Skeleton({ className = "h-4 w-full" }: SkeletonProps) {
 export function ProductCardSkeleton() {
   return (
     <div className="flex flex-col gap-3">
-      <Skeleton className="aspect-[3/4] w-full bg-zinc-100" />
+      <Skeleton className="aspect-3/4 w-full" />
       <Skeleton className="h-3 w-20" />
       <Skeleton className="h-4 w-3/4" />
       <Skeleton className="h-4 w-1/3" />

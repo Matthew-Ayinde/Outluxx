@@ -1,7 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import { pageMetadata } from "@/lib/config/seo";
 
-export const metadata = { title: "About Outlxx" };
+export const metadata = pageMetadata({
+  title: "About Outlxx",
+  description: "The story behind Outlxx — a premium fashion house dedicated to timeless tailoring and considered design.",
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (

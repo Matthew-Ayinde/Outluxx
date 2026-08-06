@@ -18,26 +18,26 @@ export default function ForgotPasswordPage() {
 
         <form className="flex flex-col gap-4">
           <div>
-            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
               Email address
             </label>
             <input
               type="email"
-              className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black"
+              className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black dark:border-white/20 dark:focus:border-white"
               placeholder="your@email.com"
             />
           </div>
 
           <button
             type="button"
-            className="mt-2 flex h-12 items-center justify-center bg-black text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors"
+            className="mt-2 flex h-12 items-center justify-center bg-black text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors dark:bg-white dark:text-black dark:hover:bg-zinc-200"
           >
             Send Reset Link
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-zinc-500">
-          <Link href="/account/sign-in" className="text-black underline underline-offset-2">
+          <Link href="/account/sign-in" className="text-black underline underline-offset-2 dark:text-white">
             ← Back to sign in
           </Link>
         </p>

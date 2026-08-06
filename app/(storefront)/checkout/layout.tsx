@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import CloseCartOnMount from "@/components/cart/CloseCartOnMount";
+import { NOINDEX } from "@/lib/config/seo";
+
+export const metadata = NOINDEX;
 
 const STEPS = [
   { label: "Shipping", href: "/checkout/shipping" },
@@ -9,10 +12,10 @@ const STEPS = [
 
 export default function CheckoutLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background text-foreground">
       <CloseCartOnMount />
       {/* Minimal header */}
-      <header className="border-b border-black/10">
+      <header className="border-b border-black/10 dark:border-white/10">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <Link href="/" className="font-heading text-xl font-semibold tracking-widest">
             Outlxx
@@ -24,14 +27,14 @@ export default function CheckoutLayout({ children }: { children: ReactNode }) {
                   {step.label}
                 </span>
                 {i < STEPS.length - 1 && (
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-zinc-300">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-zinc-300 dark:text-zinc-600">
                     <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 )}
               </div>
             ))}
           </nav>
-          <Link href="/cart" className="text-xs text-zinc-400 hover:text-black transition-colors">
+          <Link href="/cart" className="text-xs text-zinc-400 hover:text-black transition-colors dark:hover:text-white">
             ← Bag
           </Link>
         </div>

@@ -8,6 +8,7 @@ import { PromoCode } from "@/lib/db/models/PromoCode";
 import { getSession } from "@/lib/utils/auth";
 import { ok, err } from "@/lib/utils/api";
 import { sendOrderConfirmationEmail, sendAdminOrderNotification } from "@/lib/email/order";
+import { DELIVERY_FEE } from "@/lib/constants/checkout";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-06-24.dahlia" });
 
@@ -92,7 +93,7 @@ export async function POST(req: NextRequest) {
   }
 
   const discountAmount = subtotal * discountRate;
-  const shipping = deliveryMethod === "express" ? 25 : subtotal >= 500 ? 0 : 15;
+  const shipping = DELIVERY_FEE;
   const total = subtotal - discountAmount + shipping;
 
   const order = await Order.create({

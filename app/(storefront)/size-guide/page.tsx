@@ -1,4 +1,10 @@
-export const metadata = { title: "Size Guide" };
+import { pageMetadata } from "@/lib/config/seo";
+
+export const metadata = pageMetadata({
+  title: "Size Guide",
+  description: "Find your perfect fit with the Outlxx size guide — UK, EU, and US measurements for women's and men's clothing.",
+  path: "/size-guide",
+});
 
 const WOMEN_SIZES = [
   { size: "XS", uk: "6–8", eu: "34–36", us: "2–4", bust: "80–84", waist: "62–66", hips: "88–92" },

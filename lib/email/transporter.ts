@@ -11,10 +11,14 @@ export function getTransporter() {
   }
 
   const port = Number(SMTP_PORT) || 465;
+  const secure = port === 465;
   transporter = nodemailer.createTransport({
     host: SMTP_HOST,
     port,
-    secure: port === 465,
+    secure,
+    // IONOS (and most providers) require STARTTLS to be enforced on 587 —
+    // without this, auth silently downgrades to plaintext if negotiation fails.
+    requireTLS: !secure,
     auth: { user: SMTP_USER, pass: SMTP_PASS },
   });
 

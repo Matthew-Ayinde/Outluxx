@@ -21,14 +21,14 @@ export default async function AddressesPage() {
       </div>
 
       {addresses.length === 0 ? (
-        <div className="border border-black/10 p-8 text-center">
+        <div className="border border-black/10 p-8 text-center dark:border-white/10">
           <p className="text-sm font-medium">No saved addresses yet</p>
           <p className="mt-1 text-xs text-zinc-500">
             Addresses you use at checkout will appear here for faster ordering.
           </p>
           <Link
             href="/new-arrivals"
-            className="mt-4 inline-block border border-black px-5 py-2 text-[10px] font-semibold uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+            className="mt-4 inline-block border border-black px-5 py-2 text-[10px] font-semibold uppercase tracking-widest hover:bg-black hover:text-white transition-colors dark:border-white dark:hover:bg-white dark:hover:text-black"
           >
             Start Shopping
           </Link>
@@ -36,9 +36,9 @@ export default async function AddressesPage() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {addresses.map((addr) => (
-            <div key={addr.id} className="relative border border-black/10 p-5">
+            <div key={addr.id} className="relative border border-black/10 p-5 dark:border-white/10">
               {addr.isDefault && (
-                <span className="absolute right-3 top-3 border border-black px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest">
+                <span className="absolute right-3 top-3 border border-black px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest dark:border-white">
                   Default
                 </span>
               )}

@@ -37,8 +37,7 @@ const categories = [
 
 const trustItems = [
   { label: "Authenticated Luxury", sub: "Every piece verified" },
-  { label: "Global Shipping",      sub: "Complimentary over $250" },
-  { label: "30-Day Returns",       sub: "Free, no questions asked" },
+  { label: "10-Day Returns",       sub: "Free, no questions asked" },
 ];
 
 export default function Homepage() {
@@ -108,7 +107,7 @@ export default function Homepage() {
       {/* -- Trust Strip ----------------------------------------------------─ */}
       <section className="border-y border-border bg-surface">
         <div className="mx-auto max-w-7xl px-5 py-10 lg:px-8">
-          <div className="grid gap-6 sm:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2">
             {trustItems.map((item) => (
               <div key={item.label} className="flex flex-col items-center text-center gap-1 py-2">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground">

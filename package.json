@@ -9,6 +9,7 @@
     "seed": "tsx --tsconfig tsconfig.json lib/db/seed.ts",
     "seed:admin": "tsx --tsconfig tsconfig.json lib/db/seed-admin.ts",
     "db:reset": "tsx --tsconfig tsconfig.json lib/db/reset-db.ts",
+    "test:email": "tsx --tsconfig tsconfig.json scripts/test-smtp.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui"
   },

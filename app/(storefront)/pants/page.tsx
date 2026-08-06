@@ -1,7 +1,12 @@
 import PLPTemplate from "@/components/plp/PLPTemplate";
 import { getProductsByCategory } from "@/lib/data/server";
+import { pageMetadata } from "@/lib/config/seo";
 
-export const metadata = { title: "Pants" };
+export const metadata = pageMetadata({
+  title: "Pants",
+  description: "Shop premium tailored and casual pants at Outlxx — wool, linen, and cashmere silhouettes.",
+  path: "/pants",
+});
 
 // Product data lives in MongoDB and changes via the admin panel — render per-request
 // instead of baking it into static HTML at build time.

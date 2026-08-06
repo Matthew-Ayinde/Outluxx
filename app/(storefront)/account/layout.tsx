@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import SignOutButton from "@/components/account/SignOutButton";
+import { NOINDEX } from "@/lib/config/seo";
+
+export const metadata = NOINDEX;
 
 const NAV = [
   { label: "Overview", href: "/account" },

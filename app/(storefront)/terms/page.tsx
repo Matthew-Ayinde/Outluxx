@@ -1,4 +1,10 @@
-export const metadata = { title: "Terms of Service" };
+import { pageMetadata } from "@/lib/config/seo";
+
+export const metadata = pageMetadata({
+  title: "Terms of Service",
+  description: "The terms and conditions governing use of the Outlxx website and purchase of Outlxx products.",
+  path: "/terms",
+});
 
 export default function TermsPage() {
   return (

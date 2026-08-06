@@ -1,6 +1,6 @@
 export function useLocale() {
   return {
-    locale: "en-US",
-    currency: "USD",
+    locale: "en-GB",
+    currency: "GBP",
   };
 }

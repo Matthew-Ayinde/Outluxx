@@ -1,4 +1,10 @@
-export const metadata = { title: "FAQ" };
+import { pageMetadata } from "@/lib/config/seo";
+
+export const metadata = pageMetadata({
+  title: "FAQ",
+  description: "Frequently asked questions about Outlxx orders, delivery, returns, and payments.",
+  path: "/support/faq",
+});
 
 const FAQ = [
   {

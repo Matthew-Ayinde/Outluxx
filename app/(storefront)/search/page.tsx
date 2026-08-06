@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { getAllProducts } from "@/lib/data/server";
 import ProductGrid from "@/components/product/ProductGrid";
+import { NOINDEX } from "@/lib/config/seo";
 
-export const metadata: Metadata = { title: "Search" };
+// Search results are query-dependent and low-value for indexing, but the
+// page is deliberately left crawlable (see app/robots.ts) so this noindex
+// meta tag actually gets seen instead of silently ignored.
+export const metadata: Metadata = { title: "Search", ...NOINDEX };
 
 type Props = { searchParams: Promise<{ q?: string }> };
 

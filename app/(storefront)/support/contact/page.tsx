@@ -1,10 +1,16 @@
-export const metadata = { title: "Contact Us" };
+import { pageMetadata } from "@/lib/config/seo";
+
+export const metadata = pageMetadata({
+  title: "Contact Us",
+  description: "Get in touch with the Outlxx team — order enquiries, returns, product questions, and press & partnerships.",
+  path: "/support/contact",
+});
 
 export default function ContactPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
       <div className="mb-10">
-        <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">Get in Touch</p>
+        <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Get in Touch</p>
         <h1 className="text-4xl font-semibold">Contact Us</h1>
         <p className="mt-3 text-sm text-zinc-500">We reply to all enquiries within 24 hours, Monday–Friday.</p>
       </div>
@@ -20,10 +26,10 @@ export default function ContactPage() {
           <Field label="Order number (optional)" type="text" />
 
           <div>
-            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
               Subject
             </label>
-            <select className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black">
+            <select className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black dark:border-white/20 dark:focus:border-white dark:bg-transparent">
               {["Order enquiry", "Return request", "Product question", "Press & partnerships", "Other"].map((o) => (
                 <option key={o}>{o}</option>
               ))}
@@ -31,19 +37,19 @@ export default function ContactPage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
               Message
             </label>
             <textarea
               rows={5}
-              className="w-full resize-none border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black"
+              className="w-full resize-none border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black dark:border-white/20 dark:focus:border-white"
               placeholder="How can we help?"
             />
           </div>
 
           <button
             type="button"
-            className="flex h-12 items-center justify-center bg-black text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors"
+            className="flex h-12 items-center justify-center bg-black text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors dark:bg-white dark:text-black dark:hover:bg-zinc-200"
           >
             Send Message
           </button>
@@ -52,12 +58,12 @@ export default function ContactPage() {
         {/* Contact info */}
         <div className="space-y-8">
           {[
-            { label: "Email", value: "clientservices@outlxx.com", sub: "We reply within 24 hours" },
+            { label: "Email", value: "support@outlxx.co.uk", sub: "We reply within 24 hours" },
             { label: "Phone", value: "+44 (0) 20 7946 0958", sub: "Mon–Fri, 9am–6pm GMT" },
             { label: "Address", value: "Outlxx Ltd, 14 Savile Row", sub: "London W1S 3JN, United Kingdom" },
           ].map((item) => (
             <div key={item.label}>
-              <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">{item.label}</p>
+              <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">{item.label}</p>
               <p className="text-sm font-medium">{item.value}</p>
               <p className="text-xs text-zinc-500">{item.sub}</p>
             </div>
@@ -71,8 +77,8 @@ export default function ContactPage() {
 function Field({ label, type }: { label: string; type: string }) {
   return (
     <div>
-      <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">{label}</label>
-      <input type={type} className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black" />
+      <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">{label}</label>
+      <input type={type} className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black dark:border-white/20 dark:focus:border-white" />
     </div>
   );
 }

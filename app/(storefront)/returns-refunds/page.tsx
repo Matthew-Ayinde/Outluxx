@@ -1,6 +1,11 @@
 import Link from "next/link";
+import { pageMetadata } from "@/lib/config/seo";
 
-export const metadata = { title: "Returns & Exchange Policy" };
+export const metadata = pageMetadata({
+  title: "Returns & Exchange Policy",
+  description: "Outlxx returns and exchange policy — 10-day, no-questions-asked returns on eligible items.",
+  path: "/returns-refunds",
+});
 
 export default function ReturnsRefundsPage() {
   return (

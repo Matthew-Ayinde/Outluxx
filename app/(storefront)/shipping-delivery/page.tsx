@@ -1,4 +1,10 @@
-export const metadata = { title: "Shipping Policy" };
+import { pageMetadata } from "@/lib/config/seo";
+
+export const metadata = pageMetadata({
+  title: "Shipping Policy",
+  description: "Outlxx shipping and delivery policy — delivery times, fees, and international shipping information.",
+  path: "/shipping-delivery",
+});
 
 export default function ShippingDeliveryPage() {
   return (

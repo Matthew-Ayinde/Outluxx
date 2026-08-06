@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { getProductBySlug, getAllProducts } from "@/lib/data/server";
 import PDPClient from "./PDPClient";
 import type { Product } from "@/types/commerce";
+import { pageMetadata, SITE_URL } from "@/lib/config/seo";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -10,7 +11,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
   if (!product) return {};
-  return { title: `${product.title} — ${product.brand}` };
+
+  const description = product.description?.trim().length
+    ? product.description.slice(0, 155)
+    : `Shop the ${product.title} by ${product.brand} at Outlxx — ${product.material}.`;
+
+  return pageMetadata({
+    title: `${product.title} — ${product.brand}`,
+    description,
+    path: `/products/${product.slug}`,
+    image: product.images[0]?.src,
+    imageAlt: product.images[0]?.alt ?? product.title,
+    type: "website",
+  });
 }
 
 export default async function ProductPage({ params }: Props) {
@@ -22,5 +35,32 @@ export default async function ProductPage({ params }: Props) {
   const all = await getAllProducts({ category: product.category });
   const related: Product[] = all.filter((p) => p.slug !== product.slug).slice(0, 4);
 
-  return <PDPClient product={product} related={related} />;
+  const inStock = product.sizes.some((s) => s.available) && product.colors.some((c) => c.available);
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: product.description,
+    image: product.images.map((img) => img.src),
+    brand: { "@type": "Brand", name: product.brand },
+    sku: product.id,
+    category: product.category,
+    offers: {
+      "@type": "Offer",
+      url: `${SITE_URL}/products/${product.slug}`,
+      priceCurrency: "GBP",
+      price: product.price,
+      availability: inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
+      <PDPClient product={product} related={related} />
+    </>
+  );
 }

@@ -3,7 +3,12 @@
  * Run with: npm run seed:admin
  *
  * Credentials can be overridden via env:
- *   ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_FIRST_NAME, ADMIN_LAST_NAME
+ *   SEED_ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_FIRST_NAME, ADMIN_LAST_NAME
+ *
+ * Deliberately NOT ADMIN_EMAIL — that var is the order-notification
+ * recipient (see lib/email/order.ts) and must stay independent of the
+ * seeded admin login, otherwise pointing order emails at a new inbox
+ * would silently change who can sign in to /admin.
  */
 
 import "dotenv/config";
@@ -21,7 +26,7 @@ if (!MONGODB_URI) {
   process.exit(1);
 }
 
-const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || "admin@outlxx.com").toLowerCase();
+const ADMIN_EMAIL = (process.env.SEED_ADMIN_EMAIL || "admin@outlxx.com").toLowerCase();
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Admin1234!";
 const ADMIN_FIRST_NAME = process.env.ADMIN_FIRST_NAME || "Admin";
 const ADMIN_LAST_NAME = process.env.ADMIN_LAST_NAME || "Outlxx";

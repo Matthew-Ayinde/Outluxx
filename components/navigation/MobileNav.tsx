@@ -124,13 +124,6 @@ export default function MobileNav({ open, onClose, nav }: MobileNavProps) {
             </ul>
           </div>
         </div>
-
-        {/* Footer strip */}
-        <div className="border-t border-border px-6 py-4">
-          <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-muted">
-            Free global shipping on orders over $250
-          </p>
-        </div>
       </aside>
     </>
   );

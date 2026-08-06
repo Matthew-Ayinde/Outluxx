@@ -58,14 +58,14 @@ function SignInForm() {
         </div>
 
         {error && (
-          <div className="mb-4 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+          <div className="mb-4 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-900 dark:bg-red-950 dark:text-red-400">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
               Email address
             </label>
             <input
@@ -74,16 +74,16 @@ function SignInForm() {
               onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
               required
               autoComplete="email"
-              className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black"
+              className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black dark:border-white/20 dark:focus:border-white"
               placeholder="your@email.com"
             />
           </div>
           <div>
             <div className="mb-1 flex items-center justify-between">
-              <label className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+              <label className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
                 Password
               </label>
-              <Link href="/account/forgot-password" className="text-[11px] text-zinc-400 hover:text-black">
+              <Link href="/account/forgot-password" className="text-[11px] text-zinc-400 hover:text-black dark:hover:text-white">
                 Forgot?
               </Link>
             </div>
@@ -93,7 +93,7 @@ function SignInForm() {
               onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
               required
               autoComplete="current-password"
-              className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black"
+              className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black dark:border-white/20 dark:focus:border-white"
               placeholder="••••••••"
             />
           </div>
@@ -101,7 +101,7 @@ function SignInForm() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 flex h-12 items-center justify-center bg-black text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors disabled:opacity-60"
+            className="mt-2 flex h-12 items-center justify-center bg-black text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
           >
             {loading ? "Signing in…" : "Sign In"}
           </button>
@@ -109,7 +109,7 @@ function SignInForm() {
 
         <p className="mt-6 text-center text-sm text-zinc-500">
           New to Outlxx?{" "}
-          <Link href="/account/register" className="font-medium text-black underline underline-offset-2">
+          <Link href="/account/register" className="font-medium text-black underline underline-offset-2 dark:text-white">
             Create account
           </Link>
         </p>

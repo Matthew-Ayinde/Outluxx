@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { getSession } from "@/lib/utils/auth";
 import { getCustomerOrder } from "@/lib/data/server";
 import { formatMoney } from "@/lib/utils/format";
+import OrderStatusBadge from "@/components/account/OrderStatusBadge";
 
 type Props = { params: Promise<{ orderId: string }> };
 
@@ -24,15 +25,6 @@ export default async function OrderDetailPage({ params }: Props) {
 
   const order = await getCustomerOrder(session.sub, orderId);
   if (!order) notFound();
-
-  const statusStyles: Record<string, string> = {
-    delivered: "bg-green-50 text-green-700 border-green-200",
-    shipped: "bg-blue-50 text-blue-700 border-blue-200",
-    processing: "bg-yellow-50 text-yellow-700 border-yellow-200",
-    pending: "bg-zinc-50 text-zinc-600 border-zinc-200",
-    cancelled: "bg-red-50 text-red-700 border-red-200",
-    returned: "bg-purple-50 text-purple-700 border-purple-200",
-  };
 
   const paymentLabel: Record<string, string> = {
     paid: "Paid",
@@ -55,17 +47,15 @@ export default async function OrderDetailPage({ params }: Props) {
             Placed {new Date(order.placedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
           </p>
         </div>
-        <span className={`border px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest ${statusStyles[order.status] ?? statusStyles.pending}`}>
-          {order.status}
-        </span>
+        <OrderStatusBadge status={order.status} />
       </div>
 
       {/* Items */}
-      <div className="mb-6 border border-black/10">
-        <div className="border-b border-black/10 px-5 py-3">
+      <div className="mb-6 border border-black/10 dark:border-white/10">
+        <div className="border-b border-black/10 px-5 py-3 dark:border-white/10">
           <h3 className="text-xs font-semibold uppercase tracking-widest">Items</h3>
         </div>
-        <div className="divide-y divide-black/5">
+        <div className="divide-y divide-black/5 dark:divide-white/10">
           {order.items.map((item, i) => (
             <div key={`${item.productId}-${i}`} className="flex gap-4 px-5 py-4">
               <div className="relative h-20 w-14 shrink-0 overflow-hidden bg-zinc-50">
@@ -88,7 +78,7 @@ export default async function OrderDetailPage({ params }: Props) {
 
       {/* Two-column grid: shipping + payment */}
       <div className="mb-6 grid gap-4 sm:grid-cols-2">
-        <div className="border border-black/10 p-5">
+        <div className="border border-black/10 p-5 dark:border-white/10">
           <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest">Shipping Address</h3>
           <div className="text-sm text-zinc-600">
             <p>{order.shippingAddress.firstName} {order.shippingAddress.lastName}</p>
@@ -99,7 +89,7 @@ export default async function OrderDetailPage({ params }: Props) {
           </div>
           <p className="mt-3 text-xs text-zinc-400 capitalize">{order.deliveryMethod} delivery</p>
         </div>
-        <div className="border border-black/10 p-5">
+        <div className="border border-black/10 p-5 dark:border-white/10">
           <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest">Payment</h3>
           <p className="text-sm text-zinc-600">{paymentLabel[order.paymentStatus] ?? order.paymentStatus}</p>
           {order.paymentStatus === "paid" && (
@@ -111,7 +101,7 @@ export default async function OrderDetailPage({ params }: Props) {
       </div>
 
       {/* Summary */}
-      <div className="border border-black/10 p-5">
+      <div className="border border-black/10 p-5 dark:border-white/10">
         <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest">Order Summary</h3>
         <div className="space-y-2 text-sm">
           <div className="flex justify-between text-zinc-500">
@@ -125,7 +115,7 @@ export default async function OrderDetailPage({ params }: Props) {
               <span>Discount</span><span>–{formatMoney(order.discount)}</span>
             </div>
           )}
-          <div className="flex justify-between border-t border-black/10 pt-3 font-semibold">
+          <div className="flex justify-between border-t border-black/10 pt-3 font-semibold dark:border-white/10">
             <span>Total</span><span>{formatMoney(order.total)}</span>
           </div>
         </div>

@@ -96,11 +96,8 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-border">
-        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-5 text-xs text-muted sm:flex-row sm:items-center sm:justify-between lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-5 text-xs text-muted lg:px-8">
           <p>© {new Date().getFullYear()} Outlxx. All rights reserved.</p>
-          <p className="text-[10px] uppercase tracking-[0.18em]">
-            Complimentary global shipping on orders over $250
-          </p>
         </div>
       </div>
     </footer>

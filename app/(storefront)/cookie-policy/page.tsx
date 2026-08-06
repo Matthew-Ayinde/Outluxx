@@ -1,4 +1,10 @@
-export const metadata = { title: "Cookie Policy" };
+import { pageMetadata } from "@/lib/config/seo";
+
+export const metadata = pageMetadata({
+  title: "Cookie Policy",
+  description: "How Outlxx uses cookies to improve your browsing experience and personalise content.",
+  path: "/cookie-policy",
+});
 
 export default function CookiePolicyPage() {
   return (

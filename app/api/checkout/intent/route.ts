@@ -5,6 +5,7 @@ import connectDB from "@/lib/db/mongoose";
 import { Product } from "@/lib/db/models/Product";
 import { PromoCode } from "@/lib/db/models/PromoCode";
 import { ok, err } from "@/lib/utils/api";
+import { DELIVERY_FEE } from "@/lib/constants/checkout";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-06-24.dahlia" });
 
@@ -54,7 +55,7 @@ export async function POST(req: NextRequest) {
   }
 
   const discountAmount = subtotal * discountRate;
-  const shipping = 0;
+  const shipping = DELIVERY_FEE;
   const total = subtotal - discountAmount + shipping;
   const totalInPence = Math.round(total * 100);
 

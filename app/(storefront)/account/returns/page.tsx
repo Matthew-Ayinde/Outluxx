@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/utils/auth";
 import { getCustomerOrders } from "@/lib/data/server";
 import { formatMoney } from "@/lib/utils/format";
+import OrderStatusBadge from "@/components/account/OrderStatusBadge";
 
 export const metadata = { title: "Returns" };
 
@@ -20,7 +21,7 @@ export default async function ReturnsPage() {
         Returns are accepted within 10 days of delivery. Items must be in original condition.
       </p>
 
-      <div className="mb-6 border border-black/10 p-5">
+      <div className="mb-6 border border-black/10 p-5 dark:border-white/10">
         <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest">Eligible for Return</h3>
         {eligibleOrders.length === 0 ? (
           <p className="text-sm text-zinc-500">
@@ -39,13 +40,11 @@ export default async function ReturnsPage() {
                 <div className="flex items-center gap-4">
                   <span className="text-sm font-semibold">{formatMoney(order.total)}</span>
                   {order.status === "returned" ? (
-                    <span className="border border-purple-200 bg-purple-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-purple-700">
-                      Returned
-                    </span>
+                    <OrderStatusBadge status="returned" />
                   ) : (
                     <Link
                       href="/support/contact"
-                      className="border border-black px-4 py-1.5 text-[10px] font-semibold uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+                      className="border border-black px-4 py-1.5 text-[10px] font-semibold uppercase tracking-widest hover:bg-black hover:text-white transition-colors dark:border-white dark:hover:bg-white dark:hover:text-black"
                     >
                       Start Return
                     </Link>
@@ -57,7 +56,7 @@ export default async function ReturnsPage() {
         )}
       </div>
 
-      <div className="border border-black/10 p-5">
+      <div className="border border-black/10 p-5 dark:border-white/10">
         <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest">Returns Policy</h3>
         <ul className="space-y-2 text-sm text-zinc-600">
           <li className="flex gap-2">

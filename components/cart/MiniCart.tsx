@@ -22,25 +22,25 @@ export default function MiniCart() {
 
       <aside
         className={[
-          "fixed right-0 top-0 z-50 h-full w-96 max-w-[100vw] bg-white flex flex-col shadow-2xl",
+          "fixed right-0 top-0 z-50 h-full w-96 max-w-[100vw] bg-background flex flex-col shadow-2xl",
           "transition-transform duration-300 ease-in-out",
           isOpen ? "translate-x-0" : "translate-x-full",
         ].join(" ")}
         aria-label="Shopping cart"
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-black/10 px-5 py-4">
+        <div className="flex items-center justify-between border-b border-black/10 px-5 py-4 dark:border-white/10">
           <div className="flex items-center gap-2">
             <p className="text-sm font-semibold uppercase tracking-[0.14em]">Cart</p>
             {itemCount > 0 && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white dark:bg-white dark:text-black">
                 {itemCount}
               </span>
             )}
           </div>
           <button
             onClick={closeCart}
-            className="text-zinc-400 hover:text-black transition-colors p-1"
+            className="text-zinc-400 hover:text-black transition-colors p-1 dark:hover:text-white"
             aria-label="Close cart"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -63,7 +63,7 @@ export default function MiniCart() {
               </div>
               <button
                 onClick={closeCart}
-                className="mt-2 border border-black px-6 py-2 text-xs font-medium uppercase tracking-[0.12em] hover:bg-black hover:text-white transition-colors"
+                className="mt-2 border border-black px-6 py-2 text-xs font-medium uppercase tracking-[0.12em] hover:bg-black hover:text-white transition-colors dark:border-white dark:hover:bg-white dark:hover:text-black"
               >
                 Continue Shopping
               </button>
@@ -73,7 +73,7 @@ export default function MiniCart() {
               {items.map((item) => (
                 <li key={`${item.product.id}-${item.selectedSize}-${item.selectedColor}`}
                   className="flex gap-4">
-                  <div className="relative h-24 w-16 shrink-0 overflow-hidden border border-black/10">
+                  <div className="relative h-24 w-16 shrink-0 overflow-hidden border border-black/10 dark:border-white/10">
                     <Image
                       src={item.product.images[0].src}
                       alt={item.product.images[0].alt}
@@ -117,7 +117,7 @@ export default function MiniCart() {
 
         {/* Footer */}
         {items.length > 0 && (
-          <div className="border-t border-black/10 px-5 py-5 space-y-4">
+          <div className="border-t border-black/10 px-5 py-5 space-y-4 dark:border-white/10">
             <div className="flex items-center justify-between">
               <p className="text-xs font-medium uppercase tracking-[0.12em] text-zinc-500">Subtotal</p>
               <p className="text-sm font-semibold">{formatMoney(subtotal)}</p>
@@ -128,14 +128,14 @@ export default function MiniCart() {
             <Link
               href="/checkout/shipping"
               onClick={closeCart}
-              className="block w-full bg-black py-4 text-center text-xs font-semibold uppercase tracking-[0.14em] text-white hover:bg-zinc-800 transition-colors"
+              className="block w-full bg-black py-4 text-center text-xs font-semibold uppercase tracking-[0.14em] text-white hover:bg-zinc-800 transition-colors dark:bg-white dark:text-black dark:hover:bg-zinc-200"
             >
               Checkout
             </Link>
             <Link
               href="/cart"
               onClick={closeCart}
-              className="block w-full border border-black/20 py-3 text-center text-xs font-medium uppercase tracking-[0.12em] text-black hover:border-black transition-colors"
+              className="block w-full border border-black/20 py-3 text-center text-xs font-medium uppercase tracking-[0.12em] text-black hover:border-black transition-colors dark:border-white/20 dark:text-white dark:hover:border-white"
             >
               View Cart
             </Link>

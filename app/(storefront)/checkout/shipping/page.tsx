@@ -8,6 +8,7 @@ import { formatMoney } from "@/lib/utils/format";
 import { createIntent } from "@/lib/api/checkout";
 import type { CheckoutItem } from "@/lib/api/checkout";
 import { ApiError } from "@/lib/api/client";
+import { DELIVERY_FEE } from "@/lib/constants/checkout";
 import Image from "next/image";
 
 export default function ShippingPage() {
@@ -19,7 +20,7 @@ export default function ShippingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const shipping = 0;
+  const shipping = DELIVERY_FEE;
 
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "", phone: "",
@@ -112,7 +113,7 @@ export default function ShippingPage() {
         </div>
 
         {error && (
-          <div className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>
+          <div className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-900 dark:bg-red-950 dark:text-red-400">{error}</div>
         )}
 
         <section className="flex flex-col gap-4">
@@ -131,11 +132,11 @@ export default function ShippingPage() {
           <div className="grid grid-cols-2 gap-4">
             <Field label="Postcode / ZIP" value={form.postalCode} onChange={(v) => set("postalCode", v)} required />
             <div>
-              <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Country</label>
+              <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Country</label>
               <select
                 value={form.country}
                 onChange={(e) => set("country", e.target.value)}
-                className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black"
+                className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black dark:border-white/20 dark:focus:border-white"
               >
                 {["United Kingdom", "United States", "France", "Germany", "Italy", "Japan", "Australia", "Canada"].map((c) => (
                   <option key={c}>{c}</option>
@@ -149,17 +150,17 @@ export default function ShippingPage() {
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest">Delivery Method</h2>
           <div className="space-y-3">
             {([
-              { id: "standard" as const, label: "Standard Delivery", time: "3–5 business days", price: "Free" },
-              { id: "express" as const, label: "Express Delivery", time: "1–2 business days", price: "Free" },
+              { id: "standard" as const, label: "Standard Delivery", time: "3–5 business days", price: formatMoney(DELIVERY_FEE) },
+              { id: "express" as const, label: "Express Delivery", time: "1–2 business days", price: formatMoney(DELIVERY_FEE) },
             ]).map((opt) => (
-              <label key={opt.id} className="flex cursor-pointer items-center justify-between border border-black/15 p-4 hover:border-black transition-colors">
+              <label key={opt.id} className="flex cursor-pointer items-center justify-between border border-black/15 p-4 hover:border-black transition-colors dark:border-white/20 dark:hover:border-white">
                 <div className="flex items-center gap-3">
                   <input
                     type="radio"
                     name="delivery"
                     checked={deliveryMethod === opt.id}
                     onChange={() => setDeliveryMethod(opt.id)}
-                    className="accent-black"
+                    className="accent-black dark:accent-white"
                   />
                   <div>
                     <p className="text-sm font-medium">{opt.label}</p>
@@ -175,7 +176,7 @@ export default function ShippingPage() {
         <button
           type="submit"
           disabled={loading}
-          className="mt-2 flex h-12 w-full items-center justify-center bg-black text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors disabled:opacity-60"
+          className="mt-2 flex h-12 w-full items-center justify-center bg-black text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
         >
           {loading ? "Please wait…" : "Continue to Payment"}
         </button>
@@ -193,7 +194,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+      <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
         {label}{required && " *"}
       </label>
       <input
@@ -201,7 +202,7 @@ function Field({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required={required}
-        className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black"
+        className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black dark:border-white/20 dark:focus:border-white"
       />
     </div>
   );
@@ -214,9 +215,9 @@ function OrderSummary({
   subtotal: number; total: number; discount: number; shipping: number;
 }) {
   return (
-    <div className="border border-black/10 p-6 h-fit">
+    <div className="border border-black/10 p-6 h-fit dark:border-white/10">
       <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest">Your Order</h2>
-      <div className="space-y-4 border-b border-black/10 pb-4">
+      <div className="space-y-4 border-b border-black/10 pb-4 dark:border-white/10">
         {items.map((item) => (
           <div key={`${item.product.id}-${item.selectedSize}-${item.selectedColor}`} className="flex gap-3">
             <div className="relative h-16 w-12 shrink-0 overflow-hidden bg-zinc-50">
@@ -246,7 +247,7 @@ function OrderSummary({
           <span>Shipping</span>
           <span>{shipping === 0 ? "Free" : formatMoney(shipping)}</span>
         </div>
-        <div className="flex justify-between border-t border-black/10 pt-3 font-semibold">
+        <div className="flex justify-between border-t border-black/10 pt-3 font-semibold dark:border-white/10">
           <span>Total</span><span>{formatMoney(total + shipping)}</span>
         </div>
       </div>
