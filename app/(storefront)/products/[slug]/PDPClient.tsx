@@ -152,7 +152,7 @@ export default function PDPClient({ product, related }: { product: Product; rela
             </div>
           </div>
 
-          {error && <p className="text-xs text-foreground opacity-60">{error}</p>}
+          {error && <p className="text-xs font-medium text-red-600 dark:text-red-400">{error}</p>}
 
           {/* CTAs */}
           <div className="flex flex-col gap-3">
