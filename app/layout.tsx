@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Jost } from "next/font/google";
 import { Providers } from "@/lib/store/Providers";
-import { SITE_NAME, SITE_URL, DEFAULT_DESCRIPTION, DEFAULT_OG_IMAGE } from "@/lib/config/seo";
+import { SITE_URL, DEFAULT_OG_IMAGE } from "@/lib/config/seo";
+import { getStoreSettings } from "@/lib/data/settings";
 import "./globals.css";
 
 const headingFont = Cormorant_Garamond({
@@ -19,52 +20,56 @@ const bodyFont = Jost({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: {
-    template: "%s | Outlxx",
-    default: "Outlxx — Premium Fashion House",
-  },
-  description: DEFAULT_DESCRIPTION,
-  applicationName: SITE_NAME,
-  keywords: [
-    "Outlxx",
-    "luxury fashion",
-    "premium clothing",
-    "designer apparel UK",
-    "menswear",
-    "womenswear",
-    "tailoring",
-    "editorial fashion",
-  ],
-  category: "shopping",
-  formatDetection: { email: false, address: false, telephone: false },
-  alternates: { canonical: "/" },
-  openGraph: {
-    title: "Outlxx — Premium Fashion House",
-    description: DEFAULT_DESCRIPTION,
-    url: "/",
-    siteName: SITE_NAME,
-    type: "website",
-    locale: "en_GB",
-    images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Outlxx — Premium Fashion House",
-    description: DEFAULT_DESCRIPTION,
-    images: [DEFAULT_OG_IMAGE],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
-  },
-  manifest: "/site.webmanifest",
-  // icon.png / apple-icon.png / favicon.ico are picked up automatically via
-  // Next's file-based icon convention (app/icon.png etc.) — no need to
-  // declare them here too, and doing so risks conflicting <link> tags.
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { storeName, metaTitle, metaDescription } = await getStoreSettings();
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      template: `%s | ${storeName}`,
+      default: metaTitle,
+    },
+    description: metaDescription,
+    applicationName: storeName,
+    keywords: [
+      storeName,
+      "luxury fashion",
+      "premium clothing",
+      "designer apparel UK",
+      "menswear",
+      "womenswear",
+      "tailoring",
+      "editorial fashion",
+    ],
+    category: "shopping",
+    formatDetection: { email: false, address: false, telephone: false },
+    alternates: { canonical: "/" },
+    openGraph: {
+      title: metaTitle,
+      description: metaDescription,
+      url: "/",
+      siteName: storeName,
+      type: "website",
+      locale: "en_GB",
+      images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: storeName }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: metaTitle,
+      description: metaDescription,
+      images: [DEFAULT_OG_IMAGE],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+    },
+    manifest: "/site.webmanifest",
+    // icon.png / apple-icon.png / favicon.ico are picked up automatically via
+    // Next's file-based icon convention (app/icon.png etc.) — no need to
+    // declare them here too, and doing so risks conflicting <link> tags.
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#0a0a0a",
@@ -72,17 +77,19 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: SITE_NAME,
-  url: SITE_URL,
-  logo: `${SITE_URL}/black-logo.png`,
-};
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const settings = await getStoreSettings();
+
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: settings.storeName,
+    url: SITE_URL,
+    logo: `${SITE_URL}/black-logo.png`,
+  };
+
   return (
     <html
       lang="en"
@@ -109,7 +116,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full bg-[var(--background)] text-[var(--foreground)] antialiased">
-        <Providers>{children}</Providers>
+        <Providers initialSettings={settings}>{children}</Providers>
       </body>
     </html>
   );

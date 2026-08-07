@@ -112,13 +112,14 @@ export function button(label: string, href: string) {
     </table>`;
 }
 
-export function emailLayout(opts: { preheader: string; eyebrow: string; heading: string; body: string }) {
+export function emailLayout(opts: { preheader: string; eyebrow: string; heading: string; body: string; storeName?: string }) {
+  const storeName = opts.storeName ?? "Outlxx";
   return `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Outlxx</title>
+    <title>${escapeHtml(storeName)}</title>
   </head>
   <body style="margin:0; padding:0; background-color:#f4f4f5; font-family:Helvetica,Arial,sans-serif;">
     <div style="display:none; max-height:0; overflow:hidden; opacity:0;">${escapeHtml(opts.preheader)}</div>
@@ -128,7 +129,7 @@ export function emailLayout(opts: { preheader: string; eyebrow: string; heading:
           <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:${COLORS.paper}; border:1px solid ${COLORS.border};">
             <tr>
               <td style="padding:28px 40px; border-bottom:1px solid ${COLORS.border};">
-                <img src="cid:${LOGO_CID}" alt="Outlxx" width="120" height="32" style="height:28px; width:auto; display:block;" />
+                <img src="cid:${LOGO_CID}" alt="${escapeHtml(storeName)}" width="120" height="32" style="height:28px; width:auto; display:block;" />
               </td>
             </tr>
             <tr>
@@ -148,7 +149,7 @@ export function emailLayout(opts: { preheader: string; eyebrow: string; heading:
                   Refined apparel for the considered wardrobe.
                 </p>
                 <p style="margin:8px 0 0; font-size:11px; color:${COLORS.faint}; text-align:center;">
-                  &copy; ${new Date().getFullYear()} Outlxx. All rights reserved.
+                  &copy; ${new Date().getFullYear()} ${escapeHtml(storeName)}. All rights reserved.
                 </p>
               </td>
             </tr>

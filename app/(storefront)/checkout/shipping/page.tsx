@@ -8,7 +8,7 @@ import { formatMoney } from "@/lib/utils/format";
 import { createIntent } from "@/lib/api/checkout";
 import type { CheckoutItem } from "@/lib/api/checkout";
 import { ApiError } from "@/lib/api/client";
-import { DELIVERY_FEE } from "@/lib/constants/checkout";
+import { useSettings } from "@/lib/store/SettingsContext";
 import Image from "next/image";
 
 export default function ShippingPage() {
@@ -20,7 +20,8 @@ export default function ShippingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const shipping = DELIVERY_FEE;
+  const { deliveryFee } = useSettings();
+  const shipping = deliveryFee;
 
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "", phone: "",
@@ -150,8 +151,8 @@ export default function ShippingPage() {
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest">Delivery Method</h2>
           <div className="space-y-3">
             {([
-              { id: "standard" as const, label: "Standard Delivery", time: "3–5 business days", price: formatMoney(DELIVERY_FEE) },
-              { id: "express" as const, label: "Express Delivery", time: "1–2 business days", price: formatMoney(DELIVERY_FEE) },
+              { id: "standard" as const, label: "Standard Delivery", time: "3–5 business days", price: formatMoney(deliveryFee) },
+              { id: "express" as const, label: "Express Delivery", time: "1–2 business days", price: formatMoney(deliveryFee) },
             ]).map((opt) => (
               <label key={opt.id} className="flex cursor-pointer items-center justify-between border border-black/15 p-4 hover:border-black transition-colors dark:border-white/20 dark:hover:border-white">
                 <div className="flex items-center gap-3">

@@ -4,8 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/lib/store/CartContext";
+import { useSettings } from "@/lib/store/SettingsContext";
 import { formatMoney } from "@/lib/utils/format";
-import { DELIVERY_FEE } from "@/lib/constants/checkout";
 
 export default function CartView() {
   const { items, removeItem, updateQuantity, subtotal, total, discount, applyPromo, promoCode } =
@@ -13,6 +13,7 @@ export default function CartView() {
   const [promoInput, setPromoInput] = useState("");
   const [promoError, setPromoError] = useState("");
   const [promoSuccess, setPromoSuccess] = useState(false);
+  const { deliveryFee } = useSettings();
 
   async function handlePromo(e: React.FormEvent) {
     e.preventDefault();
@@ -26,7 +27,7 @@ export default function CartView() {
     }
   }
 
-  const shipping = DELIVERY_FEE;
+  const shipping = deliveryFee;
 
   if (items.length === 0) {
     return (

@@ -1,15 +1,127 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IconCheckCircle, IconGlobe, IconBell, IconCard, IconStore, IconGear } from "@/components/admin/icons";
 import { Panel, SectionHeader, StatusBadge, Toggle, Button, IconChip, type Accent } from "@/components/admin/ui";
+import { apiFetch, ApiError } from "@/lib/api/client";
+
+interface NotificationSettings {
+  orderConfirmation: boolean;
+  shippingNotification: boolean;
+  lowStockAlerts: boolean;
+  newCustomerRegistrations: boolean;
+  weeklyRevenueSummary: boolean;
+}
+
+interface SettingsForm {
+  storeName: string;
+  contactEmail: string;
+  supportPhone: string;
+  currency: string;
+  deliveryFee: string;
+  metaTitle: string;
+  metaDescription: string;
+  notifications: NotificationSettings;
+}
+
+const FORM_DEFAULTS: SettingsForm = {
+  storeName: "",
+  contactEmail: "",
+  supportPhone: "",
+  currency: "GBP",
+  deliveryFee: "3.98",
+  metaTitle: "",
+  metaDescription: "",
+  notifications: {
+    orderConfirmation: true,
+    shippingNotification: true,
+    lowStockAlerts: true,
+    newCustomerRegistrations: false,
+    weeklyRevenueSummary: true,
+  },
+};
+
+const NOTIFICATION_ITEMS: { key: keyof NotificationSettings; label: string; live: boolean }[] = [
+  { key: "orderConfirmation", label: "Order confirmation emails", live: true },
+  { key: "shippingNotification", label: "Shipping notification emails", live: false },
+  { key: "lowStockAlerts", label: "Low stock alerts", live: false },
+  { key: "newCustomerRegistrations", label: "New customer registrations", live: false },
+  { key: "weeklyRevenueSummary", label: "Weekly revenue summary", live: false },
+];
 
 export default function AdminSettingsPage() {
+  const [form, setForm] = useState<SettingsForm>(FORM_DEFAULTS);
+  const [siteUrl, setSiteUrl] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSave() {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+  useEffect(() => {
+    apiFetch<SettingsForm & { deliveryFee: number; siteUrl: string }>("/api/settings")
+      .then((data) => {
+        setForm({
+          storeName: data.storeName,
+          contactEmail: data.contactEmail,
+          supportPhone: data.supportPhone,
+          currency: data.currency,
+          deliveryFee: String(data.deliveryFee),
+          metaTitle: data.metaTitle,
+          metaDescription: data.metaDescription,
+          notifications: data.notifications,
+        });
+        setSiteUrl(data.siteUrl);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  function set<K extends keyof SettingsForm>(key: K, value: SettingsForm[K]) {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  function setNotification(key: keyof NotificationSettings, value: boolean) {
+    setForm((prev) => ({ ...prev, notifications: { ...prev.notifications, [key]: value } }));
+  }
+
+  async function handleSave() {
+    setError("");
+    const fee = Number(form.deliveryFee);
+    if (!Number.isFinite(fee) || fee < 0) {
+      setError("Delivery fee must be a valid non-negative number.");
+      return;
+    }
+    if (!form.storeName.trim()) {
+      setError("Store name is required.");
+      return;
+    }
+    if (!/^[A-Za-z]{3}$/.test(form.currency.trim())) {
+      setError("Currency must be a 3-letter code, e.g. GBP.");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await apiFetch("/api/settings", {
+        method: "PUT",
+        body: JSON.stringify({
+          storeName: form.storeName.trim(),
+          contactEmail: form.contactEmail.trim(),
+          supportPhone: form.supportPhone.trim(),
+          currency: form.currency.trim().toUpperCase(),
+          deliveryFee: fee,
+          metaTitle: form.metaTitle.trim(),
+          metaDescription: form.metaDescription.trim(),
+          notifications: form.notifications,
+        }),
+      });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (e) {
+      setError(e instanceof ApiError ? e.message : "Failed to save settings.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -20,29 +132,61 @@ export default function AdminSettingsPage() {
         <div className="space-y-6">
           {/* General */}
           <Section title="General" icon={<IconStore className="h-4 w-4" />} accent="blue">
-            <Field label="Store Name" defaultValue="Outlxx" />
-            <Field label="Store URL" defaultValue="https://outlxx.com" />
-            <Field label="Contact Email" defaultValue="support@outlxx.co.uk" />
-            <Field label="Support Phone" defaultValue="+44 (0) 20 7946 0958" />
+            <Field label="Store Name" value={form.storeName} disabled={loading} onChange={(v) => set("storeName", v)} />
+            <div>
+              <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+                Store URL
+              </label>
+              <input
+                type="text"
+                value={siteUrl}
+                readOnly
+                disabled
+                className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-sm text-zinc-500 outline-none"
+              />
+              <p className="mt-1 text-[11px] text-zinc-400">
+                Set via the NEXT_PUBLIC_APP_URL environment variable — not editable here.
+              </p>
+            </div>
+            <Field label="Contact Email" type="email" value={form.contactEmail} disabled={loading} onChange={(v) => set("contactEmail", v)} />
+            <Field label="Support Phone" value={form.supportPhone} disabled={loading} onChange={(v) => set("supportPhone", v)} />
           </Section>
 
           {/* Commerce */}
           <Section title="Commerce" icon={<IconCard className="h-4 w-4" />} accent="emerald">
-            <Field label="Default Currency" defaultValue="GBP" />
-            <Field label="Delivery Fee" defaultValue="3.98" />
+            <Field label="Default Currency" value={form.currency} disabled={loading} onChange={(v) => set("currency", v.toUpperCase())} maxLength={3} />
+            <div>
+              <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+                Delivery Fee (£)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={form.deliveryFee}
+                disabled={loading}
+                onChange={(e) => set("deliveryFee", e.target.value)}
+                className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100 disabled:opacity-50"
+              />
+              <p className="mt-1 text-[11px] text-zinc-400">
+                Flat shipping fee charged on every order, applied at checkout.
+              </p>
+            </div>
           </Section>
 
           {/* SEO */}
           <Section title="SEO & Metadata" icon={<IconGlobe className="h-4 w-4" />} accent="sky">
-            <Field label="Meta Title" defaultValue="Outlxx — Premium Fashion House" />
+            <Field label="Meta Title" value={form.metaTitle} disabled={loading} onChange={(v) => set("metaTitle", v)} />
             <div>
               <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
                 Meta Description
               </label>
               <textarea
-                defaultValue="Curated luxury fashion for the modern wardrobe. Discover timeless tailoring, elevated essentials, and editorial pieces."
+                value={form.metaDescription}
+                disabled={loading}
+                onChange={(e) => set("metaDescription", e.target.value)}
                 rows={3}
-                className="w-full resize-none rounded-xl border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+                className="w-full resize-none rounded-xl border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100 disabled:opacity-50"
               />
             </div>
           </Section>
@@ -50,30 +194,36 @@ export default function AdminSettingsPage() {
           {/* Notifications */}
           <Section title="Notifications" icon={<IconBell className="h-4 w-4" />} accent="orange">
             <div className="space-y-4">
-              {[
-                { label: "Order confirmation emails", checked: true },
-                { label: "Shipping notification emails", checked: true },
-                { label: "Low stock alerts", checked: true },
-                { label: "New customer registrations", checked: false },
-                { label: "Weekly revenue summary", checked: true },
-              ].map((item) => (
-                <label key={item.label} className="flex cursor-pointer items-center justify-between">
-                  <span className="text-sm text-zinc-700">{item.label}</span>
-                  <Toggle defaultChecked={item.checked} />
+              {NOTIFICATION_ITEMS.map((item) => (
+                <label key={item.key} className="flex cursor-pointer items-center justify-between">
+                  <span className="text-sm text-zinc-700">
+                    {item.label}
+                    {!item.live && (
+                      <span className="ml-2 text-[10px] font-medium uppercase tracking-wide text-zinc-400">
+                        (not yet active)
+                      </span>
+                    )}
+                  </span>
+                  <Toggle
+                    checked={form.notifications[item.key]}
+                    disabled={loading}
+                    onChange={(e) => setNotification(item.key, e.target.checked)}
+                  />
                 </label>
               ))}
             </div>
           </Section>
 
           <div className="flex items-center gap-4 pt-2">
-            <Button onClick={handleSave} className="h-11">
-              Save Settings
+            <Button onClick={handleSave} disabled={saving || loading} className="h-11">
+              {saving ? "Saving…" : "Save Settings"}
             </Button>
             {saved && (
               <p className="flex items-center gap-1.5 text-xs font-medium text-emerald-600">
                 <IconCheckCircle className="h-3.5 w-3.5" /> Settings saved successfully.
               </p>
             )}
+            {error && <p className="text-xs font-medium text-red-600">{error}</p>}
           </div>
         </div>
 
@@ -132,16 +282,23 @@ function Section({ title, icon, accent = "slate", children }: { title: string; i
   );
 }
 
-function Field({ label, defaultValue }: { label: string; defaultValue: string }) {
+function Field({
+  label, value, onChange, type = "text", disabled, maxLength,
+}: {
+  label: string; value: string; onChange: (v: string) => void; type?: string; disabled?: boolean; maxLength?: number;
+}) {
   return (
     <div>
       <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
         {label}
       </label>
       <input
-        type="text"
-        defaultValue={defaultValue}
-        className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100"
+        type={type}
+        value={value}
+        disabled={disabled}
+        maxLength={maxLength}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100 disabled:opacity-50"
       />
     </div>
   );

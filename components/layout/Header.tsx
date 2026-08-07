@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/lib/store/CartContext";
+import { useSettings } from "@/lib/store/SettingsContext";
 import MobileNav from "@/components/navigation/MobileNav";
 import MiniCart from "@/components/cart/MiniCart";
 
@@ -55,6 +56,7 @@ function DarkModeToggle() {
 
 export default function Header() {
   const { itemCount, openCart } = useCart();
+  const { storeName } = useSettings();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -76,10 +78,10 @@ export default function Header() {
       >
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-5 lg:px-8">
           {/* Logo */}
-          <Link href="/" aria-label="Outlxx home" className="shrink-0">
+          <Link href="/" aria-label={`${storeName} home`} className="shrink-0">
             <Image
               src="/black-logo.png"
-              alt="Outlxx"
+              alt={storeName}
               width={120}
               height={32}
               priority
@@ -87,7 +89,7 @@ export default function Header() {
             />
             <Image
               src="/white-logo.png"
-              alt="Outlxx"
+              alt={storeName}
               width={120}
               height={32}
               priority

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { getStoreSettings } from "@/lib/data/settings";
 
 const columns = [
   {
@@ -33,24 +34,26 @@ const columns = [
   },
 ];
 
-export default function Footer() {
+export default async function Footer() {
+  const { storeName } = await getStoreSettings();
+
   return (
     <footer className="border-t border-border bg-background">
       <div className="mx-auto max-w-7xl px-5 py-14 lg:px-8">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand col */}
           <div>
-            <Link href="/" aria-label="Outlxx home">
+            <Link href="/" aria-label={`${storeName} home`}>
               <Image
                 src="/black-logo.png"
-                alt="Outlxx"
+                alt={storeName}
                 width={120}
                 height={32}
                 className="h-8 w-auto dark:hidden"
               />
               <Image
                 src="/white-logo.png"
-                alt="Outlxx"
+                alt={storeName}
                 width={120}
                 height={32}
                 className="hidden h-8 w-auto dark:block"
@@ -97,7 +100,7 @@ export default function Footer() {
 
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-5 text-xs text-muted lg:px-8">
-          <p>© {new Date().getFullYear()} Outlxx. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {storeName}. All rights reserved.</p>
         </div>
       </div>
     </footer>

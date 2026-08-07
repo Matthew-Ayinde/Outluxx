@@ -3,13 +3,23 @@
 import { CartProvider } from "./CartContext";
 import { WishlistProvider } from "./WishlistContext";
 import { CheckoutProvider } from "./CheckoutContext";
+import { SettingsProvider } from "./SettingsContext";
+import type { StoreSettings } from "@/lib/data/settings";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({
+  children,
+  initialSettings,
+}: {
+  children: React.ReactNode;
+  initialSettings: StoreSettings;
+}) {
   return (
-    <CartProvider>
-      <WishlistProvider>
-        <CheckoutProvider>{children}</CheckoutProvider>
-      </WishlistProvider>
-    </CartProvider>
+    <SettingsProvider initialSettings={initialSettings}>
+      <CartProvider>
+        <WishlistProvider>
+          <CheckoutProvider>{children}</CheckoutProvider>
+        </WishlistProvider>
+      </CartProvider>
+    </SettingsProvider>
   );
 }

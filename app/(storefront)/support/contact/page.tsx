@@ -1,4 +1,5 @@
 import { pageMetadata } from "@/lib/config/seo";
+import { getStoreSettings } from "@/lib/data/settings";
 
 export const metadata = pageMetadata({
   title: "Contact Us",
@@ -6,7 +7,9 @@ export const metadata = pageMetadata({
   path: "/support/contact",
 });
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { contactEmail, supportPhone } = await getStoreSettings();
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
       <div className="mb-10">
@@ -58,8 +61,8 @@ export default function ContactPage() {
         {/* Contact info */}
         <div className="space-y-8">
           {[
-            { label: "Email", value: "support@outlxx.co.uk", sub: "We reply within 24 hours" },
-            { label: "Phone", value: "+44 (0) 20 7946 0958", sub: "Mon–Fri, 9am–6pm GMT" },
+            { label: "Email", value: contactEmail, sub: "We reply within 24 hours" },
+            { label: "Phone", value: supportPhone, sub: "Mon–Fri, 9am–6pm GMT" },
             { label: "Address", value: "Outlxx Ltd, 14 Savile Row", sub: "London W1S 3JN, United Kingdom" },
           ].map((item) => (
             <div key={item.label}>

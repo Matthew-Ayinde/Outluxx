@@ -2,6 +2,7 @@ import path from "path";
 import { getTransporter } from "./transporter";
 import { formatMoney } from "@/lib/utils/format";
 import type { IOrder } from "@/lib/db/models/Order";
+import { getStoreSettings } from "@/lib/data/settings";
 import { emailLayout, itemsTable, totalsBlock, addressBlock, button, LOGO_CID } from "./templates";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
@@ -15,6 +16,9 @@ const LOGO_ATTACHMENT = {
 };
 
 export async function sendOrderConfirmationEmail(order: IOrder) {
+  const settings = await getStoreSettings();
+  if (!settings.notifications.orderConfirmation) return;
+
   const body = `
     <p style="margin:0 0 24px; font-size:14px; line-height:1.6; color:#52525b;">
       Hi ${order.shippingAddress.firstName}, thank you for shopping with us. Your order
@@ -37,6 +41,7 @@ export async function sendOrderConfirmationEmail(order: IOrder) {
     eyebrow: "Order Confirmed",
     heading: "Thank you for your order",
     body,
+    storeName: settings.storeName,
   });
 
   await getTransporter().sendMail({
@@ -49,6 +54,8 @@ export async function sendOrderConfirmationEmail(order: IOrder) {
 }
 
 export async function sendAdminOrderNotification(order: IOrder) {
+  const settings = await getStoreSettings();
+
   const customerCard = `
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse; border:1px solid #e4e4e7; margin-bottom:24px;">
       <tr>
@@ -89,6 +96,7 @@ export async function sendAdminOrderNotification(order: IOrder) {
     eyebrow: "New Order",
     heading: `Order ${order.orderNumber}`,
     body,
+    storeName: settings.storeName,
   });
 
   await getTransporter().sendMail({
