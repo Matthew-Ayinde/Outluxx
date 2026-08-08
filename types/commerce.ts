@@ -20,6 +20,8 @@ export type Product = {
   subcategory: string;
   price: number;
   compareAtPrice?: number;
+  priceNGN?: number;
+  compareAtPriceNGN?: number;
   isNew: boolean;
   isSale: boolean;
   isFeatured: boolean;

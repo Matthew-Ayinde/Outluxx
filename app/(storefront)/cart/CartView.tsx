@@ -5,15 +5,24 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/lib/store/CartContext";
 import { useSettings } from "@/lib/store/SettingsContext";
+import { useCurrency } from "@/lib/store/CurrencyContext";
 import { formatMoney } from "@/lib/utils/format";
+import { resolveProductPrice, resolveCartTotals } from "@/lib/utils/price";
 
 export default function CartView() {
-  const { items, removeItem, updateQuantity, subtotal, total, discount, applyPromo, promoCode } =
+  const { items, removeItem, updateQuantity, discount, applyPromo, promoCode } =
     useCart();
   const [promoInput, setPromoInput] = useState("");
   const [promoError, setPromoError] = useState("");
   const [promoSuccess, setPromoSuccess] = useState(false);
-  const { deliveryFee } = useSettings();
+  const { deliveryFee, deliveryFeeNGN } = useSettings();
+  const currency = useCurrency();
+  const {
+    currency: totalsCurrency,
+    subtotal,
+    shipping,
+    total,
+  } = resolveCartTotals(items, discount, deliveryFee, deliveryFeeNGN, currency);
 
   async function handlePromo(e: React.FormEvent) {
     e.preventDefault();
@@ -26,8 +35,6 @@ export default function CartView() {
       setPromoSuccess(false);
     }
   }
-
-  const shipping = deliveryFee;
 
   if (items.length === 0) {
     return (
@@ -97,7 +104,10 @@ export default function CartView() {
                     </p>
                   </div>
                   <p className="shrink-0 text-sm font-semibold">
-                    {formatMoney(item.product.price * item.quantity)}
+                    {(() => {
+                      const { price, currency: c } = resolveProductPrice(item.product, currency);
+                      return formatMoney(price * item.quantity, c);
+                    })()}
                   </p>
                 </div>
 
@@ -159,23 +169,23 @@ export default function CartView() {
           <div className="space-y-3 border-t border-black/10 pt-4 text-sm dark:border-white/10">
             <div className="flex justify-between">
               <span className="text-zinc-500">Subtotal</span>
-              <span className="font-medium">{formatMoney(subtotal)}</span>
+              <span className="font-medium">{formatMoney(subtotal, totalsCurrency)}</span>
             </div>
             {discount > 0 && (
               <div className="flex justify-between text-foreground opacity-60">
                 <span>Discount ({Math.round(discount * 100)}%)</span>
-                <span>–{formatMoney(subtotal * discount)}</span>
+                <span>–{formatMoney(subtotal * discount, totalsCurrency)}</span>
               </div>
             )}
             <div className="flex justify-between">
               <span className="text-zinc-500">Shipping</span>
-              <span>{formatMoney(shipping)}</span>
+              <span>{formatMoney(shipping, totalsCurrency)}</span>
             </div>
           </div>
 
           <div className="mt-4 flex justify-between border-t border-black/10 pt-4 dark:border-white/10">
             <span className="font-semibold">Total</span>
-            <span className="font-semibold">{formatMoney(total + shipping)}</span>
+            <span className="font-semibold">{formatMoney(total, totalsCurrency)}</span>
           </div>
 
           <Link

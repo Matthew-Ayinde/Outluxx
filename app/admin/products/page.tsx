@@ -20,7 +20,9 @@ const categoryDisplayMap: Record<string, string> = {
 interface Product {
   _id: string; slug: string; title: string; brand: string; category: string;
   subcategory: string;
-  price: number; compareAtPrice?: number; stock: number;
+  price: number; compareAtPrice?: number;
+  priceNGN?: number; compareAtPriceNGN?: number;
+  stock: number;
   isNew: boolean; isSale: boolean; isFeatured: boolean;
   images: { src: string; alt: string }[];
   description: string; sizes: { label: string; value: string; available: boolean }[];
@@ -146,10 +148,15 @@ export default function AdminProductsPage() {
                   </td>
                   <td className="px-5 py-3 text-zinc-600">{categoryDisplayMap[product.category] ?? product.category}</td>
                   <td className="px-5 py-3">
-                    <span className="font-semibold">{formatMoney(product.price)}</span>
-                    {product.compareAtPrice && (
-                      <span className="ml-2 text-xs text-zinc-400 line-through">{formatMoney(product.compareAtPrice)}</span>
-                    )}
+                    <div>
+                      <span className="font-semibold">{formatMoney(product.price)}</span>
+                      {product.compareAtPrice && (
+                        <span className="ml-2 text-xs text-zinc-400 line-through">{formatMoney(product.compareAtPrice)}</span>
+                      )}
+                    </div>
+                    <div className="text-xs text-zinc-400">
+                      {product.priceNGN ? formatMoney(product.priceNGN, "NGN") : "No ₦ price set"}
+                    </div>
                   </td>
                   <td className="px-5 py-3">
                     <span className={`text-xs font-semibold ${product.stock > 0 ? "text-emerald-600" : "text-rose-500"}`}>
@@ -217,6 +224,8 @@ function ProductModal({
     subcategory: product?.subcategory ?? "",
     price: String(product?.price ?? ""),
     compareAtPrice: String(product?.compareAtPrice ?? ""),
+    priceNGN: String(product?.priceNGN ?? ""),
+    compareAtPriceNGN: String(product?.compareAtPriceNGN ?? ""),
     stock: String(product?.stock ?? "100"),
     isNew: product?.isNew ?? false,
     isSale: product?.isSale ?? false,
@@ -266,6 +275,8 @@ function ProductModal({
         subcategory: form.subcategory || form.category,
         price: Number(form.price),
         compareAtPrice: form.compareAtPrice ? Number(form.compareAtPrice) : undefined,
+        priceNGN: form.priceNGN ? Number(form.priceNGN) : undefined,
+        compareAtPriceNGN: form.compareAtPriceNGN ? Number(form.compareAtPriceNGN) : undefined,
         stock: Number(form.stock),
         isNew: form.isNew,
         isSale: form.isSale,
@@ -332,8 +343,15 @@ function ProductModal({
           </div>
           <div className="grid grid-cols-3 gap-4">
             <F label="Price (£) *" type="number" value={form.price} onChange={(v) => setForm((f) => ({ ...f, price: v }))} required />
-            <F label="Compare-at Price" type="number" value={form.compareAtPrice} onChange={(v) => setForm((f) => ({ ...f, compareAtPrice: v }))} />
+            <F label="Compare-at Price (£)" type="number" value={form.compareAtPrice} onChange={(v) => setForm((f) => ({ ...f, compareAtPrice: v }))} />
             <F label="Stock *" type="number" value={form.stock} onChange={(v) => setForm((f) => ({ ...f, stock: v }))} required />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <F label="Price (₦)" type="number" value={form.priceNGN} onChange={(v) => setForm((f) => ({ ...f, priceNGN: v }))} />
+              <p className="mt-1 text-[11px] text-zinc-400">Shown to Nigerian visitors instead of the £ price. Set independently — not converted.</p>
+            </div>
+            <F label="Compare-at Price (₦)" type="number" value={form.compareAtPriceNGN} onChange={(v) => setForm((f) => ({ ...f, compareAtPriceNGN: v }))} />
           </div>
 
           <div className="flex gap-6">

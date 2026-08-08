@@ -1,5 +1,5 @@
 import PLPTemplate from "@/components/plp/PLPTemplate";
-import { getNewArrivals } from "@/lib/data/server";
+import { getNewArrivals, getSiteMedia } from "@/lib/data/server";
 import { pageMetadata } from "@/lib/config/seo";
 
 export const metadata = pageMetadata({
@@ -13,12 +13,12 @@ export const metadata = pageMetadata({
 export const dynamic = "force-dynamic";
 
 export default async function NewArrivalsPage() {
-  const products = await getNewArrivals();
+  const [products, media] = await Promise.all([getNewArrivals(), getSiteMedia()]);
   return (
     <PLPTemplate
       title="New Arrivals"
       subtitle="The latest from the edit."
-      heroSeed="olx-hero-newarrivals"
+      heroImage={media["plp-hero-newarrivals"].url}
       products={products}
     />
   );

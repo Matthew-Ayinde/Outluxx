@@ -5,6 +5,7 @@ import { SITE_NAME, DEFAULT_TITLE, DEFAULT_DESCRIPTION } from "@/lib/config/seo"
 
 export interface StoreSettings {
   deliveryFee: number;
+  deliveryFeeNGN?: number;
   storeName: string;
   contactEmail: string;
   supportPhone: string;
@@ -46,6 +47,7 @@ async function fetchStoreSettings(): Promise<StoreSettings> {
 
   return {
     deliveryFee: doc.deliveryFee ?? 3.98,
+    deliveryFeeNGN: doc.deliveryFeeNGN,
     storeName: doc.storeName ?? FALLBACK.storeName,
     contactEmail: doc.contactEmail ?? FALLBACK.contactEmail,
     supportPhone: doc.supportPhone ?? FALLBACK.supportPhone,

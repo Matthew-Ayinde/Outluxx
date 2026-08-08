@@ -36,6 +36,8 @@ export async function PUT(req: NextRequest, { params }: Params) {
     subcategory: z.string().optional(),
     price: z.number().positive().optional(),
     compareAtPrice: z.number().positive().nullable().optional(),
+    priceNGN: z.number().positive().nullable().optional(),
+    compareAtPriceNGN: z.number().positive().nullable().optional(),
     stock: z.number().int().min(0).optional(),
     isNew: z.boolean().optional(),
     isSale: z.boolean().optional(),

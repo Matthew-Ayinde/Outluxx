@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import { Cormorant_Garamond, Jost } from "next/font/google";
 import { Providers } from "@/lib/store/Providers";
 import { SITE_URL, DEFAULT_OG_IMAGE } from "@/lib/config/seo";
 import { getStoreSettings } from "@/lib/data/settings";
+import type { Currency } from "@/lib/store/CurrencyContext";
 import "./globals.css";
 
 const headingFont = Cormorant_Garamond({
@@ -81,6 +83,7 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const settings = await getStoreSettings();
+  const currency: Currency = (await headers()).get("x-currency") === "NGN" ? "NGN" : "GBP";
 
   const organizationJsonLd = {
     "@context": "https://schema.org",
@@ -116,7 +119,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-full bg-[var(--background)] text-[var(--foreground)] antialiased">
-        <Providers initialSettings={settings}>{children}</Providers>
+        <Providers initialSettings={settings} initialCurrency={currency}>{children}</Providers>
       </body>
     </html>
   );

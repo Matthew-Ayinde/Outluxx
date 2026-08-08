@@ -23,6 +23,7 @@ const NotificationsSchema = z.object({
 
 const UpdateSchema = z.object({
   deliveryFee: z.number().min(0).max(1000),
+  deliveryFeeNGN: z.number().min(0).max(1000000).nullable().optional(),
   storeName: z.string().trim().min(1).max(80),
   contactEmail: z.string().trim().email(),
   supportPhone: z.string().trim().min(1).max(40),
@@ -50,6 +51,6 @@ export async function PUT(req: NextRequest) {
 
   invalidateStoreSettingsCache();
 
-  const { deliveryFee, storeName, contactEmail, supportPhone, currency, metaTitle, metaDescription, notifications } = settings;
-  return ok({ deliveryFee, storeName, contactEmail, supportPhone, currency, metaTitle, metaDescription, notifications, siteUrl: SITE_URL });
+  const { deliveryFee, deliveryFeeNGN, storeName, contactEmail, supportPhone, currency, metaTitle, metaDescription, notifications } = settings;
+  return ok({ deliveryFee, deliveryFeeNGN, storeName, contactEmail, supportPhone, currency, metaTitle, metaDescription, notifications, siteUrl: SITE_URL });
 }

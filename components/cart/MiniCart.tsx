@@ -4,10 +4,23 @@ import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/lib/store/CartContext";
+import { useCurrency } from "@/lib/store/CurrencyContext";
 import { formatMoney } from "@/lib/utils/format";
+import { resolveProductPrice } from "@/lib/utils/price";
 
 export default function MiniCart() {
-  const { items, isOpen, closeCart, removeItem, itemCount, subtotal } = useCart();
+  const { items, isOpen, closeCart, removeItem, itemCount } = useCart();
+  const currency = useCurrency();
+
+  // Line items resolve per-product (fall back to GBP individually), but the
+  // subtotal only switches to NGN when every item in the cart has one set —
+  // see resolveCartTotals for why a mixed-currency sum isn't shown.
+  const allHaveNGN = items.every((i) => i.product.priceNGN != null);
+  const subtotalCurrency = currency === "NGN" && allHaveNGN ? "NGN" : "GBP";
+  const subtotal = items.reduce((sum, i) => {
+    const unit = subtotalCurrency === "NGN" ? i.product.priceNGN! : i.product.price;
+    return sum + unit * i.quantity;
+  }, 0);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -96,7 +109,10 @@ export default function MiniCart() {
                     </div>
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-medium">
-                        {formatMoney(item.product.price * item.quantity)}
+                        {(() => {
+                          const { price, currency: c } = resolveProductPrice(item.product, currency);
+                          return formatMoney(price * item.quantity, c);
+                        })()}
                       </p>
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-zinc-500">Qty {item.quantity}</span>
@@ -120,7 +136,7 @@ export default function MiniCart() {
           <div className="border-t border-black/10 px-5 py-5 space-y-4 dark:border-white/10">
             <div className="flex items-center justify-between">
               <p className="text-xs font-medium uppercase tracking-[0.12em] text-zinc-500">Subtotal</p>
-              <p className="text-sm font-semibold">{formatMoney(subtotal)}</p>
+              <p className="text-sm font-semibold">{formatMoney(subtotal, subtotalCurrency)}</p>
             </div>
             <p className="text-[11px] text-zinc-400">
               Shipping & taxes calculated at checkout

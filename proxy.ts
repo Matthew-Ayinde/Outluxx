@@ -1,43 +1,41 @@
-import { NextRequest, NextResponse } from "next/server";
-import { verifyToken, COOKIE_NAME } from "@/lib/utils/auth";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { detectCountry } from "@/lib/currency/detectCountry";
 
-export function proxy(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-  const token = req.cookies.get(COOKIE_NAME)?.value;
+const CURRENCY_COOKIE = "currency";
+const CURRENCY_HEADER = "x-currency";
+// Re-checked daily so a visitor's currency updates if they travel.
+const COOKIE_MAX_AGE = 60 * 60 * 24;
 
-  if (pathname.startsWith("/admin")) {
-    if (!token) {
-      const url = req.nextUrl.clone();
-      url.pathname = "/account/sign-in";
-      url.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(url);
-    }
-    const payload = verifyToken(token);
-    if (!payload || payload.role !== "admin") {
-      const url = req.nextUrl.clone();
-      url.pathname = "/account/sign-in";
-      url.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(url);
-    }
+export async function proxy(request: NextRequest) {
+  const cookieValue = request.cookies.get(CURRENCY_COOKIE)?.value;
+  let currency = cookieValue === "NGN" || cookieValue === "GBP" ? cookieValue : null;
+
+  if (!currency) {
+    const country = await detectCountry(request);
+    currency = country === "NG" ? "NGN" : "GBP";
   }
 
-  if (
-    pathname.startsWith("/account/profile") ||
-    pathname.startsWith("/account/addresses") ||
-    pathname.startsWith("/account/orders") ||
-    pathname.startsWith("/account/returns")
-  ) {
-    if (!token || !verifyToken(token)) {
-      const url = req.nextUrl.clone();
-      url.pathname = "/account/sign-in";
-      url.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(url);
-    }
+  // Forwarded as a request header so the very first render (before the
+  // Set-Cookie below has round-tripped) already sees the right currency.
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set(CURRENCY_HEADER, currency);
+
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
+
+  if (!cookieValue) {
+    response.cookies.set(CURRENCY_COOKIE, currency, {
+      maxAge: COOKIE_MAX_AGE,
+      path: "/",
+      sameSite: "lax",
+    });
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/account/profile", "/account/addresses", "/account/orders/:path*", "/account/returns"],
+  matcher: [
+    "/((?!api|admin|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+  ],
 };

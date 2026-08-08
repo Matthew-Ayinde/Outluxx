@@ -1,5 +1,5 @@
 import PLPTemplate from "@/components/plp/PLPTemplate";
-import { getSaleProducts } from "@/lib/data/server";
+import { getSaleProducts, getSiteMedia } from "@/lib/data/server";
 import { pageMetadata } from "@/lib/config/seo";
 
 export const metadata = pageMetadata({
@@ -13,12 +13,12 @@ export const metadata = pageMetadata({
 export const dynamic = "force-dynamic";
 
 export default async function SalePage() {
-  const products = await getSaleProducts();
+  const [products, media] = await Promise.all([getSaleProducts(), getSiteMedia()]);
   return (
     <PLPTemplate
       title="Sale"
       subtitle="Exceptional pieces. Exceptional prices."
-      heroSeed="olx-hero-sale"
+      heroImage={media["plp-hero-sale"].url}
       products={products}
     />
   );

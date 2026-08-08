@@ -9,11 +9,11 @@ import type { Product } from "@/types/commerce";
 type PLPTemplateProps = {
   title: string;
   subtitle?: string;
-  heroSeed: string;
+  heroImage: string;
   products: Product[];
 };
 
-export default function PLPTemplate({ title, subtitle, heroSeed, products }: PLPTemplateProps) {
+export default function PLPTemplate({ title, subtitle, heroImage, products }: PLPTemplateProps) {
   const [sort, setSort] = useState("featured");
   const [sizeFilter, setSizeFilter] = useState<string[]>([]);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -44,7 +44,7 @@ export default function PLPTemplate({ title, subtitle, heroSeed, products }: PLP
       {/* Hero */}
       <div className="relative h-[38vh] min-h-52 overflow-hidden bg-black">
         <Image
-          src={`https://picsum.photos/seed/${heroSeed}/1600/600`}
+          src={heroImage}
           alt={title}
           fill
           priority

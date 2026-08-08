@@ -5,23 +5,31 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/store/CartContext";
 import { useCheckout } from "@/lib/store/CheckoutContext";
 import { formatMoney } from "@/lib/utils/format";
+import { resolveCartTotals } from "@/lib/utils/price";
 import { createIntent } from "@/lib/api/checkout";
 import type { CheckoutItem } from "@/lib/api/checkout";
 import { ApiError } from "@/lib/api/client";
 import { useSettings } from "@/lib/store/SettingsContext";
+import { useCurrency } from "@/lib/store/CurrencyContext";
 import Image from "next/image";
 
 export default function ShippingPage() {
   const router = useRouter();
-  const { items, subtotal, total, discount, promoCode } = useCart();
+  const { items, discount, promoCode } = useCart();
   const { setShipping, setIntent, setCartItems } = useCheckout();
 
   const [deliveryMethod, setDeliveryMethod] = useState<"standard" | "express">("standard");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const { deliveryFee } = useSettings();
-  const shipping = deliveryFee;
+  const { deliveryFee, deliveryFeeNGN } = useSettings();
+  const currency = useCurrency();
+  const {
+    currency: totalsCurrency,
+    subtotal,
+    shipping,
+    total,
+  } = resolveCartTotals(items, discount, deliveryFee, deliveryFeeNGN, currency);
 
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "", phone: "",
@@ -151,8 +159,8 @@ export default function ShippingPage() {
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest">Delivery Method</h2>
           <div className="space-y-3">
             {([
-              { id: "standard" as const, label: "Standard Delivery", time: "3–5 business days", price: formatMoney(deliveryFee) },
-              { id: "express" as const, label: "Express Delivery", time: "1–2 business days", price: formatMoney(deliveryFee) },
+              { id: "standard" as const, label: "Standard Delivery", time: "3–5 business days", price: formatMoney(shipping, totalsCurrency) },
+              { id: "express" as const, label: "Express Delivery", time: "1–2 business days", price: formatMoney(shipping, totalsCurrency) },
             ]).map((opt) => (
               <label key={opt.id} className="flex cursor-pointer items-center justify-between border border-black/15 p-4 hover:border-black transition-colors dark:border-white/20 dark:hover:border-white">
                 <div className="flex items-center gap-3">
@@ -183,7 +191,7 @@ export default function ShippingPage() {
         </button>
       </form>
 
-      <OrderSummary items={items} subtotal={subtotal} total={total} discount={discount} shipping={shipping} />
+      <OrderSummary items={items} subtotal={subtotal} total={total} discount={discount} shipping={shipping} currency={totalsCurrency} />
     </div>
   );
 }
@@ -210,46 +218,49 @@ function Field({
 }
 
 function OrderSummary({
-  items, subtotal, total, discount, shipping,
+  items, subtotal, total, discount, shipping, currency,
 }: {
   items: ReturnType<typeof useCart>["items"];
-  subtotal: number; total: number; discount: number; shipping: number;
+  subtotal: number; total: number; discount: number; shipping: number; currency: "GBP" | "NGN";
 }) {
   return (
     <div className="border border-black/10 p-6 h-fit dark:border-white/10">
       <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest">Your Order</h2>
       <div className="space-y-4 border-b border-black/10 pb-4 dark:border-white/10">
-        {items.map((item) => (
-          <div key={`${item.product.id}-${item.selectedSize}-${item.selectedColor}`} className="flex gap-3">
-            <div className="relative h-16 w-12 shrink-0 overflow-hidden bg-zinc-50">
-              <Image src={item.product.images[0].src} alt={item.product.title} fill className="object-cover" sizes="48px" />
-              <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
-                {item.quantity}
-              </span>
+        {items.map((item) => {
+          const unit = currency === "NGN" ? item.product.priceNGN! : item.product.price;
+          return (
+            <div key={`${item.product.id}-${item.selectedSize}-${item.selectedColor}`} className="flex gap-3">
+              <div className="relative h-16 w-12 shrink-0 overflow-hidden bg-zinc-50">
+                <Image src={item.product.images[0].src} alt={item.product.title} fill className="object-cover" sizes="48px" />
+                <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
+                  {item.quantity}
+                </span>
+              </div>
+              <div className="flex-1">
+                <p className="text-xs font-medium leading-tight">{item.product.title}</p>
+                <p className="mt-0.5 text-[11px] text-zinc-500">{item.selectedSize} · {item.selectedColor}</p>
+              </div>
+              <p className="text-xs font-semibold">{formatMoney(unit * item.quantity, currency)}</p>
             </div>
-            <div className="flex-1">
-              <p className="text-xs font-medium leading-tight">{item.product.title}</p>
-              <p className="mt-0.5 text-[11px] text-zinc-500">{item.selectedSize} · {item.selectedColor}</p>
-            </div>
-            <p className="text-xs font-semibold">{formatMoney(item.product.price * item.quantity)}</p>
-          </div>
-        ))}
+          );
+        })}
       </div>
       <div className="mt-4 space-y-2 text-sm">
         <div className="flex justify-between text-zinc-500">
-          <span>Subtotal</span><span>{formatMoney(subtotal)}</span>
+          <span>Subtotal</span><span>{formatMoney(subtotal, currency)}</span>
         </div>
         {discount > 0 && (
           <div className="flex justify-between text-red-600">
-            <span>Discount</span><span>–{formatMoney(subtotal * discount)}</span>
+            <span>Discount</span><span>–{formatMoney(subtotal * discount, currency)}</span>
           </div>
         )}
         <div className="flex justify-between text-zinc-500">
           <span>Shipping</span>
-          <span>{shipping === 0 ? "Free" : formatMoney(shipping)}</span>
+          <span>{shipping === 0 ? "Free" : formatMoney(shipping, currency)}</span>
         </div>
         <div className="flex justify-between border-t border-black/10 pt-3 font-semibold dark:border-white/10">
-          <span>Total</span><span>{formatMoney(total + shipping)}</span>
+          <span>Total</span><span>{formatMoney(total, currency)}</span>
         </div>
       </div>
     </div>

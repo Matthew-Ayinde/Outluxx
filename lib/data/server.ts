@@ -6,6 +6,8 @@ import connectDB from "@/lib/db/mongoose";
 import { Product as ProductModel } from "@/lib/db/models/Product";
 import { Customer as CustomerModel, type ICustomerAddress } from "@/lib/db/models/Customer";
 import { Order as OrderModel, type IOrderItem, type IAddress, type OrderStatus, type PaymentStatus } from "@/lib/db/models/Order";
+import { SiteMedia } from "@/lib/db/models/SiteMedia";
+import { MEDIA_SLOTS, type MediaType } from "@/lib/media/slots";
 import type { Product, ProductCategory } from "@/types/commerce";
 import type { IProduct } from "@/lib/db/models/Product";
 import mongoose from "mongoose";
@@ -22,6 +24,8 @@ function toProduct(doc: LeanProduct): Product {
     subcategory: doc.subcategory,
     price: doc.price,
     compareAtPrice: doc.compareAtPrice,
+    priceNGN: doc.priceNGN,
+    compareAtPriceNGN: doc.compareAtPriceNGN,
     isNew: doc.isNew,
     isSale: doc.isSale,
     isFeatured: doc.isFeatured,
@@ -91,6 +95,28 @@ export async function getAllProducts(opts: {
 
   const docs = await ProductModel.find(filter).sort(sortObj).lean<LeanProduct[]>();
   return docs.map(toProduct);
+}
+
+// ── Site media (admin-managed pictures/videos) ──────────────────────────────
+
+export type SiteMediaMap = Record<string, { type: MediaType; url: string }>;
+
+/** Resolves every media slot to its admin-uploaded file, falling back to the
+ *  bundled default asset for slots that haven't been customized. */
+export async function getSiteMedia(): Promise<SiteMediaMap> {
+  await connectDB();
+  const overrides = await SiteMedia.find({}).lean();
+  const overrideMap = new Map(overrides.map((o) => [o.slot, o]));
+
+  const map: SiteMediaMap = {};
+  for (const def of MEDIA_SLOTS) {
+    const override = overrideMap.get(def.id);
+    map[def.id] = {
+      type: override?.mediaType ?? def.defaultType,
+      url: override?.url ?? def.defaultUrl,
+    };
+  }
+  return map;
 }
 
 // ── Account data (session-scoped) ───────────────────────────────────────────

@@ -3,14 +3,18 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useWishlist } from "@/lib/store/WishlistContext";
+import { useCurrency } from "@/lib/store/CurrencyContext";
 import { formatMoney } from "@/lib/utils/format";
+import { resolveProductPrice } from "@/lib/utils/price";
 import type { Product } from "@/types/commerce";
 
 export default function ProductCard({ product }: { product: Product }) {
   const { toggle, has } = useWishlist();
+  const currency = useCurrency();
   const wishlisted = has(product.id);
   const image = product.images[0];
   const hover = product.images[1];
+  const { price, compareAtPrice, currency: displayCurrency } = resolveProductPrice(product, currency);
 
   return (
     <article className="group">
@@ -83,11 +87,11 @@ export default function ProductCard({ product }: { product: Product }) {
         </Link>
         <div className="flex items-baseline gap-2 pt-0.5">
           <span className="text-sm font-medium text-foreground">
-            {formatMoney(product.price)}
+            {formatMoney(price, displayCurrency)}
           </span>
-          {product.compareAtPrice && (
+          {compareAtPrice && (
             <span className="text-xs text-muted line-through">
-              {formatMoney(product.compareAtPrice)}
+              {formatMoney(compareAtPrice, displayCurrency)}
             </span>
           )}
           {product.isSale && (

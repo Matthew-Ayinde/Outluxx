@@ -3,6 +3,7 @@ import Image from "next/image";
 import HeroSlideshow from "@/components/homepage/HeroSlideshow";
 import FeaturedProducts from "@/components/homepage/FeaturedProducts";
 import BrandStatement from "@/components/homepage/BrandStatement";
+import { getSiteMedia } from "@/lib/data/server";
 
 const categories = [
   {
@@ -10,28 +11,28 @@ const categories = [
     href: "/tshirts",
     seed: "olx-cat-ts",
     sub: "Supima · Pima · Modal",
-    image: "/media/img10.PNG",
+    slot: "category-tshirts",
   },
   {
     label: "Pants",
     href: "/pants",
     seed: "olx-cat-pt",
     sub: "Wool · Linen · Cashmere",
-    image: "/media/img2.PNG",
+    slot: "category-pants",
   },
   {
     label: "Armless",
     href: "/armless",
     seed: "olx-cat-ar",
     sub: "Silk · Knit · Linen",
-    image: "/media/img8.PNG",
+    slot: "category-armless",
   },
   {
     label: "Tank Tops",
     href: "/tank-tops",
     seed: "olx-cat-tt",
     sub: "Cotton · Silk · Cashmere",
-    image: "/media/img6.PNG",
+    slot: "category-tanktops",
   },
 ];
 
@@ -40,11 +41,21 @@ const trustItems = [
   { label: "10-Day Returns",       sub: "Free, no questions asked" },
 ];
 
-export default function Homepage() {
+const HERO_SLOTS = ["hero-slide-1", "hero-slide-2", "hero-slide-3", "hero-slide-4"];
+
+export default async function Homepage() {
+  const media = await getSiteMedia();
+  const heroMedia = HERO_SLOTS.map((slot) => {
+    const m = media[slot];
+    return m.type === "video"
+      ? { type: "video" as const, src: m.url }
+      : { type: "image" as const, src: m.url, alt: "" };
+  });
+
   return (
     <div className="bg-background">
       {/* -- Hero ------------------------------------------------------------ */}
-      <HeroSlideshow />
+      <HeroSlideshow media={heroMedia} />
 
       {/* -- Category Grid --------------------------------------------------─ */}
       <section id="collections" className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
@@ -69,7 +80,7 @@ export default function Homepage() {
             >
               <div className="relative aspect-[3/4] w-full overflow-hidden">
                 <Image
-                  src={cat.image}
+                  src={media[cat.slot].url}
                   alt={cat.label}
                   fill
                   sizes="(max-width: 640px) 50vw, 25vw"

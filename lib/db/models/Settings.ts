@@ -15,6 +15,8 @@ export interface ISettingsNotifications {
 export interface ISettings extends Document {
   key: string;
   deliveryFee: number;
+  /** Independently-set Naira delivery fee shown to Nigerian visitors — not a converted equivalent. */
+  deliveryFeeNGN?: number;
   storeName: string;
   contactEmail: string;
   supportPhone: string;
@@ -41,6 +43,7 @@ const SettingsSchema = new Schema<ISettings>(
   {
     key: { type: String, required: true, unique: true, default: SETTINGS_KEY },
     deliveryFee: { type: Number, required: true, min: 0, default: 3.98 },
+    deliveryFeeNGN: { type: Number, min: 0 },
     storeName: { type: String, required: true, default: SITE_NAME },
     contactEmail: { type: String, required: true, default: "support@outlxx.co.uk" },
     supportPhone: { type: String, required: true, default: "+44 (0) 20 7946 0958" },

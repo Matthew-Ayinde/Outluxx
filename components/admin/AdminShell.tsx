@@ -13,6 +13,7 @@ import {
   IconChartBar,
   IconGear,
   IconLayout,
+  IconImage,
   IconMenu,
   IconChevronLeft,
   IconArrowLeft,
@@ -28,6 +29,7 @@ const NAV: { label: string; href: string; icon: typeof IconGrid; accent: Accent 
   { label: "Payments", href: "/admin/payments", icon: IconCard, accent: "teal" },
   { label: "Analytics", href: "/admin/analytics", icon: IconChartBar, accent: "rose" },
   { label: "Content", href: "/admin/content", icon: IconLayout, accent: "orange" },
+  { label: "Media", href: "/admin/media", icon: IconImage, accent: "teal" },
   { label: "Settings", href: "/admin/settings", icon: IconGear, accent: "slate" },
 ];
 

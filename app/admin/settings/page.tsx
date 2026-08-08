@@ -19,6 +19,7 @@ interface SettingsForm {
   supportPhone: string;
   currency: string;
   deliveryFee: string;
+  deliveryFeeNGN: string;
   metaTitle: string;
   metaDescription: string;
   notifications: NotificationSettings;
@@ -30,6 +31,7 @@ const FORM_DEFAULTS: SettingsForm = {
   supportPhone: "",
   currency: "GBP",
   deliveryFee: "3.98",
+  deliveryFeeNGN: "",
   metaTitle: "",
   metaDescription: "",
   notifications: {
@@ -58,7 +60,7 @@ export default function AdminSettingsPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    apiFetch<SettingsForm & { deliveryFee: number; siteUrl: string }>("/api/settings")
+    apiFetch<SettingsForm & { deliveryFee: number; deliveryFeeNGN?: number; siteUrl: string }>("/api/settings")
       .then((data) => {
         setForm({
           storeName: data.storeName,
@@ -66,6 +68,7 @@ export default function AdminSettingsPage() {
           supportPhone: data.supportPhone,
           currency: data.currency,
           deliveryFee: String(data.deliveryFee),
+          deliveryFeeNGN: data.deliveryFeeNGN != null ? String(data.deliveryFeeNGN) : "",
           metaTitle: data.metaTitle,
           metaDescription: data.metaDescription,
           notifications: data.notifications,
@@ -91,6 +94,11 @@ export default function AdminSettingsPage() {
       setError("Delivery fee must be a valid non-negative number.");
       return;
     }
+    const feeNGN = form.deliveryFeeNGN ? Number(form.deliveryFeeNGN) : undefined;
+    if (feeNGN !== undefined && (!Number.isFinite(feeNGN) || feeNGN < 0)) {
+      setError("Naira delivery fee must be a valid non-negative number.");
+      return;
+    }
     if (!form.storeName.trim()) {
       setError("Store name is required.");
       return;
@@ -110,6 +118,7 @@ export default function AdminSettingsPage() {
           supportPhone: form.supportPhone.trim(),
           currency: form.currency.trim().toUpperCase(),
           deliveryFee: fee,
+          deliveryFeeNGN: feeNGN,
           metaTitle: form.metaTitle.trim(),
           metaDescription: form.metaDescription.trim(),
           notifications: form.notifications,
@@ -170,6 +179,23 @@ export default function AdminSettingsPage() {
               />
               <p className="mt-1 text-[11px] text-zinc-400">
                 Flat shipping fee charged on every order, applied at checkout.
+              </p>
+            </div>
+            <div>
+              <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+                Delivery Fee (₦)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={form.deliveryFeeNGN}
+                disabled={loading}
+                onChange={(e) => set("deliveryFeeNGN", e.target.value)}
+                className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100 disabled:opacity-50"
+              />
+              <p className="mt-1 text-[11px] text-zinc-400">
+                Shown to Nigerian visitors instead of the £ fee. Set independently — not converted.
               </p>
             </div>
           </Section>

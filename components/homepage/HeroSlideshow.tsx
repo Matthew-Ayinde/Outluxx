@@ -4,64 +4,55 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
+type SlideMedia =
+  | { type: "video"; src: string; poster?: string }
+  | { type: "image"; src: string; alt: string };
+
 type Slide = {
   eyebrow: string;
   lines: { text: string; italic?: boolean }[];
   copy: string;
   duration: number;
-  media:
-    | { type: "video"; src: string; poster: string }
-    | { type: "image"; src: string; alt: string };
 };
 
+// Text content stays fixed here; media (image/video) is admin-managed via
+// the Media section and passed in as `media`, keyed by slot order below.
 const slides: Slide[] = [
   {
     eyebrow: "Outlxx · Premium Fashion House",
-    lines: [{ text: "Refined by" }, { text: "Restraint.", italic: true }],
+    lines: [{ text: "Beyond the" }, { text: "Ordinary.", italic: true }],
     copy: "Considered apparel built on exceptional material and precise construction. For wardrobes that outlast trends.",
     duration: 10000,
-    media: {
-      type: "video",
-      src: "/media/home/hero1.MOV",
-      poster: "/media/home/slide-1.svg",
-    },
   },
   {
     eyebrow: "The Tailoring Edit",
-    lines: [{ text: "Cut with" }, { text: "Intention.", italic: true }],
+    lines: [{ text: "Culture in" }, { text: "Motion.", italic: true }],
     copy: "Supima, silk, and cashmere — shaped by hand and finished without compromise.",
     duration: 7000,
-    media: {
-      type: "image",
-      src: "/media/img3.PNG",
-      alt: "Tailored garment detail",
-    },
   },
-    {
+  {
     eyebrow: "Outlxx · Premium Fashion House",
-    lines: [{ text: "Refined by" }, { text: "Restraint.", italic: true }],
+    lines: [{ text: "Beyond the" }, { text: "Ordinary.", italic: true }],
     copy: "Considered apparel built on exceptional material and precise construction. For wardrobes that outlast trends.",
     duration: 10000,
-    media: {
-      type: "video",
-      src: "/media/home/hero2.MOV",
-      poster: "/media/home/slide-1.svg",
-    },
   },
   {
     eyebrow: "Monochrome Study",
-    lines: [{ text: "Quiet is the" }, { text: "Statement.", italic: true }],
+    lines: [{ text: "The New" }, { text: "Standard.", italic: true }],
     copy: "Black, ivory, and the space between. Foundational pieces that outlast every season.",
     duration: 7000,
-    media: {
-      type: "image",
-      src: "/media/img9.PNG",
-      alt: "Monochrome editorial look",
-    },
   },
 ];
 
-export default function HeroSlideshow() {
+const defaultMedia: SlideMedia[] = [
+  { type: "video", src: "/media/home/hero1.MOV", poster: "/media/home/slide-1.svg" },
+  { type: "image", src: "/media/img3.PNG", alt: "Tailored garment detail" },
+  { type: "video", src: "/media/home/hero2.MOV", poster: "/media/home/slide-1.svg" },
+  { type: "image", src: "/media/img9.PNG", alt: "Monochrome editorial look" },
+];
+
+export default function HeroSlideshow({ media }: { media?: SlideMedia[] }) {
+  const resolvedMedia = media && media.length === slides.length ? media : defaultMedia;
   const [active, setActive] = useState(0);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -76,7 +67,7 @@ export default function HeroSlideshow() {
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    if (slides[active].media.type === "video") {
+    if (resolvedMedia[active].type === "video") {
       video.currentTime = 0;
       video.play().catch(() => {});
     } else {
@@ -89,7 +80,7 @@ export default function HeroSlideshow() {
   return (
     <section className="relative h-screen overflow-hidden bg-black">
       {/* -- Media layers -- */}
-      {slides.map((s, i) => (
+      {resolvedMedia.map((m, i) => (
         <div
           key={i}
           aria-hidden={i !== active}
@@ -97,12 +88,12 @@ export default function HeroSlideshow() {
             i === active ? "opacity-100" : "opacity-0"
           }`}
         >
-          {s.media.type === "video" ? (
+          {m.type === "video" ? (
             <video
               ref={videoRef}
               className="h-full w-full object-cover"
-              src={s.media.src}
-              poster={s.media.poster}
+              src={m.src}
+              poster={m.poster}
               autoPlay
               muted
               loop
@@ -112,8 +103,8 @@ export default function HeroSlideshow() {
           ) : (
             <div className={`h-full w-full ${i === active ? "hero-kenburns" : ""}`}>
               <Image
-                src={s.media.src}
-                alt={s.media.alt}
+                src={m.src}
+                alt={m.alt}
                 fill
                 sizes="100vw"
                 className="object-cover"

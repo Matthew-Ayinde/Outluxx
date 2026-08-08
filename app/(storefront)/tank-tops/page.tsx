@@ -1,5 +1,5 @@
 import PLPTemplate from "@/components/plp/PLPTemplate";
-import { getProductsByCategory } from "@/lib/data/server";
+import { getProductsByCategory, getSiteMedia } from "@/lib/data/server";
 import { pageMetadata } from "@/lib/config/seo";
 
 export const metadata = pageMetadata({
@@ -13,12 +13,15 @@ export const metadata = pageMetadata({
 export const dynamic = "force-dynamic";
 
 export default async function TankTopsPage() {
-  const products = await getProductsByCategory("tank-tops");
+  const [products, media] = await Promise.all([
+    getProductsByCategory("tank-tops"),
+    getSiteMedia(),
+  ]);
   return (
     <PLPTemplate
       title="Tank Tops"
       subtitle="Outlxx Essentials"
-      heroSeed="olx-hero-tanktops"
+      heroImage={media["plp-hero-tanktops"].url}
       products={products}
     />
   );

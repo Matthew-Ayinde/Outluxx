@@ -22,6 +22,9 @@ export interface IProduct {
   subcategory: string;
   price: number;
   compareAtPrice?: number;
+  /** Independently-set Naira price shown to Nigerian visitors — not a converted equivalent. */
+  priceNGN?: number;
+  compareAtPriceNGN?: number;
   stock: number;
   isNew: boolean;
   isSale: boolean;
@@ -47,6 +50,8 @@ const ProductSchema = new Schema<any>(
     subcategory: { type: String, required: true },
     price: { type: Number, required: true, min: 0 },
     compareAtPrice: { type: Number, min: 0 },
+    priceNGN: { type: Number, min: 0 },
+    compareAtPriceNGN: { type: Number, min: 0 },
     stock: { type: Number, default: 100, min: 0 },
     isNew: { type: Boolean, default: false },
     isSale: { type: Boolean, default: false },

@@ -24,6 +24,8 @@ const CreateProductSchema = z.object({
   subcategory: z.string().min(1),
   price: z.number().positive(),
   compareAtPrice: z.number().positive().optional(),
+  priceNGN: z.number().positive().optional(),
+  compareAtPriceNGN: z.number().positive().optional(),
   stock: z.number().int().min(0).default(100),
   isNew: z.boolean().default(false),
   isSale: z.boolean().default(false),

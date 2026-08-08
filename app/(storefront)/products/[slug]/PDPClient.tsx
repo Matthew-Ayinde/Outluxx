@@ -90,7 +90,13 @@ export default function PDPClient({ product, related }: { product: Product; rela
               {product.title}
             </h1>
             <div className="mt-5">
-              <PriceBlock price={product.price} compareAtPrice={product.compareAtPrice} size="lg" />
+              <PriceBlock
+                price={product.price}
+                compareAtPrice={product.compareAtPrice}
+                priceNGN={product.priceNGN}
+                compareAtPriceNGN={product.compareAtPriceNGN}
+                size="lg"
+              />
             </div>
           </div>
 

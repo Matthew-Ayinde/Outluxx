@@ -1,5 +1,5 @@
 import PLPTemplate from "@/components/plp/PLPTemplate";
-import { getProductsByCategory } from "@/lib/data/server";
+import { getProductsByCategory, getSiteMedia } from "@/lib/data/server";
 import { pageMetadata } from "@/lib/config/seo";
 
 export const metadata = pageMetadata({
@@ -13,12 +13,15 @@ export const metadata = pageMetadata({
 export const dynamic = "force-dynamic";
 
 export default async function ArmlessPage() {
-  const products = await getProductsByCategory("armless");
+  const [products, media] = await Promise.all([
+    getProductsByCategory("armless"),
+    getSiteMedia(),
+  ]);
   return (
     <PLPTemplate
       title="Armless"
       subtitle="Outlxx Essentials"
-      heroSeed="olx-hero-armless"
+      heroImage={media["plp-hero-armless"].url}
       products={products}
     />
   );
