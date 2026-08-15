@@ -44,12 +44,25 @@ export default async function AdminAnalyticsPage() {
   ]);
 
   const paidOrders = allOrders.filter((o) => o.paymentStatus === "paid" && o.status !== "cancelled");
-  const totalRevenue = paidOrders.reduce((s, o) => s + o.total, 0);
-  const avgOrderValue = paidOrders.length > 0 ? totalRevenue / paidOrders.length : 0;
   const itemsSold = paidOrders.reduce(
     (s, o) => s + o.items.reduce((n, item) => n + item.quantity, 0),
     0
   );
+
+  // GBP and NGN are never summed together — a £ + ₦ figure would be
+  // meaningless (mirrors app/admin/payments/page.tsx). The charts/breakdowns
+  // below are scoped to GBP orders, Outluxx's base currency, and labelled as
+  // such; per-currency totals are still shown in the top stat cards.
+  const gbpOrders = paidOrders.filter((o) => o.currency !== "NGN");
+  const ngnOrders = paidOrders.filter((o) => o.currency === "NGN");
+  const gbpRevenue = gbpOrders.reduce((s, o) => s + o.total, 0);
+  const ngnRevenue = ngnOrders.reduce((s, o) => s + o.total, 0);
+  const avgOrderValueGBP = gbpOrders.length > 0 ? gbpRevenue / gbpOrders.length : 0;
+  const avgOrderValueNGN = ngnOrders.length > 0 ? ngnRevenue / ngnOrders.length : 0;
+
+  // GBP-scoped datasets for the charts/breakdowns below.
+  const totalRevenue = gbpRevenue;
+  const paidOrdersForCharts = gbpOrders;
 
   const statusBreakdown = allOrders.reduce((acc, o) => {
     acc[o.status] = (acc[o.status] ?? 0) + 1;
@@ -58,7 +71,7 @@ export default async function AdminAnalyticsPage() {
 
   // Revenue by category — join order items to products by id
   const categoryById = new Map(products.map((p) => [p._id.toString(), p.category]));
-  const categoryRevenue = paidOrders.reduce((acc, o) => {
+  const categoryRevenue = paidOrdersForCharts.reduce((acc, o) => {
     o.items.forEach((item) => {
       const category = categoryById.get(item.productId);
       if (category) {
@@ -80,7 +93,7 @@ export default async function AdminAnalyticsPage() {
     });
   }
   const monthlyRevenue = months.map(({ year, month }) =>
-    paidOrders
+    paidOrdersForCharts
       .filter((o) => {
         const d = new Date(o.createdAt);
         return d.getFullYear() === year && d.getMonth() === month;
@@ -91,7 +104,7 @@ export default async function AdminAnalyticsPage() {
 
   // Top products by real revenue from order items
   const productRevenue = new Map<string, { revenue: number; units: number; brand: string }>();
-  paidOrders.forEach((o) => {
+  paidOrdersForCharts.forEach((o) => {
     o.items.forEach((item) => {
       const entry = productRevenue.get(item.productTitle) ?? { revenue: 0, units: 0, brand: item.productBrand };
       entry.revenue += item.price * item.quantity;
@@ -109,15 +122,29 @@ export default async function AdminAnalyticsPage() {
 
       {/* Key metrics */}
       <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Total Revenue" value={formatMoney(totalRevenue)} icon={<IconCard className="h-4 w-4" />} accent="emerald" />
+        <StatCard
+          label="Total Revenue"
+          value={formatMoney(gbpRevenue, "GBP")}
+          sub={ngnRevenue > 0 ? `+ ${formatMoney(ngnRevenue, "NGN")}` : undefined}
+          icon={<IconCard className="h-4 w-4" />}
+          accent="emerald"
+        />
         <StatCard label="Paid Orders" value={paidOrders.length.toString()} icon={<IconReceipt className="h-4 w-4" />} accent="blue" />
-        <StatCard label="Avg Order Value" value={formatMoney(avgOrderValue)} icon={<IconChartBar className="h-4 w-4" />} accent="gold" />
+        <StatCard
+          label="Avg Order Value"
+          value={formatMoney(avgOrderValueGBP, "GBP")}
+          sub={ngnRevenue > 0 ? `+ ${formatMoney(avgOrderValueNGN, "NGN")}` : undefined}
+          icon={<IconChartBar className="h-4 w-4" />}
+          accent="gold"
+        />
         <StatCard label="Items Sold" value={itemsSold.toString()} icon={<IconShirt className="h-4 w-4" />} accent="sky" />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Monthly revenue bar chart */}
-        <Panel title="Monthly Revenue" icon={<IconChartBar className="h-4 w-4" />} accent="gold" bodyClassName="p-5">
+        {/* Monthly revenue bar chart — scoped to GBP orders; NGN revenue is
+            shown separately above and on the Payments page (never summed
+            together with GBP). */}
+        <Panel title={ngnRevenue > 0 ? "Monthly Revenue (GBP)" : "Monthly Revenue"} icon={<IconChartBar className="h-4 w-4" />} accent="gold" bodyClassName="p-5">
           <div className="relative h-40">
             {[0, 25, 50, 75].map((pct) => (
               <div key={pct} className="absolute inset-x-0 border-t border-zinc-100" style={{ top: `${100 - pct}%` }} />
@@ -131,7 +158,7 @@ export default async function AdminAnalyticsPage() {
                       {monthlyRevenue[i] === 0 ? "—" : `${(monthlyRevenue[i] / 1000).toFixed(1)}k`}
                     </span>
                     <div
-                      title={formatMoney(monthlyRevenue[i])}
+                      title={formatMoney(monthlyRevenue[i], "GBP")}
                       className="w-full max-w-9 rounded-t-md bg-amber-400 transition-all hover:bg-amber-300"
                       style={{ height: `${Math.max(height, monthlyRevenue[i] > 0 ? 2 : 0)}%` }}
                     />
@@ -177,8 +204,8 @@ export default async function AdminAnalyticsPage() {
           )}
         </Panel>
 
-        {/* Revenue by category */}
-        <Panel title="Revenue by Category" icon={<IconTag className="h-4 w-4" />} accent="orange" bodyClassName="p-5">
+        {/* Revenue by category — scoped to GBP orders (see note above) */}
+        <Panel title={ngnRevenue > 0 ? "Revenue by Category (GBP)" : "Revenue by Category"} icon={<IconTag className="h-4 w-4" />} accent="orange" bodyClassName="p-5">
           {Object.keys(categoryRevenue).length === 0 ? (
             <p className="text-xs text-zinc-400">No paid orders yet.</p>
           ) : (
@@ -195,7 +222,7 @@ export default async function AdminAnalyticsPage() {
                           <span className="h-2 w-2 rounded-full" style={{ backgroundColor: color }} />
                           {CATEGORY_LABELS[category] ?? category}
                         </span>
-                        <span className="font-semibold tabular-nums">{formatMoney(revenue)}</span>
+                        <span className="font-semibold tabular-nums">{formatMoney(revenue, "GBP")}</span>
                       </div>
                       <div className="h-1.5 w-full rounded-full bg-zinc-100">
                         <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: color }} />
@@ -208,8 +235,8 @@ export default async function AdminAnalyticsPage() {
           )}
         </Panel>
 
-        {/* Top products by revenue */}
-        <Panel title="Top Products by Revenue" icon={<IconCard className="h-4 w-4" />} accent="emerald" bodyClassName="p-5">
+        {/* Top products by revenue — scoped to GBP orders (see note above) */}
+        <Panel title={ngnRevenue > 0 ? "Top Products by Revenue (GBP)" : "Top Products by Revenue"} icon={<IconCard className="h-4 w-4" />} accent="emerald" bodyClassName="p-5">
           {topProducts.length === 0 ? (
             <p className="text-xs text-zinc-400">No paid orders yet.</p>
           ) : (
@@ -223,7 +250,7 @@ export default async function AdminAnalyticsPage() {
                     <p className="truncate text-xs font-medium">{title}</p>
                     <p className="text-[11px] text-zinc-400">{data.brand} · {data.units} sold</p>
                   </div>
-                  <span className="text-xs font-semibold tabular-nums">{formatMoney(data.revenue)}</span>
+                  <span className="text-xs font-semibold tabular-nums">{formatMoney(data.revenue, "GBP")}</span>
                 </div>
               ))}
             </div>

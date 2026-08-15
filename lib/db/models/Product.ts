@@ -12,6 +12,13 @@ export interface IProductVariant {
   available: boolean;
 }
 
+export interface IProductColor {
+  label: string;
+  value: string;
+  available: boolean;
+  images: IProductImage[];
+}
+
 // Note: IProduct does NOT extend Document to avoid conflict with Document.isNew
 export interface IProduct {
   _id: mongoose.Types.ObjectId;
@@ -32,7 +39,7 @@ export interface IProduct {
   images: IProductImage[];
   description: string;
   sizes: IProductVariant[];
-  colors: IProductVariant[];
+  colors: IProductColor[];
   material: string;
   careInstructions: string;
   tags: string[];
@@ -66,7 +73,18 @@ const ProductSchema = new Schema<any>(
       default: [],
     },
     colors: {
-      type: [{ label: String, value: String, available: Boolean, _id: false }],
+      type: [
+        {
+          label: String,
+          value: String,
+          available: Boolean,
+          images: {
+            type: [{ src: String, alt: String, cloudinaryPublicId: String, _id: false }],
+            default: [],
+          },
+          _id: false,
+        },
+      ],
       default: [],
     },
     material: { type: String, required: true },

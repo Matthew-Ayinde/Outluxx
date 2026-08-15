@@ -8,6 +8,7 @@ import { useSettings } from "@/lib/store/SettingsContext";
 import { useCurrency } from "@/lib/store/CurrencyContext";
 import { formatMoney } from "@/lib/utils/format";
 import { resolveProductPrice, resolveCartTotals } from "@/lib/utils/price";
+import { resolveVariantImage } from "@/lib/utils/variant";
 
 export default function CartView() {
   const { items, removeItem, updateQuantity, discount, applyPromo, promoCode } =
@@ -71,12 +72,14 @@ export default function CartView() {
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_380px]">
         {/* Items */}
         <div className="divide-y divide-black/10 dark:divide-white/10">
-          {items.map((item) => (
+          {items.map((item) => {
+            const image = resolveVariantImage(item.product.images, item.product.colors, item.selectedColor);
+            return (
             <div key={`${item.product.id}-${item.selectedSize}-${item.selectedColor}`} className="flex gap-5 py-6">
               <Link href={`/products/${item.product.slug}`} className="shrink-0">
                 <div className="relative h-28 w-20 overflow-hidden bg-zinc-50">
                   <Image
-                    src={item.product.images[0].src}
+                    src={image.src}
                     alt={item.product.title}
                     fill
                     className="object-cover"
@@ -134,7 +137,8 @@ export default function CartView() {
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Order summary */}

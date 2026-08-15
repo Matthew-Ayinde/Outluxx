@@ -16,6 +16,13 @@ const ProductImageSchema = z.object({
   cloudinaryPublicId: z.string().optional(),
 });
 
+const ProductColorSchema = z.object({
+  label: z.string(),
+  value: z.string(),
+  available: z.boolean().default(true),
+  images: z.array(ProductImageSchema).default([]),
+});
+
 const CreateProductSchema = z.object({
   slug: z.string().min(1),
   title: z.string().min(1),
@@ -33,7 +40,7 @@ const CreateProductSchema = z.object({
   images: z.array(ProductImageSchema).min(1),
   description: z.string().min(1),
   sizes: z.array(ProductVariantSchema),
-  colors: z.array(ProductVariantSchema),
+  colors: z.array(ProductColorSchema),
   material: z.string().min(1),
   careInstructions: z.string().min(1),
   tags: z.array(z.string()).default([]),

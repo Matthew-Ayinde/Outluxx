@@ -26,8 +26,19 @@ interface Product {
   isNew: boolean; isSale: boolean; isFeatured: boolean;
   images: { src: string; alt: string }[];
   description: string; sizes: { label: string; value: string; available: boolean }[];
-  colors: { label: string; value: string; available: boolean }[];
+  colors: ProductColorForm[];
   material: string; careInstructions: string; tags: string[];
+}
+
+type ProductImageForm = { src: string; alt: string; cloudinaryPublicId?: string };
+type ProductColorForm = { label: string; value: string; available: boolean; images: ProductImageForm[] };
+
+function slugify(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)+/g, "");
 }
 
 export default function AdminProductsPage() {
@@ -234,7 +245,7 @@ function ProductModal({
     material: product?.material ?? "",
     careInstructions: product?.careInstructions ?? "",
     tags: product?.tags?.join(", ") ?? "",
-    images: product?.images ?? [] as { src: string; alt: string; cloudinaryPublicId?: string }[],
+    images: product?.images ?? [] as ProductImageForm[],
     sizes: product?.sizes ?? [
       { label: "XS", value: "xs", available: true },
       { label: "S", value: "s", available: true },
@@ -242,12 +253,11 @@ function ProductModal({
       { label: "L", value: "l", available: true },
       { label: "XL", value: "xl", available: true },
     ],
-    colors: product?.colors ?? [] as { label: string; value: string; available: boolean }[],
+    colors: product?.colors ?? [] as ProductColorForm[],
   });
 
-  async function uploadImages(files: FileList) {
-    setUploadingImages(true);
-    const uploaded: { src: string; alt: string; cloudinaryPublicId?: string }[] = [];
+  async function uploadFiles(files: FileList, alt: string): Promise<ProductImageForm[]> {
+    const uploaded: ProductImageForm[] = [];
     for (const file of Array.from(files)) {
       const fd = new FormData();
       fd.append("file", file);
@@ -255,15 +265,67 @@ function ProductModal({
       const res = await fetch("/api/upload", { method: "POST", body: fd });
       if (res.ok) {
         const json = await res.json();
-        uploaded.push({ src: json.data.url, alt: form.title || file.name, cloudinaryPublicId: json.data.publicId });
+        uploaded.push({ src: json.data.url, alt, cloudinaryPublicId: json.data.publicId });
       }
     }
+    return uploaded;
+  }
+
+  async function uploadImages(files: FileList) {
+    setUploadingImages(true);
+    const uploaded = await uploadFiles(files, form.title || "Product image");
     setForm((f) => ({ ...f, images: [...f.images, ...uploaded] }));
+    setUploadingImages(false);
+  }
+
+  function addColor() {
+    setForm((f) => ({ ...f, colors: [...f.colors, { label: "", value: "", available: true, images: [] }] }));
+  }
+
+  function removeColor(index: number) {
+    setForm((f) => ({ ...f, colors: f.colors.filter((_, i) => i !== index) }));
+  }
+
+  function updateColorLabel(index: number, label: string) {
+    setForm((f) => ({
+      ...f,
+      colors: f.colors.map((c, i) => (i === index ? { ...c, label, value: slugify(label) } : c)),
+    }));
+  }
+
+  function updateColorAvailable(index: number, available: boolean) {
+    setForm((f) => ({
+      ...f,
+      colors: f.colors.map((c, i) => (i === index ? { ...c, available } : c)),
+    }));
+  }
+
+  function removeColorImage(colorIndex: number, imageIndex: number) {
+    setForm((f) => ({
+      ...f,
+      colors: f.colors.map((c, i) =>
+        i === colorIndex ? { ...c, images: c.images.filter((_, j) => j !== imageIndex) } : c
+      ),
+    }));
+  }
+
+  async function uploadColorImages(colorIndex: number, files: FileList) {
+    setUploadingImages(true);
+    const color = form.colors[colorIndex];
+    const uploaded = await uploadFiles(files, color.label ? `${form.title} — ${color.label}` : form.title || "Colour image");
+    setForm((f) => ({
+      ...f,
+      colors: f.colors.map((c, i) => (i === colorIndex ? { ...c, images: [...c.images, ...uploaded] } : c)),
+    }));
     setUploadingImages(false);
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (form.colors.some((c) => !c.label.trim())) {
+      setError("Every colour needs a name.");
+      return;
+    }
     setLoading(true);
     setError("");
     try {
@@ -431,6 +493,85 @@ function ProductModal({
                   />
                   {s.label}
                 </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Colours */}
+          <div>
+            <div className="mb-2 flex items-center justify-between">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+                Colours {uploadingImages && <span className="text-zinc-400">(uploading…)</span>}
+              </p>
+              <button
+                type="button"
+                onClick={addColor}
+                className="flex items-center gap-1 text-[11px] font-semibold text-blue-600 hover:text-blue-700"
+              >
+                <IconPlus className="h-3 w-3" /> Add Colour
+              </button>
+            </div>
+
+            {form.colors.length === 0 && (
+              <p className="rounded-xl border border-dashed border-zinc-200 px-3 py-3 text-xs text-zinc-400">
+                No colours yet. Add one, then upload the image that shows the product in that colour.
+              </p>
+            )}
+
+            <div className="flex flex-col gap-3">
+              {form.colors.map((color, i) => (
+                <div key={i} className="rounded-xl border border-zinc-200 p-3">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="text"
+                      placeholder="Colour name (e.g. Black)"
+                      value={color.label}
+                      onChange={(e) => updateColorLabel(i, e.target.value)}
+                      className="flex-1 rounded-lg border border-zinc-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                    />
+                    <label className="flex items-center gap-1.5 whitespace-nowrap text-xs">
+                      <input
+                        type="checkbox"
+                        checked={color.available}
+                        onChange={(e) => updateColorAvailable(i, e.target.checked)}
+                        className="h-4 w-4 rounded accent-blue-600"
+                      />
+                      Available
+                    </label>
+                    <IconButton
+                      icon={<IconTrash className="h-3.5 w-3.5" />}
+                      label="Remove colour"
+                      tone="danger"
+                      onClick={() => removeColor(i)}
+                    />
+                  </div>
+
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {color.images.map((img, j) => (
+                      <div key={j} className="relative h-16 w-12 overflow-hidden rounded-lg border border-zinc-100 bg-zinc-50">
+                        <Image src={img.src} alt={img.alt} fill className="object-cover" sizes="48px" />
+                        <button
+                          type="button"
+                          onClick={() => removeColorImage(i, j)}
+                          className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-black/70 text-white"
+                          aria-label="Remove image"
+                        >
+                          <IconClose className="h-2.5 w-2.5" />
+                        </button>
+                      </div>
+                    ))}
+                    <label className="flex h-16 w-12 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-zinc-300 text-zinc-400 hover:border-blue-400 hover:text-blue-500 transition-colors">
+                      <IconUpload className="h-4 w-4" />
+                      <input
+                        type="file"
+                        accept="image/*,video/*"
+                        multiple
+                        onChange={(e) => e.target.files && uploadColorImages(i, e.target.files)}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                </div>
               ))}
             </div>
           </div>

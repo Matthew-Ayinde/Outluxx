@@ -7,6 +7,7 @@ import { useCart } from "@/lib/store/CartContext";
 import { useCurrency } from "@/lib/store/CurrencyContext";
 import { formatMoney } from "@/lib/utils/format";
 import { resolveProductPrice } from "@/lib/utils/price";
+import { resolveVariantImage } from "@/lib/utils/variant";
 
 export default function MiniCart() {
   const { items, isOpen, closeCart, removeItem, itemCount } = useCart();
@@ -83,13 +84,15 @@ export default function MiniCart() {
             </div>
           ) : (
             <ul className="space-y-5">
-              {items.map((item) => (
+              {items.map((item) => {
+                const image = resolveVariantImage(item.product.images, item.product.colors, item.selectedColor);
+                return (
                 <li key={`${item.product.id}-${item.selectedSize}-${item.selectedColor}`}
                   className="flex gap-4">
                   <div className="relative h-24 w-16 shrink-0 overflow-hidden border border-black/10 dark:border-white/10">
                     <Image
-                      src={item.product.images[0].src}
-                      alt={item.product.images[0].alt}
+                      src={image.src}
+                      alt={image.alt}
                       fill
                       className="object-cover"
                       sizes="64px"
@@ -126,7 +129,8 @@ export default function MiniCart() {
                     </div>
                   </div>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           )}
         </div>

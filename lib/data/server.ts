@@ -32,7 +32,12 @@ function toProduct(doc: LeanProduct): Product {
     images: doc.images.map(({ src, alt }) => ({ src, alt })),
     description: doc.description,
     sizes: doc.sizes.map(({ label, value, available }) => ({ label, value, available })),
-    colors: doc.colors.map(({ label, value, available }) => ({ label, value, available })),
+    colors: doc.colors.map(({ label, value, available, images }) => ({
+      label,
+      value,
+      available,
+      images: (images ?? []).map(({ src, alt }) => ({ src, alt })),
+    })),
     material: doc.material,
     careInstructions: doc.careInstructions,
     tags: doc.tags,

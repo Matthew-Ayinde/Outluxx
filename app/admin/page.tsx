@@ -27,7 +27,7 @@ export default async function AdminDashboard() {
   ] = await Promise.all([
     Order.aggregate([
       { $match: { paymentStatus: "paid", status: { $ne: "cancelled" } } },
-      { $group: { _id: null, total: { $sum: "$total" } } },
+      { $group: { _id: "$currency", total: { $sum: "$total" } } },
     ]),
     Order.countDocuments({}),
     Order.countDocuments({ status: { $in: ["pending", "processing"] } }),
@@ -43,7 +43,7 @@ export default async function AdminDashboard() {
       { $unwind: "$items" },
       {
         $group: {
-          _id: "$items.productTitle",
+          _id: { title: "$items.productTitle", currency: "$currency" },
           revenue: { $sum: { $multiply: ["$items.price", "$items.quantity"] } },
           unitsSold: { $sum: "$items.quantity" },
         },
@@ -53,10 +53,21 @@ export default async function AdminDashboard() {
     ]),
   ]);
 
-  const totalRevenue = revenueAgg[0]?.total ?? 0;
+  // GBP and NGN revenue are never summed together — a £ + ₦ figure would be
+  // meaningless — so each currency's total is tracked separately (mirrors
+  // app/admin/payments/page.tsx).
+  const gbpRevenue = revenueAgg.find((r) => r._id === "GBP")?.total ?? 0;
+  const ngnRevenue = revenueAgg.find((r) => r._id === "NGN")?.total ?? 0;
 
   const stats: { label: string; value: string; change: string; trend: "up" | "down" | "flat"; icon: React.ReactNode; accent: Accent }[] = [
-    { label: "Total Revenue", value: formatMoney(totalRevenue), change: "Paid orders, all time", trend: "flat", icon: <IconCard className="h-4 w-4" />, accent: "emerald" },
+    {
+      label: "Total Revenue",
+      value: formatMoney(gbpRevenue, "GBP"),
+      change: ngnRevenue > 0 ? `+ ${formatMoney(ngnRevenue, "NGN")} · Paid orders, all time` : "Paid orders, all time",
+      trend: "flat",
+      icon: <IconCard className="h-4 w-4" />,
+      accent: "emerald",
+    },
     { label: "Total Orders", value: totalOrders.toString(), change: `+${ordersThisWeek} this week`, trend: ordersThisWeek > 0 ? "up" : "flat", icon: <IconReceipt className="h-4 w-4" />, accent: "blue" },
     { label: "Pending", value: pendingOrders.toString(), change: pendingOrders > 0 ? "Needs attention" : "All clear", trend: pendingOrders === 0 ? "up" : "down", icon: <IconAlertTriangle className="h-4 w-4" />, accent: "orange" },
     { label: "Customers", value: customerCount.toString(), change: `+${newCustomersThisWeek} this week`, trend: newCustomersThisWeek > 0 ? "up" : "flat", icon: <IconUsers className="h-4 w-4" />, accent: "sky" },
@@ -141,14 +152,14 @@ export default async function AdminDashboard() {
                 <p className="text-xs text-zinc-400">No sales yet.</p>
               ) : (
                 topProductsAgg.map((p, i) => (
-                  <div key={p._id} className="flex items-center gap-3">
+                  <div key={`${p._id.title}-${p._id.currency}`} className="flex items-center gap-3">
                     <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-amber-50 text-[9px] font-bold text-amber-700">
                       {i + 1}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="truncate text-xs font-medium">{p._id}</p>
+                      <p className="truncate text-xs font-medium">{p._id.title}</p>
                       <p className="text-[11px] text-zinc-400">
-                        {p.unitsSold} sold · {formatMoney(p.revenue)}
+                        {p.unitsSold} sold · {formatMoney(p.revenue, p._id.currency)}
                       </p>
                     </div>
                   </div>

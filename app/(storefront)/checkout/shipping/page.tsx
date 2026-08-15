@@ -11,6 +11,7 @@ import type { CheckoutItem } from "@/lib/api/checkout";
 import { ApiError } from "@/lib/api/client";
 import { useSettings } from "@/lib/store/SettingsContext";
 import { useCurrency } from "@/lib/store/CurrencyContext";
+import { resolveVariantImage } from "@/lib/utils/variant";
 import Image from "next/image";
 
 export default function ShippingPage() {
@@ -229,10 +230,11 @@ function OrderSummary({
       <div className="space-y-4 border-b border-black/10 pb-4 dark:border-white/10">
         {items.map((item) => {
           const unit = currency === "NGN" ? item.product.priceNGN! : item.product.price;
+          const image = resolveVariantImage(item.product.images, item.product.colors, item.selectedColor);
           return (
             <div key={`${item.product.id}-${item.selectedSize}-${item.selectedColor}`} className="flex gap-3">
               <div className="relative h-16 w-12 shrink-0 overflow-hidden bg-zinc-50">
-                <Image src={item.product.images[0].src} alt={item.product.title} fill className="object-cover" sizes="48px" />
+                <Image src={image.src} alt={item.product.title} fill className="object-cover" sizes="48px" />
                 <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
                   {item.quantity}
                 </span>

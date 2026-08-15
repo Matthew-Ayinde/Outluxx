@@ -18,6 +18,10 @@ export async function GET(_req: NextRequest, { params }: Params) {
 
   const orders = await Order.find({ customerId: id }).sort({ createdAt: -1 }).lean();
 
+  // GBP and NGN spend are never summed together — see route.ts (list endpoint).
+  const totalSpentGBP = orders.filter((o) => o.currency !== "NGN").reduce((sum, o) => sum + o.total, 0);
+  const totalSpentNGN = orders.filter((o) => o.currency === "NGN").reduce((sum, o) => sum + o.total, 0);
+
   return ok({
     id: customer._id.toString(),
     firstName: customer.firstName,
@@ -28,7 +32,8 @@ export async function GET(_req: NextRequest, { params }: Params) {
     addresses: customer.addresses,
     orders,
     orderCount: orders.length,
-    totalSpent: orders.reduce((sum, o) => sum + o.total, 0),
+    totalSpentGBP,
+    totalSpentNGN,
   });
 }
 

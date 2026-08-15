@@ -1,4 +1,5 @@
 import { pageMetadata } from "@/lib/config/seo";
+import { getPageCurrency } from "@/lib/currency/getPageCurrency";
 
 export const metadata = pageMetadata({
   title: "Shipping Policy",
@@ -6,7 +7,8 @@ export const metadata = pageMetadata({
   path: "/shipping-delivery",
 });
 
-export default function ShippingDeliveryPage() {
+export default async function ShippingDeliveryPage() {
+  const currency = await getPageCurrency();
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
       <div className="mb-10">
@@ -38,7 +40,10 @@ export default function ShippingDeliveryPage() {
         <Section title="Shipping Costs">
           <p>Shipping fees are calculated during checkout based on your delivery location.</p>
           <h3 className="mb-2 mt-5 text-sm font-semibold">Free Shipping</h3>
-          <p>We proudly offer <span className="font-medium">FREE shipping</span> on all orders over £100.</p>
+          <p>
+            We proudly offer <span className="font-medium">FREE shipping</span> on qualifying orders
+            {currency === "GBP" ? " over £100" : ""}.
+          </p>
           <p className="mt-3">Orders below this amount will incur the applicable shipping charge shown at checkout.</p>
         </Section>
 

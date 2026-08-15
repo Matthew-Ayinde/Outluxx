@@ -10,6 +10,7 @@ import { getStoreSettings } from "@/lib/data/settings";
 import { getRequestCurrency } from "@/lib/currency/getRequestCurrency";
 import { priceOrder, PricingError } from "@/lib/utils/serverPricing";
 import { verifyTransaction } from "@/lib/payments/paystack";
+import { resolveVariantImage } from "@/lib/utils/variant";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-06-24.dahlia" });
 
@@ -102,7 +103,7 @@ export async function POST(req: NextRequest) {
     productId: item.product._id.toString(),
     productTitle: item.product.title,
     productBrand: item.product.brand,
-    productImage: item.product.images[0]?.src ?? "",
+    productImage: resolveVariantImage(item.product.images, item.product.colors, item.selectedColor)?.src ?? "",
     quantity: item.quantity,
     selectedSize: item.selectedSize,
     selectedColor: item.selectedColor,

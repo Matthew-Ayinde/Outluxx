@@ -32,24 +32,37 @@ export async function GET(req: NextRequest) {
     .limit(limit)
     .lean();
 
-  // Enrich with order counts
+  // Enrich with order counts. GBP and NGN spend are never summed together —
+  // a £ + ₦ figure would be meaningless — so each currency is tracked
+  // separately (mirrors app/admin/payments/page.tsx).
   const customerIds = customers.map((c) => c._id.toString());
   const orderAgg = await Order.aggregate([
     { $match: { customerId: { $in: customerIds } } },
-    { $group: { _id: "$customerId", count: { $sum: 1 }, total: { $sum: "$total" } } },
+    { $group: { _id: { customerId: "$customerId", currency: "$currency" }, count: { $sum: 1 }, total: { $sum: "$total" } } },
   ]);
-  const orderMap = new Map(orderAgg.map((a) => [a._id, { count: a.count, total: a.total }]));
+  const orderMap = new Map<string, { count: number; totalGBP: number; totalNGN: number }>();
+  for (const a of orderAgg) {
+    const entry = orderMap.get(a._id.customerId) ?? { count: 0, totalGBP: 0, totalNGN: 0 };
+    entry.count += a.count;
+    if (a._id.currency === "NGN") entry.totalNGN += a.total;
+    else entry.totalGBP += a.total;
+    orderMap.set(a._id.customerId, entry);
+  }
 
-  const enriched = customers.map((c) => ({
-    id: c._id.toString(),
-    firstName: c.firstName,
-    lastName: c.lastName,
-    email: c.email,
-    phone: c.phone,
-    createdAt: c.createdAt,
-    orderCount: orderMap.get(c._id.toString())?.count ?? 0,
-    totalSpent: orderMap.get(c._id.toString())?.total ?? 0,
-  }));
+  const enriched = customers.map((c) => {
+    const agg = orderMap.get(c._id.toString());
+    return {
+      id: c._id.toString(),
+      firstName: c.firstName,
+      lastName: c.lastName,
+      email: c.email,
+      phone: c.phone,
+      createdAt: c.createdAt,
+      orderCount: agg?.count ?? 0,
+      totalSpentGBP: agg?.totalGBP ?? 0,
+      totalSpentNGN: agg?.totalNGN ?? 0,
+    };
+  });
 
   return ok({ customers: enriched, total, page, limit, pages: Math.ceil(total / limit) });
 }

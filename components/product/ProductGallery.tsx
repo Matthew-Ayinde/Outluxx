@@ -1,11 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import type { ProductImage } from "@/types/commerce";
 
 export default function ProductGallery({ images }: { images: ProductImage[] }) {
   const [active, setActive] = useState(0);
+
+  // Selecting a colour swaps in a different image set — jump back to the first shot.
+  useEffect(() => {
+    setActive(0);
+  }, [images]);
 
   return (
     <div className="flex gap-3">

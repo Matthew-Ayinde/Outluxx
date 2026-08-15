@@ -11,6 +11,10 @@ export type ProductImage = {
   alt: string;
 };
 
+export type ProductColor = ProductVariant & {
+  images?: ProductImage[];
+};
+
 export type Product = {
   id: string;
   slug: string;
@@ -28,7 +32,7 @@ export type Product = {
   images: ProductImage[];
   description: string;
   sizes: ProductVariant[];
-  colors: ProductVariant[];
+  colors: ProductColor[];
   material: string;
   careInstructions: string;
   tags: string[];

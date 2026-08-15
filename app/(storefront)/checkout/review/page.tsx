@@ -8,6 +8,7 @@ import { useCheckout } from "@/lib/store/CheckoutContext";
 import { formatMoney } from "@/lib/utils/format";
 import { confirmOrder } from "@/lib/api/checkout";
 import { ApiError } from "@/lib/api/client";
+import { resolveVariantImage } from "@/lib/utils/variant";
 
 export default function ReviewPage() {
   const router = useRouter();
@@ -89,10 +90,11 @@ export default function ReviewPage() {
         <div className="divide-y divide-black/5">
           {items.map((item) => {
             const unit = currency === "NGN" ? item.product.priceNGN! : item.product.price;
+            const image = resolveVariantImage(item.product.images, item.product.colors, item.selectedColor);
             return (
               <div key={`${item.product.id}-${item.selectedSize}`} className="flex gap-4 px-5 py-4">
                 <div className="relative h-16 w-12 shrink-0 overflow-hidden bg-zinc-50">
-                  <Image src={item.product.images[0].src} alt={item.product.title} fill className="object-cover" sizes="48px" />
+                  <Image src={image.src} alt={item.product.title} fill className="object-cover" sizes="48px" />
                 </div>
                 <div className="flex flex-1 items-start justify-between gap-2">
                   <div>

@@ -28,7 +28,8 @@ interface Customer {
   email: string;
   phone?: string;
   orderCount: number;
-  totalSpent: number;
+  totalSpentGBP: number;
+  totalSpentNGN: number;
   createdAt: string;
 }
 
@@ -118,7 +119,12 @@ export default function AdminCustomersPage() {
                   </td>
                   <td className="px-5 py-3 text-zinc-500">{customer.email}</td>
                   <td className="px-5 py-3 text-zinc-600">{customer.orderCount}</td>
-                  <td className="px-5 py-3 font-semibold">{formatMoney(customer.totalSpent)}</td>
+                  <td className="px-5 py-3 font-semibold">
+                    <div>{formatMoney(customer.totalSpentGBP, "GBP")}</div>
+                    {customer.totalSpentNGN > 0 && (
+                      <div className="text-xs font-normal text-zinc-400">+ {formatMoney(customer.totalSpentNGN, "NGN")}</div>
+                    )}
+                  </td>
                   <td className="px-5 py-3 text-zinc-500">
                     {new Date(customer.createdAt).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}
                   </td>

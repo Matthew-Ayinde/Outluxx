@@ -45,7 +45,12 @@ export async function PUT(req: NextRequest, { params }: Params) {
     images: z.array(z.object({ src: z.string(), alt: z.string(), cloudinaryPublicId: z.string().optional() })).optional(),
     description: z.string().min(1).optional(),
     sizes: z.array(z.object({ label: z.string(), value: z.string(), available: z.boolean() })).optional(),
-    colors: z.array(z.object({ label: z.string(), value: z.string(), available: z.boolean() })).optional(),
+    colors: z.array(z.object({
+      label: z.string(),
+      value: z.string(),
+      available: z.boolean(),
+      images: z.array(z.object({ src: z.string(), alt: z.string(), cloudinaryPublicId: z.string().optional() })).default([]),
+    })).optional(),
     material: z.string().optional(),
     careInstructions: z.string().optional(),
     tags: z.array(z.string()).optional(),
@@ -74,9 +79,9 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
   const product = await Product.findOne({ slug });
   if (!product) return err("Product not found", 404);
 
-  // Delete images from Cloudinary
-  const publicIds = product.images
-    .map((img) => img.cloudinaryPublicId)
+  // Delete images from Cloudinary — both the main gallery and every colour's images
+  const colorImagePublicIds = product.colors.flatMap((c) => c.images.map((img) => img.cloudinaryPublicId));
+  const publicIds = [...product.images.map((img) => img.cloudinaryPublicId), ...colorImagePublicIds]
     .filter(Boolean) as string[];
 
   if (publicIds.length > 0) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useCart } from "@/lib/store/CartContext";
 import { useWishlist } from "@/lib/store/WishlistContext";
@@ -52,6 +52,11 @@ export default function PDPClient({ product, related }: { product: Product; rela
   const wishlisted = has(product.id);
   const categoryLabel = categoryLabels[product.category] ?? product.category;
 
+  const selectedColorImages = useMemo(() => {
+    const match = product.colors.find((c) => c.value === color);
+    return match?.images?.length ? match.images : product.images;
+  }, [product, color]);
+
   function handleAddToCart() {
     if (!size) { setError("Please select a size."); return; }
     if (product.colors.length > 0 && !color) { setError("Please select a colour."); return; }
@@ -78,7 +83,7 @@ export default function PDPClient({ product, related }: { product: Product; rela
 
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
         {/* Gallery */}
-        <ProductGallery images={product.images} />
+        <ProductGallery images={selectedColorImages} />
 
         {/* Info — animate in from right */}
         <div className="animate-slide-right flex flex-col gap-6">

@@ -4,6 +4,8 @@ import { getProductBySlug, getAllProducts } from "@/lib/data/server";
 import PDPClient from "./PDPClient";
 import type { Product } from "@/types/commerce";
 import { pageMetadata, SITE_URL } from "@/lib/config/seo";
+import { getPageCurrency } from "@/lib/currency/getPageCurrency";
+import { resolveProductPrice } from "@/lib/utils/price";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -36,6 +38,8 @@ export default async function ProductPage({ params }: Props) {
   const related: Product[] = all.filter((p) => p.slug !== product.slug).slice(0, 4);
 
   const inStock = product.sizes.some((s) => s.available) && product.colors.some((c) => c.available);
+  const currency = await getPageCurrency();
+  const { price, currency: resolvedCurrency } = resolveProductPrice(product, currency);
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -48,8 +52,8 @@ export default async function ProductPage({ params }: Props) {
     offers: {
       "@type": "Offer",
       url: `${SITE_URL}/products/${product.slug}`,
-      priceCurrency: "GBP",
-      price: product.price,
+      priceCurrency: resolvedCurrency,
+      price,
       availability: inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
     },
   };

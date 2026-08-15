@@ -17,9 +17,12 @@ export default async function AccountOverviewPage() {
   ]);
   if (!customer) redirect("/account/sign-in?redirect=/account");
 
-  const totalSpent = orders
-    .filter((o) => o.paymentStatus === "paid" && o.status !== "cancelled")
-    .reduce((s, o) => s + o.total, 0);
+  const paidOrders = orders.filter((o) => o.paymentStatus === "paid" && o.status !== "cancelled");
+  // GBP and NGN are never summed together — a £ + ₦ figure would be
+  // meaningless — so each currency gets its own total (mirrors the admin
+  // customers/payments pages).
+  const totalSpentGBP = paidOrders.filter((o) => o.currency !== "NGN").reduce((s, o) => s + o.total, 0);
+  const totalSpentNGN = paidOrders.filter((o) => o.currency === "NGN").reduce((s, o) => s + o.total, 0);
   const recentOrders = orders.slice(0, 3);
   const memberSince = new Date(customer.memberSince).toLocaleDateString("en-GB", {
     month: "short",
@@ -38,7 +41,11 @@ export default async function AccountOverviewPage() {
 
         <div className="mt-5 grid grid-cols-2 gap-4 border-t border-black/10 pt-5 sm:grid-cols-3">
           <Stat label="Total Orders" value={orders.length.toString()} />
-          <Stat label="Total Spent" value={formatMoney(totalSpent)} />
+          <Stat
+            label="Total Spent"
+            value={formatMoney(totalSpentGBP, "GBP")}
+            sub={totalSpentNGN > 0 ? `+ ${formatMoney(totalSpentNGN, "NGN")}` : undefined}
+          />
           <Stat label="Member Since" value={memberSince} />
         </div>
       </div>
@@ -105,11 +112,12 @@ export default async function AccountOverviewPage() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div>
       <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">{label}</p>
       <p className="mt-1 text-lg font-semibold">{value}</p>
+      {sub && <p className="text-xs text-zinc-400">{sub}</p>}
     </div>
   );
 }
