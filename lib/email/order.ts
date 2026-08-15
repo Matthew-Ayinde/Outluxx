@@ -37,7 +37,7 @@ export async function sendOrderConfirmationEmail(order: IOrder) {
   `;
 
   const html = emailLayout({
-    preheader: `Your order ${order.orderNumber} is confirmed — total ${formatMoney(order.total)}`,
+    preheader: `Your order ${order.orderNumber} is confirmed — total ${formatMoney(order.total, order.currency)}`,
     eyebrow: "Order Confirmed",
     heading: "Thank you for your order",
     body,
@@ -67,7 +67,7 @@ export async function sendAdminOrderNotification(order: IOrder) {
             </tr>
             <tr>
               <td style="font-size:14px; font-weight:600; color:#18181b;">${order.customerEmail}</td>
-              <td style="font-size:14px; font-weight:600; color:#18181b; text-align:right;">${formatMoney(order.total)}</td>
+              <td style="font-size:14px; font-weight:600; color:#18181b; text-align:right;">${formatMoney(order.total, order.currency)}</td>
             </tr>
           </table>
         </td>
@@ -92,7 +92,7 @@ export async function sendAdminOrderNotification(order: IOrder) {
   `;
 
   const html = emailLayout({
-    preheader: `New order ${order.orderNumber} from ${order.customerEmail} — ${formatMoney(order.total)}`,
+    preheader: `New order ${order.orderNumber} from ${order.customerEmail} — ${formatMoney(order.total, order.currency)}`,
     eyebrow: "New Order",
     heading: `Order ${order.orderNumber}`,
     body,
@@ -102,7 +102,7 @@ export async function sendAdminOrderNotification(order: IOrder) {
   await getTransporter().sendMail({
     from: FROM,
     to: ADMIN_EMAIL,
-    subject: `New Order — ${order.orderNumber} (${formatMoney(order.total)})`,
+    subject: `New Order — ${order.orderNumber} (${formatMoney(order.total, order.currency)})`,
     html,
     attachments: [LOGO_ATTACHMENT],
   });

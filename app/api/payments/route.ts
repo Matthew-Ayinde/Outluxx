@@ -23,13 +23,15 @@ export async function GET(req: NextRequest) {
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit)
-      .select("orderNumber customerEmail paymentStatus stripePaymentIntentId stripeRefundId total subtotal shipping discount createdAt shippingAddress status")
+      .select("orderNumber customerEmail paymentStatus currency paymentProvider stripePaymentIntentId stripeRefundId paystackReference paystackRefundReference total subtotal shipping discount createdAt shippingAddress status")
       .lean(),
     Order.countDocuments(filter),
+    // Grouped by currency too — GBP and NGN totals must never be summed
+    // together, or the figure is meaningless (£ + ₦ is not a real amount).
     Order.aggregate([
       {
         $group: {
-          _id: "$paymentStatus",
+          _id: { status: "$paymentStatus", currency: "$currency" },
           count: { $sum: 1 },
           total: { $sum: "$total" },
         },
@@ -37,18 +39,28 @@ export async function GET(req: NextRequest) {
     ]),
   ]);
 
-  const statMap: Record<string, { count: number; total: number }> = {};
-  for (const s of stats) statMap[s._id] = { count: s.count, total: s.total };
+  type StatBucket = { count: number; total: number };
+  type CurrencyStats = { paid: StatBucket; failed: StatBucket; pending: StatBucket; refunded: StatBucket };
+  const empty = (): CurrencyStats => ({
+    paid: { count: 0, total: 0 },
+    failed: { count: 0, total: 0 },
+    pending: { count: 0, total: 0 },
+    refunded: { count: 0, total: 0 },
+  });
+
+  const byCurrency: Record<"GBP" | "NGN", CurrencyStats> = { GBP: empty(), NGN: empty() };
+  for (const s of stats) {
+    const currency: "GBP" | "NGN" = s._id.currency === "NGN" ? "NGN" : "GBP";
+    const status = s._id.status as keyof CurrencyStats;
+    if (status in byCurrency[currency]) {
+      byCurrency[currency][status] = { count: s.count, total: s.total };
+    }
+  }
 
   return ok({
     payments: orders,
     total,
     page,
-    stats: {
-      paid: statMap.paid ?? { count: 0, total: 0 },
-      failed: statMap.failed ?? { count: 0, total: 0 },
-      pending: statMap.pending ?? { count: 0, total: 0 },
-      refunded: statMap.refunded ?? { count: 0, total: 0 },
-    },
+    stats: byCurrency,
   });
 }

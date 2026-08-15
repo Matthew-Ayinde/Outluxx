@@ -45,7 +45,7 @@ export default async function OrdersPage() {
                 </div>
                 <div className="flex items-center gap-4">
                   <OrderStatusBadge status={order.status} />
-                  <span className="font-semibold">{formatMoney(order.total)}</span>
+                  <span className="font-semibold">{formatMoney(order.total, order.currency)}</span>
                   <svg width="6" height="10" viewBox="0 0 6 10" fill="none" className="text-zinc-300">
                     <path d="M1 1l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>

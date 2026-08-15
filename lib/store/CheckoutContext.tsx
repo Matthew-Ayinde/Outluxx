@@ -7,19 +7,17 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import type { CheckoutAddress, CheckoutItem } from "@/lib/api/checkout";
+import type { CheckoutAddress, CheckoutItem, IntentResponse, CheckoutBreakdown } from "@/lib/api/checkout";
 
 interface CheckoutState {
   shippingAddress: CheckoutAddress | null;
   deliveryMethod: "standard" | "express";
+  provider: "stripe" | "paystack" | null;
   paymentIntentId: string | null;
   clientSecret: string | null;
-  breakdown: {
-    subtotal: number;
-    discountAmount: number;
-    shipping: number;
-    total: number;
-  } | null;
+  paystackReference: string | null;
+  paystackAccessCode: string | null;
+  breakdown: CheckoutBreakdown | null;
   confirmedOrderNumber: string | null;
   confirmedOrderId: string | null;
   promoCode: string;
@@ -28,11 +26,7 @@ interface CheckoutState {
 
 interface CheckoutContextValue extends CheckoutState {
   setShipping: (address: CheckoutAddress, method: "standard" | "express") => void;
-  setIntent: (
-    paymentIntentId: string,
-    clientSecret: string,
-    breakdown: CheckoutState["breakdown"]
-  ) => void;
+  setIntent: (intent: IntentResponse) => void;
   setPaymentMethodDescription: (description: string) => void;
   setConfirmed: (orderNumber: string, orderId: string) => void;
   setPromoCode: (code: string) => void;
@@ -46,8 +40,11 @@ const CheckoutContext = createContext<CheckoutContextValue | null>(null);
 const initial: CheckoutState = {
   shippingAddress: null,
   deliveryMethod: "standard",
+  provider: null,
   paymentIntentId: null,
   clientSecret: null,
+  paystackReference: null,
+  paystackAccessCode: null,
   breakdown: null,
   confirmedOrderNumber: null,
   confirmedOrderId: null,
@@ -66,12 +63,29 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  const setIntent = useCallback(
-    (paymentIntentId: string, clientSecret: string, breakdown: CheckoutState["breakdown"]) => {
-      setState((s) => ({ ...s, paymentIntentId, clientSecret, breakdown }));
-    },
-    []
-  );
+  const setIntent = useCallback((intent: IntentResponse) => {
+    setState((s) =>
+      intent.provider === "stripe"
+        ? {
+            ...s,
+            provider: "stripe",
+            paymentIntentId: intent.paymentIntentId,
+            clientSecret: intent.clientSecret,
+            paystackReference: null,
+            paystackAccessCode: null,
+            breakdown: intent.breakdown,
+          }
+        : {
+            ...s,
+            provider: "paystack",
+            paymentIntentId: null,
+            clientSecret: null,
+            paystackReference: intent.reference,
+            paystackAccessCode: intent.accessCode,
+            breakdown: intent.breakdown,
+          }
+    );
+  }, []);
 
   const setPaymentMethodDescription = useCallback((description: string) => {
     setState((s) => ({ ...s, paymentMethodDescription: description }));

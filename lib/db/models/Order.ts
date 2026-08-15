@@ -9,6 +9,7 @@ export type OrderStatus =
   | "returned";
 
 export type PaymentStatus = "pending" | "paid" | "failed" | "refunded";
+export type PaymentProvider = "stripe" | "paystack";
 
 export interface IOrderItem {
   productId: string;
@@ -39,8 +40,13 @@ export interface IOrder extends Document {
   guestCheckout: boolean;
   status: OrderStatus;
   paymentStatus: PaymentStatus;
+  currency: "GBP" | "NGN";
+  paymentProvider: PaymentProvider;
   stripePaymentIntentId?: string;
   stripeRefundId?: string;
+  paystackReference?: string;
+  paystackTransactionId?: string;
+  paystackRefundReference?: string;
   items: IOrderItem[];
   subtotal: number;
   shipping: number;
@@ -97,8 +103,13 @@ const OrderSchema = new Schema<IOrder>(
       enum: ["pending", "paid", "failed", "refunded"],
       default: "pending",
     },
+    currency: { type: String, enum: ["GBP", "NGN"], required: true, default: "GBP" },
+    paymentProvider: { type: String, enum: ["stripe", "paystack"], required: true, default: "stripe" },
     stripePaymentIntentId: { type: String, index: true },
     stripeRefundId: { type: String },
+    paystackReference: { type: String, index: true },
+    paystackTransactionId: { type: String },
+    paystackRefundReference: { type: String },
     items: { type: [OrderItemSchema], required: true },
     subtotal: { type: Number, required: true, min: 0 },
     shipping: { type: Number, required: true, min: 0 },

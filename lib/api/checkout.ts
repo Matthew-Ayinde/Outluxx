@@ -18,22 +18,34 @@ export interface CheckoutAddress {
   country: string;
 }
 
-export interface IntentResponse {
-  clientSecret: string;
-  paymentIntentId: string;
-  breakdown: {
-    subtotal: number;
-    discountAmount: number;
-    shipping: number;
-    total: number;
-  };
+export interface CheckoutBreakdown {
+  currency: "GBP" | "NGN";
+  subtotal: number;
+  discountAmount: number;
+  shipping: number;
+  total: number;
 }
+
+export type IntentResponse =
+  | {
+      provider: "stripe";
+      clientSecret: string;
+      paymentIntentId: string;
+      breakdown: CheckoutBreakdown;
+    }
+  | {
+      provider: "paystack";
+      reference: string;
+      accessCode: string;
+      breakdown: CheckoutBreakdown;
+    };
 
 export interface ConfirmResponse {
   _id: string;
   orderNumber: string;
   status: string;
   paymentStatus: string;
+  currency: "GBP" | "NGN";
   total: number;
   items: unknown[];
   shippingAddress: CheckoutAddress;
@@ -50,7 +62,8 @@ export async function createIntent(data: {
 }
 
 export async function confirmOrder(data: {
-  paymentIntentId: string;
+  provider: "stripe" | "paystack";
+  paymentReference: string;
   shippingAddress: CheckoutAddress;
   deliveryMethod: "standard" | "express";
   customerEmail: string;

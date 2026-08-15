@@ -136,6 +136,7 @@ export interface AccountOrder {
   orderNumber: string;
   status: OrderStatus;
   paymentStatus: PaymentStatus;
+  currency: "GBP" | "NGN";
   items: IOrderItem[];
   subtotal: number;
   shipping: number;
@@ -151,6 +152,7 @@ interface LeanOrder {
   orderNumber: string;
   status: OrderStatus;
   paymentStatus: PaymentStatus;
+  currency: "GBP" | "NGN";
   items: IOrderItem[];
   subtotal: number;
   shipping: number;
@@ -167,6 +169,7 @@ function toAccountOrder(doc: LeanOrder): AccountOrder {
     orderNumber: doc.orderNumber,
     status: doc.status,
     paymentStatus: doc.paymentStatus,
+    currency: doc.currency,
     items: doc.items.map(({ productId, productTitle, productBrand, productImage, quantity, selectedSize, selectedColor, price }) => ({
       productId, productTitle, productBrand, productImage, quantity, selectedSize, selectedColor, price,
     })),

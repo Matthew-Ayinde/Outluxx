@@ -5,44 +5,45 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useCart } from "@/lib/store/CartContext";
 import { useCheckout } from "@/lib/store/CheckoutContext";
-import { useSettings } from "@/lib/store/SettingsContext";
-import { useCurrency } from "@/lib/store/CurrencyContext";
 import { formatMoney } from "@/lib/utils/format";
-import { resolveCartTotals } from "@/lib/utils/price";
 import { confirmOrder } from "@/lib/api/checkout";
 import { ApiError } from "@/lib/api/client";
 
 export default function ReviewPage() {
   const router = useRouter();
-  const { items, discount, clearCart, promoCode } = useCart();
-  const { shippingAddress, deliveryMethod, paymentIntentId, breakdown, cartItems, setConfirmed, reset, paymentMethodDescription } = useCheckout();
-  const { deliveryFee, deliveryFeeNGN } = useSettings();
-  const currency = useCurrency();
+  const { items, promoCode, clearCart } = useCart();
+  const {
+    shippingAddress,
+    deliveryMethod,
+    provider,
+    paymentIntentId,
+    paystackReference,
+    breakdown,
+    cartItems,
+    setConfirmed,
+    reset,
+    paymentMethodDescription,
+  } = useCheckout();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const paymentReference = provider === "paystack" ? paystackReference : paymentIntentId;
+
   useEffect(() => {
-    if (!shippingAddress || !paymentIntentId || !breakdown) {
+    if (!shippingAddress || !provider || !paymentReference || !breakdown) {
       router.replace("/checkout/shipping");
     }
-  }, [shippingAddress, paymentIntentId, breakdown, router]);
+  }, [shippingAddress, provider, paymentReference, breakdown, router]);
 
-  if (!shippingAddress || !paymentIntentId || !breakdown) {
+  if (!shippingAddress || !provider || !paymentReference || !breakdown) {
     return null;
   }
 
-  // Stripe always charges in GBP — `breakdown` (from the payment intent) is
-  // the source of truth for that. For Nigerian visitors we additionally show
-  // a Naira-equivalent figure, computed the same way as the cart/shipping
-  // summary, purely for display.
-  const ngn = currency === "NGN"
-    ? resolveCartTotals(items, discount, deliveryFee, deliveryFeeNGN, "NGN")
-    : null;
-  const displayCurrency = ngn?.currency === "NGN" ? "NGN" : "GBP";
-  const subtotal = displayCurrency === "NGN" ? ngn!.subtotal : breakdown.subtotal;
-  const discountAmount = displayCurrency === "NGN" ? ngn!.discountAmount : breakdown.discountAmount;
-  const shipping = displayCurrency === "NGN" ? ngn!.shipping : breakdown.shipping;
-  const total = displayCurrency === "NGN" ? ngn!.total : breakdown.total;
+  // The server (see /api/checkout/intent) has already resolved the currency
+  // actually being charged — no need to recompute it here, and no risk of
+  // this page disagreeing with what Stripe/Paystack authorized.
+  const currency = breakdown.currency;
+  const { subtotal, discountAmount, shipping, total } = breakdown;
 
   async function placeOrder() {
     setLoading(true);
@@ -50,7 +51,8 @@ export default function ReviewPage() {
     try {
       const email = sessionStorage.getItem("olx_checkout_email") ?? "";
       const order = await confirmOrder({
-        paymentIntentId: paymentIntentId!,
+        provider: provider!,
+        paymentReference: paymentReference!,
         shippingAddress: shippingAddress!,
         deliveryMethod: deliveryMethod!,
         customerEmail: email,
@@ -86,7 +88,7 @@ export default function ReviewPage() {
         </div>
         <div className="divide-y divide-black/5">
           {items.map((item) => {
-            const unit = displayCurrency === "NGN" ? item.product.priceNGN! : item.product.price;
+            const unit = currency === "NGN" ? item.product.priceNGN! : item.product.price;
             return (
               <div key={`${item.product.id}-${item.selectedSize}`} className="flex gap-4 px-5 py-4">
                 <div className="relative h-16 w-12 shrink-0 overflow-hidden bg-zinc-50">
@@ -100,7 +102,7 @@ export default function ReviewPage() {
                       {item.selectedSize} · {item.selectedColor} · Qty {item.quantity}
                     </p>
                   </div>
-                  <p className="text-sm font-semibold">{formatMoney(unit * item.quantity, displayCurrency)}</p>
+                  <p className="text-sm font-semibold">{formatMoney(unit * item.quantity, currency)}</p>
                 </div>
               </div>
             );
@@ -133,7 +135,7 @@ export default function ReviewPage() {
         </div>
         <div className="px-5 py-4 text-sm text-zinc-600">
           <p>{paymentMethodDescription ?? "Payment authorised"}</p>
-          <p className="text-xs text-zinc-400">Secured by Stripe</p>
+          <p className="text-xs text-zinc-400">Secured by {provider === "paystack" ? "Paystack" : "Stripe"}</p>
         </div>
       </section>
 
@@ -141,25 +143,20 @@ export default function ReviewPage() {
       <section className="mb-8 border border-black/10 p-5">
         <div className="space-y-2 text-sm">
           <div className="flex justify-between text-zinc-500">
-            <span>Subtotal</span><span>{formatMoney(subtotal, displayCurrency)}</span>
+            <span>Subtotal</span><span>{formatMoney(subtotal, currency)}</span>
           </div>
           {discountAmount > 0 && (
             <div className="flex justify-between text-red-600">
-              <span>Discount</span><span>–{formatMoney(discountAmount, displayCurrency)}</span>
+              <span>Discount</span><span>–{formatMoney(discountAmount, currency)}</span>
             </div>
           )}
           <div className="flex justify-between text-zinc-500">
             <span>Shipping</span>
-            <span>{shipping === 0 ? "Free" : formatMoney(shipping, displayCurrency)}</span>
+            <span>{shipping === 0 ? "Free" : formatMoney(shipping, currency)}</span>
           </div>
           <div className="flex justify-between border-t border-black/10 pt-3 font-semibold">
-            <span>Total</span><span>{formatMoney(total, displayCurrency)}</span>
+            <span>Total</span><span>{formatMoney(total, currency)}</span>
           </div>
-          {displayCurrency === "NGN" && (
-            <p className="pt-2 text-[11px] text-zinc-400">
-              You&apos;ll be charged {formatMoney(breakdown.total, "GBP")} — your card issuer converts this to Naira.
-            </p>
-          )}
         </div>
       </section>
 

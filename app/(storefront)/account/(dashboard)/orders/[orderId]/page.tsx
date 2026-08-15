@@ -69,7 +69,7 @@ export default async function OrderDetailPage({ params }: Props) {
                     {item.selectedSize} · {item.selectedColor} · Qty {item.quantity}
                   </p>
                 </div>
-                <p className="text-sm font-semibold">{formatMoney(item.price * item.quantity)}</p>
+                <p className="text-sm font-semibold">{formatMoney(item.price * item.quantity, order.currency)}</p>
               </div>
             </div>
           ))}
@@ -105,18 +105,18 @@ export default async function OrderDetailPage({ params }: Props) {
         <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest">Order Summary</h3>
         <div className="space-y-2 text-sm">
           <div className="flex justify-between text-zinc-500">
-            <span>Subtotal</span><span>{formatMoney(order.subtotal)}</span>
+            <span>Subtotal</span><span>{formatMoney(order.subtotal, order.currency)}</span>
           </div>
           <div className="flex justify-between text-zinc-500">
-            <span>Shipping</span><span>{order.shipping === 0 ? "Free" : formatMoney(order.shipping)}</span>
+            <span>Shipping</span><span>{order.shipping === 0 ? "Free" : formatMoney(order.shipping, order.currency)}</span>
           </div>
           {order.discount > 0 && (
             <div className="flex justify-between text-red-600">
-              <span>Discount</span><span>–{formatMoney(order.discount)}</span>
+              <span>Discount</span><span>–{formatMoney(order.discount, order.currency)}</span>
             </div>
           )}
           <div className="flex justify-between border-t border-black/10 pt-3 font-semibold dark:border-white/10">
-            <span>Total</span><span>{formatMoney(order.total)}</span>
+            <span>Total</span><span>{formatMoney(order.total, order.currency)}</span>
           </div>
         </div>
       </div>

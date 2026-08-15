@@ -110,7 +110,7 @@ export default async function AdminDashboard() {
                       <td className="px-5 py-3">
                         <StatusBadge label={order.status} tone={ORDER_STATUS_TONES[order.status] ?? "neutral"} />
                       </td>
-                      <td className="px-5 py-3 font-semibold">{formatMoney(order.total)}</td>
+                      <td className="px-5 py-3 font-semibold">{formatMoney(order.total, order.currency)}</td>
                     </tr>
                   ))}
                 </tbody>

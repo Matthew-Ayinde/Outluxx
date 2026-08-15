@@ -11,6 +11,8 @@ const STRIPE_DASHBOARD = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.startsW
   ? "https://dashboard.stripe.com/payments"
   : "https://dashboard.stripe.com/test/payments";
 
+const PAYSTACK_DASHBOARD = "https://dashboard.paystack.com/#/transactions";
+
 const FILTERS = ["all", "paid", "failed", "pending", "refunded"] as const;
 type Filter = (typeof FILTERS)[number];
 
@@ -20,8 +22,12 @@ interface Payment {
   customerEmail: string;
   paymentStatus: string;
   status: string;
+  currency: "GBP" | "NGN";
+  paymentProvider: "stripe" | "paystack";
   stripePaymentIntentId?: string;
   stripeRefundId?: string;
+  paystackReference?: string;
+  paystackRefundReference?: string;
   total: number;
   subtotal: number;
   shipping: number;
@@ -30,12 +36,33 @@ interface Payment {
   shippingAddress: { firstName: string; lastName: string; city: string; country: string };
 }
 
-interface Stats {
+function reference(p: Payment): string | undefined {
+  return p.paymentProvider === "paystack" ? p.paystackReference : p.stripePaymentIntentId;
+}
+
+function dashboardUrl(p: Payment): string | undefined {
+  const ref = reference(p);
+  if (!ref) return undefined;
+  return p.paymentProvider === "paystack"
+    ? `${PAYSTACK_DASHBOARD}?ref=${encodeURIComponent(ref)}`
+    : `${STRIPE_DASHBOARD}/${ref}`;
+}
+
+interface CurrencyStats {
   paid: { count: number; total: number };
   failed: { count: number; total: number };
   pending: { count: number; total: number };
   refunded: { count: number; total: number };
 }
+
+type Stats = Record<"GBP" | "NGN", CurrencyStats>;
+
+const EMPTY_CURRENCY_STATS: CurrencyStats = {
+  paid: { count: 0, total: 0 },
+  failed: { count: 0, total: 0 },
+  pending: { count: 0, total: 0 },
+  refunded: { count: 0, total: 0 },
+};
 
 export default function AdminPaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -65,13 +92,14 @@ export default function AdminPaymentsPage() {
   useEffect(() => { fetchPayments(); }, [fetchPayments]);
 
   async function issueRefund(payment: Payment) {
-    if (!payment.stripePaymentIntentId) return;
-    if (!confirm(`Refund ${formatMoney(payment.total)} to ${payment.customerEmail}?`)) return;
+    const ref = reference(payment);
+    if (!ref) return;
+    if (!confirm(`Refund ${formatMoney(payment.total, payment.currency)} to ${payment.customerEmail}?`)) return;
 
     setRefundingId(payment._id);
     setRefundError("");
     try {
-      const res = await fetch(`/api/payments/${payment.stripePaymentIntentId}/refund`, { method: "POST" });
+      const res = await fetch(`/api/payments/${ref}/refund`, { method: "POST" });
       const json = await res.json();
       if (!res.ok) {
         setRefundError(json.error ?? "Refund failed.");
@@ -92,42 +120,52 @@ export default function AdminPaymentsPage() {
     }
   }
 
-  const totalRevenue = stats?.paid.total ?? 0;
-  const totalRefunded = stats?.refunded.total ?? 0;
-  const netRevenue = totalRevenue - totalRefunded;
+  // GBP and NGN totals are never summed together — a £ + ₦ figure would be
+  // meaningless — so each currency gets its own stat row.
+  function statRow(currency: "GBP" | "NGN", label: string) {
+    const s = stats?.[currency] ?? EMPTY_CURRENCY_STATS;
+    const netRevenue = s.paid.total - s.refunded.total;
+    return (
+      <div key={currency} className="mb-6">
+        <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">{label}</p>
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <StatCard label="Net Revenue" value={formatMoney(netRevenue, currency)} sub="Paid minus refunded" trend="up" icon={<IconCard className="h-4 w-4" />} accent="emerald" />
+          <StatCard
+            label="Paid"
+            value={stats ? `${s.paid.count}` : "—"}
+            sub={stats ? formatMoney(s.paid.total, currency) : undefined}
+            trend="up"
+            icon={<IconCheckCircle className="h-4 w-4" />}
+            accent="blue"
+          />
+          <StatCard
+            label="Failed"
+            value={stats ? `${s.failed.count}` : "—"}
+            sub={stats ? `${s.pending.count} pending` : undefined}
+            trend="down"
+            icon={<IconAlertTriangle className="h-4 w-4" />}
+            accent="rose"
+          />
+          <StatCard
+            label="Refunded"
+            value={stats ? `${s.refunded.count}` : "—"}
+            sub={stats ? formatMoney(s.refunded.total, currency) : undefined}
+            trend="flat"
+            icon={<IconRefresh className="h-4 w-4" />}
+            accent="teal"
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
-      <SectionHeader title="Payments" subtitle="All payment transactions powered by Stripe" icon={<IconCard className="h-5 w-5" />} accent="teal" />
+      <SectionHeader title="Payments" subtitle="All payment transactions — GBP via Stripe, NGN via Paystack" icon={<IconCard className="h-5 w-5" />} accent="teal" />
 
       {/* Stats */}
-      <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Net Revenue" value={formatMoney(netRevenue)} sub="Paid minus refunded" trend="up" icon={<IconCard className="h-4 w-4" />} accent="emerald" />
-        <StatCard
-          label="Paid"
-          value={stats ? `${stats.paid.count}` : "—"}
-          sub={stats ? formatMoney(stats.paid.total) : undefined}
-          trend="up"
-          icon={<IconCheckCircle className="h-4 w-4" />}
-          accent="blue"
-        />
-        <StatCard
-          label="Failed"
-          value={stats ? `${stats.failed.count}` : "—"}
-          sub={stats ? `${stats.pending.count} pending` : undefined}
-          trend="down"
-          icon={<IconAlertTriangle className="h-4 w-4" />}
-          accent="rose"
-        />
-        <StatCard
-          label="Refunded"
-          value={stats ? `${stats.refunded.count}` : "—"}
-          sub={stats ? formatMoney(stats.refunded.total) : undefined}
-          trend="flat"
-          icon={<IconRefresh className="h-4 w-4" />}
-          accent="teal"
-        />
-      </div>
+      {statRow("GBP", "GBP · Stripe")}
+      {statRow("NGN", "NGN · Paystack")}
 
       {refundError && (
         <div className="mb-4 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700 ring-1 ring-inset ring-rose-200">{refundError}</div>
@@ -136,7 +174,13 @@ export default function AdminPaymentsPage() {
       {/* Filter tabs */}
       <div className="mb-4 flex flex-wrap gap-2">
         {FILTERS.map((f) => (
-          <FilterTab key={f} label={f} active={f === filter} onClick={() => setFilter(f)} count={f !== "all" && stats ? stats[f as keyof Stats]?.count ?? 0 : undefined} />
+          <FilterTab
+            key={f}
+            label={f}
+            active={f === filter}
+            onClick={() => setFilter(f)}
+            count={f !== "all" && stats ? (stats.GBP[f].count + stats.NGN[f].count) : undefined}
+          />
         ))}
       </div>
 
@@ -146,7 +190,7 @@ export default function AdminPaymentsPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-zinc-100 bg-zinc-50/60">
-                {["Order #", "Date", "Customer", "Stripe PI", "Status", "Amount", "Actions"].map((h) => (
+                {["Order #", "Date", "Customer", "Provider Ref", "Status", "Amount", "Actions"].map((h) => (
                   <th key={h} className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
                     {h}
                   </th>
@@ -169,15 +213,16 @@ export default function AdminPaymentsPage() {
                     <p className="text-xs text-zinc-400">{p.customerEmail}</p>
                   </td>
                   <td className="px-5 py-3">
-                    {p.stripePaymentIntentId ? (
+                    {reference(p) ? (
                       <a
-                        href={`${STRIPE_DASHBOARD}/${p.stripePaymentIntentId}`}
+                        href={dashboardUrl(p)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 font-mono text-xs text-zinc-400 hover:text-teal-600 transition-colors"
-                        title={p.stripePaymentIntentId}
+                        title={reference(p)}
                       >
-                        {p.stripePaymentIntentId.slice(0, 18)}… <IconExternalLink className="h-3 w-3" />
+                        <span className="uppercase text-[9px] font-sans font-semibold tracking-wide text-zinc-300">{p.paymentProvider}</span>
+                        {reference(p)!.slice(0, 14)}… <IconExternalLink className="h-3 w-3" />
                       </a>
                     ) : (
                       <span className="text-xs text-zinc-300">—</span>
@@ -186,11 +231,11 @@ export default function AdminPaymentsPage() {
                   <td className="px-5 py-3">
                     <StatusBadge label={p.paymentStatus} tone={PAYMENT_STATUS_TONES[p.paymentStatus] ?? "neutral"} />
                   </td>
-                  <td className="px-5 py-3 font-semibold">{formatMoney(p.total)}</td>
+                  <td className="px-5 py-3 font-semibold">{formatMoney(p.total, p.currency)}</td>
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-2">
                       <IconButton icon={<IconEye className="h-3.5 w-3.5" />} label="View payment" onClick={() => setDetail(p)} />
-                      {p.paymentStatus === "paid" && p.stripePaymentIntentId && (
+                      {p.paymentStatus === "paid" && reference(p) && (
                         <button
                           onClick={() => issueRefund(p)}
                           disabled={refundingId === p._id}
@@ -248,30 +293,30 @@ export default function AdminPaymentsPage() {
                 <p className="text-zinc-400 text-xs mt-1">{detail.shippingAddress.city}, {detail.shippingAddress.country}</p>
               </div>
 
-              {/* Stripe info */}
+              {/* Provider info */}
               <div>
-                <Label>Stripe Payment Intent</Label>
-                {detail.stripePaymentIntentId ? (
+                <Label>{detail.paymentProvider === "paystack" ? "Paystack Reference" : "Stripe Payment Intent"}</Label>
+                {reference(detail) ? (
                   <>
-                    <p className="font-mono text-xs text-zinc-600 break-all">{detail.stripePaymentIntentId}</p>
+                    <p className="font-mono text-xs text-zinc-600 break-all">{reference(detail)}</p>
                     <a
-                      href={`${STRIPE_DASHBOARD}/${detail.stripePaymentIntentId}`}
+                      href={dashboardUrl(detail)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mt-1 inline-flex items-center gap-1 text-xs text-teal-600 hover:text-teal-800 transition-colors"
                     >
-                      View in Stripe Dashboard <IconExternalLink className="h-3 w-3" />
+                      View in {detail.paymentProvider === "paystack" ? "Paystack" : "Stripe"} Dashboard <IconExternalLink className="h-3 w-3" />
                     </a>
                   </>
                 ) : (
-                  <p className="text-zinc-400">No Stripe ID (simulation)</p>
+                  <p className="text-zinc-400">No reference (simulation)</p>
                 )}
               </div>
 
-              {detail.stripeRefundId && (
+              {(detail.stripeRefundId || detail.paystackRefundReference) && (
                 <div>
-                  <Label>Stripe Refund ID</Label>
-                  <p className="font-mono text-xs text-zinc-600 break-all">{detail.stripeRefundId}</p>
+                  <Label>{detail.paymentProvider === "paystack" ? "Paystack Refund ID" : "Stripe Refund ID"}</Label>
+                  <p className="font-mono text-xs text-zinc-600 break-all">{detail.stripeRefundId || detail.paystackRefundReference}</p>
                 </div>
               )}
 
@@ -279,13 +324,13 @@ export default function AdminPaymentsPage() {
               <div>
                 <Label>Amount Breakdown</Label>
                 <div className="space-y-1.5 text-sm">
-                  <Row label="Subtotal" value={formatMoney(detail.subtotal)} />
+                  <Row label="Subtotal" value={formatMoney(detail.subtotal, detail.currency)} />
                   {detail.discount > 0 && (
-                    <Row label="Discount" value={`–${formatMoney(detail.discount)}`} className="text-rose-600" />
+                    <Row label="Discount" value={`–${formatMoney(detail.discount, detail.currency)}`} className="text-rose-600" />
                   )}
-                  <Row label="Shipping" value={detail.shipping === 0 ? "Free" : formatMoney(detail.shipping)} />
+                  <Row label="Shipping" value={detail.shipping === 0 ? "Free" : formatMoney(detail.shipping, detail.currency)} />
                   <div className="border-t border-zinc-100 pt-2">
-                    <Row label="Total" value={formatMoney(detail.total)} bold />
+                    <Row label="Total" value={formatMoney(detail.total, detail.currency)} bold />
                   </div>
                 </div>
               </div>
@@ -300,7 +345,7 @@ export default function AdminPaymentsPage() {
               </div>
 
               {/* Refund action */}
-              {detail.paymentStatus === "paid" && detail.stripePaymentIntentId && (
+              {detail.paymentStatus === "paid" && reference(detail) && (
                 <div className="border-t border-zinc-100 pt-4">
                   <Button
                     variant="danger-outline"
@@ -308,10 +353,10 @@ export default function AdminPaymentsPage() {
                     disabled={refundingId === detail._id}
                     onClick={() => issueRefund(detail)}
                   >
-                    {refundingId === detail._id ? "Processing Refund…" : `Refund ${formatMoney(detail.total)}`}
+                    {refundingId === detail._id ? "Processing Refund…" : `Refund ${formatMoney(detail.total, detail.currency)}`}
                   </Button>
                   <p className="mt-2 text-center text-[11px] text-zinc-400">
-                    Full refund via Stripe · Cannot be undone
+                    Full refund via {detail.paymentProvider === "paystack" ? "Paystack" : "Stripe"} · Cannot be undone
                   </p>
                 </div>
               )}

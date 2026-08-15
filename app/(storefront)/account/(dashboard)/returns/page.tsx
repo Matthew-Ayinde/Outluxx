@@ -38,7 +38,7 @@ export default async function ReturnsPage() {
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-sm font-semibold">{formatMoney(order.total)}</span>
+                  <span className="text-sm font-semibold">{formatMoney(order.total, order.currency)}</span>
                   {order.status === "returned" ? (
                     <OrderStatusBadge status="returned" />
                   ) : (

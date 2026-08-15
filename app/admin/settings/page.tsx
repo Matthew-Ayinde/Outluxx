@@ -274,7 +274,8 @@ export default function AdminSettingsPage() {
           <Panel title="Integrations" icon={<IconCard className="h-4 w-4" />} accent="teal">
             <div className="space-y-3 p-5">
               {[
-                { name: "Stripe", connected: true },
+                { name: "Stripe", connected: !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY },
+                { name: "Paystack", connected: !!process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY },
                 { name: "Mailchimp", connected: true },
                 { name: "Google Analytics", connected: false },
                 { name: "Klaviyo", connected: false },

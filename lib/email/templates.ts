@@ -14,8 +14,8 @@ const COLORS = {
   paper: "#ffffff",
 };
 
-function money(value: number) {
-  return formatMoney(value);
+function money(value: number, currency: string) {
+  return formatMoney(value, currency);
 }
 
 function escapeHtml(value: string) {
@@ -47,7 +47,7 @@ export function itemsTable(order: IOrder) {
             </p>
           </td>
           <td style="padding:16px 0 16px 16px; border-bottom:1px solid ${isLast ? "transparent" : COLORS.divider}; text-align:right; white-space:nowrap;" valign="top">
-            <p style="margin:0; font-size:14px; font-weight:600; color:${COLORS.ink};">${money(item.price * item.quantity)}</p>
+            <p style="margin:0; font-size:14px; font-weight:600; color:${COLORS.ink};">${money(item.price * item.quantity, order.currency)}</p>
           </td>
         </tr>`;
     })
@@ -69,10 +69,10 @@ export function totalsBlock(order: IOrder) {
 
   return `
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse; margin-top:8px;">
-      ${row("Subtotal", money(order.subtotal))}
-      ${order.discount > 0 ? row("Discount", `&minus;${money(order.discount)}`, { negative: true }) : ""}
-      ${row("Shipping", order.shipping === 0 ? "Free" : money(order.shipping))}
-      ${row("Total", money(order.total), { strong: true, top: true })}
+      ${row("Subtotal", money(order.subtotal, order.currency))}
+      ${order.discount > 0 ? row("Discount", `&minus;${money(order.discount, order.currency)}`, { negative: true }) : ""}
+      ${row("Shipping", order.shipping === 0 ? "Free" : money(order.shipping, order.currency))}
+      ${row("Total", money(order.total, order.currency), { strong: true, top: true })}
     </table>`;
 }
 

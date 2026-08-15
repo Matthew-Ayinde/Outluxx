@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { detectCountry } from "@/lib/currency/detectCountry";
+import { CURRENCY_COOKIE } from "@/lib/currency/constants";
 
-const CURRENCY_COOKIE = "currency";
 const CURRENCY_HEADER = "x-currency";
 // Re-checked daily so a visitor's currency updates if they travel.
 const COOKIE_MAX_AGE = 60 * 60 * 24;

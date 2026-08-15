@@ -15,6 +15,7 @@ interface Order {
   customerEmail: string;
   status: string;
   paymentStatus: string;
+  currency: "GBP" | "NGN";
   total: number;
   items: unknown[];
   shippingAddress: { firstName: string; lastName: string; city: string; country: string };
@@ -114,7 +115,7 @@ export default function AdminOrdersPage() {
                       tone={order.paymentStatus === "paid" ? "success" : order.paymentStatus === "failed" ? "danger" : "neutral"}
                     />
                   </td>
-                  <td className="px-5 py-3 font-semibold">{formatMoney(order.total)}</td>
+                  <td className="px-5 py-3 font-semibold">{formatMoney(order.total, order.currency)}</td>
                   <td className="px-5 py-3">
                     <button
                       onClick={() => setDetailOrder(order)}
@@ -169,7 +170,7 @@ export default function AdminOrdersPage() {
                         <p className="font-medium text-xs">{item.productTitle}</p>
                         <p className="text-[11px] text-zinc-400">{item.selectedSize} · {item.selectedColor} · ×{item.quantity}</p>
                       </div>
-                      <p className="text-xs font-semibold">{formatMoney(item.price * item.quantity)}</p>
+                      <p className="text-xs font-semibold">{formatMoney(item.price * item.quantity, detailOrder.currency)}</p>
                     </div>
                   ))}
                 </div>
@@ -177,7 +178,7 @@ export default function AdminOrdersPage() {
               <div className="border-t border-zinc-100 pt-4">
                 <div className="flex justify-between font-semibold">
                   <span>Total</span>
-                  <span>{formatMoney(detailOrder.total)}</span>
+                  <span>{formatMoney(detailOrder.total, detailOrder.currency)}</span>
                 </div>
               </div>
             </div>
