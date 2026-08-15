@@ -140,14 +140,12 @@ export async function POST(req: NextRequest) {
     console.log(`[ORDER CREATED] ${order.orderNumber} — ${symbol}${pricing.total.toFixed(2)} for ${customerEmail}`);
   }
 
-  try {
-    await Promise.all([
-      sendOrderConfirmationEmail(order),
-      sendAdminOrderNotification(order),
-    ]);
-  } catch (e) {
+  Promise.all([
+    sendOrderConfirmationEmail(order),
+    sendAdminOrderNotification(order),
+  ]).catch((e) => {
     console.error("Failed to send order emails:", e);
-  }
+  });
 
   return ok(order.toObject(), 201);
 }
