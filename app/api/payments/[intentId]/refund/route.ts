@@ -6,7 +6,7 @@ import { getSession } from "@/lib/utils/auth";
 import { ok, err } from "@/lib/utils/api";
 import { createRefund as createPaystackRefund } from "@/lib/payments/paystack";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-06-24.dahlia" });
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-07-29.dahlia" });
 
 export async function POST(
   _req: NextRequest,

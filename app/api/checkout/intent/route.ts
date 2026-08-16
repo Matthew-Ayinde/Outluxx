@@ -8,7 +8,7 @@ import { getRequestCurrency } from "@/lib/currency/getRequestCurrency";
 import { priceOrder, PricingError } from "@/lib/utils/serverPricing";
 import { generatePaystackReference, initializeTransaction } from "@/lib/payments/paystack";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-06-24.dahlia" });
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-07-29.dahlia" });
 
 const ItemSchema = z.object({
   slug: z.string(),

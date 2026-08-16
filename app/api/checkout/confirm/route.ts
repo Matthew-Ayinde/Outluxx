@@ -12,7 +12,7 @@ import { priceOrder, PricingError } from "@/lib/utils/serverPricing";
 import { verifyTransaction } from "@/lib/payments/paystack";
 import { resolveVariantImage } from "@/lib/utils/variant";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-06-24.dahlia" });
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-07-29.dahlia" });
 
 const AddressSchema = z.object({
   firstName: z.string().min(1),

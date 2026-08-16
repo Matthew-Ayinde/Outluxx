@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import connectDB from "@/lib/db/mongoose";
 import { Order } from "@/lib/db/models/Order";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-06-24.dahlia" });
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-07-29.dahlia" });
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
