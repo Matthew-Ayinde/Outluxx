@@ -9,17 +9,21 @@ type VariantSelectorProps = {
   selected: string;
   onChange: (value: string) => void;
   variant?: "size" | "color";
+  extra?: React.ReactNode;
 };
 
 export default function VariantSelector({
-  label, options, selected, onChange, variant = "size",
+  label, options, selected, onChange, variant = "size", extra,
 }: VariantSelectorProps) {
   return (
     <fieldset>
       <div className="flex items-baseline justify-between mb-3">
-        <legend className="text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground">
-          {label}
-        </legend>
+        <div className="flex items-baseline gap-3">
+          <legend className="text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground">
+            {label}
+          </legend>
+          {extra}
+        </div>
         {selected && (
           <span className="text-xs text-muted">{selected}</span>
         )}

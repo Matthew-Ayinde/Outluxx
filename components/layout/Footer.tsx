@@ -63,10 +63,10 @@ export default async function Footer() {
               Refined apparel for the considered wardrobe. Each piece made to be worn for decades, not seasons.
             </p>
             <div className="mt-6 flex gap-5">
-              {["Instagram", "Pinterest"].map((s) => (
+              {["Instagram"].map((s) => (
                 <a
                   key={s}
-                  href="#"
+                  href="https://www.instagram.com/outlxx_"
                   className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted transition-opacity hover:opacity-100"
                 >
                   {s}

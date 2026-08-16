@@ -247,11 +247,11 @@ function ProductModal({
     tags: product?.tags?.join(", ") ?? "",
     images: product?.images ?? [] as ProductImageForm[],
     sizes: product?.sizes ?? [
-      { label: "XS", value: "xs", available: true },
-      { label: "S", value: "s", available: true },
       { label: "M", value: "m", available: true },
       { label: "L", value: "l", available: true },
       { label: "XL", value: "xl", available: true },
+      { label: "2XL", value: "2xl", available: true },
+      { label: "3XL", value: "3xl", available: true },
     ],
     colors: product?.colors ?? [] as ProductColorForm[],
   });

@@ -8,7 +8,7 @@ export const orders: Order[] = [
     customerId: "c-001", status: "delivered",
     items: [
       { productId: "w-001", productTitle: "Midnight Silk Slip Dress", productBrand: "Maison Altair",
-        productImage: `${B}/olx-w1a/120/160`, quantity: 1, selectedSize: "S", selectedColor: "Midnight", price: 1250 },
+        productImage: `${B}/olx-w1a/120/160`, quantity: 1, selectedSize: "M", selectedColor: "Midnight", price: 1250 },
     ],
     subtotal: 1250, shipping: 0, discount: 0, total: 1250,
     shippingAddress: {
@@ -94,7 +94,7 @@ export const orders: Order[] = [
     customerId: "c-009", status: "pending",
     items: [
       { productId: "w-002", productTitle: "Oversized Cashmere Coat", productBrand: "Studio Voss",
-        productImage: `${B}/olx-w2a/120/160`, quantity: 1, selectedSize: "S", selectedColor: "Camel", price: 3400 },
+        productImage: `${B}/olx-w2a/120/160`, quantity: 1, selectedSize: "M", selectedColor: "Camel", price: 3400 },
     ],
     subtotal: 3400, shipping: 0, discount: 0, total: 3400,
     shippingAddress: {
@@ -158,7 +158,7 @@ export const orders: Order[] = [
     customerId: "c-001", status: "shipped",
     items: [
       { productId: "w-008", productTitle: "Double-Breasted Wool Coat", productBrand: "Silhouette House",
-        productImage: `${B}/olx-w8a/120/160`, quantity: 1, selectedSize: "XS", selectedColor: "Black", price: 2850 },
+        productImage: `${B}/olx-w8a/120/160`, quantity: 1, selectedSize: "M", selectedColor: "Black", price: 2850 },
     ],
     subtotal: 2850, shipping: 0, discount: 250, total: 2600,
     shippingAddress: {
@@ -192,9 +192,9 @@ export const orders: Order[] = [
     customerId: "c-003", status: "delivered",
     items: [
       { productId: "w-007", productTitle: "Plissé Maxi Skirt", productBrand: "Opus One",
-        productImage: `${B}/olx-w7a/120/160`, quantity: 1, selectedSize: "S", selectedColor: "Forest Green", price: 870 },
+        productImage: `${B}/olx-w7a/120/160`, quantity: 1, selectedSize: "M", selectedColor: "Forest Green", price: 870 },
       { productId: "w-006", productTitle: "Asymmetric Silk Blouse", productBrand: "Ligne Claire",
-        productImage: `${B}/olx-w6a/120/160`, quantity: 1, selectedSize: "S", selectedColor: "White", price: 595 },
+        productImage: `${B}/olx-w6a/120/160`, quantity: 1, selectedSize: "M", selectedColor: "White", price: 595 },
     ],
     subtotal: 1465, shipping: 0, discount: 0, total: 1465,
     shippingAddress: {
@@ -228,7 +228,7 @@ export const orders: Order[] = [
     customerId: "c-005", status: "delivered",
     items: [
       { productId: "w-001", productTitle: "Midnight Silk Slip Dress", productBrand: "Maison Altair",
-        productImage: `${B}/olx-w1a/120/160`, quantity: 1, selectedSize: "XS", selectedColor: "Ivory", price: 1250 },
+        productImage: `${B}/olx-w1a/120/160`, quantity: 1, selectedSize: "M", selectedColor: "Ivory", price: 1250 },
       { productId: "a-001", productTitle: "Structured Leather Tote", productBrand: "Maison Altair",
         productImage: `${B}/olx-a1a/120/160`, quantity: 1, selectedSize: "One Size", selectedColor: "Tan", price: 2100 },
     ],

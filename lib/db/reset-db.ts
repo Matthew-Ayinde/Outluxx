@@ -80,11 +80,11 @@ const PRODUCTS = [
     ],
     description: "Cut from 100% Supima cotton in a structured single-jersey knit. The weight and hand-feel are immediately apparent — dense without stiffness, cool without thinness.",
     sizes: [
-      { label: "XS", value: "xs", available: true },
-      { label: "S", value: "s", available: true },
       { label: "M", value: "m", available: true },
       { label: "L", value: "l", available: true },
       { label: "XL", value: "xl", available: false },
+      { label: "2XL", value: "2xl", available: true },
+      { label: "3XL", value: "3xl", available: true },
     ],
     colors: [
       { label: "White", value: "white", available: true },
@@ -130,10 +130,10 @@ const PRODUCTS = [
     ],
     description: "Washed Charmeuse silk in a languid camisole cut. Adjustable satin straps and a fluid hem — worn alone or layered, both are correct choices.",
     sizes: [
-      { label: "XS", value: "xs", available: true },
-      { label: "S", value: "s", available: true },
       { label: "M", value: "m", available: true },
       { label: "L", value: "l", available: true },
+      { label: "2XL", value: "2xl", available: true },
+      { label: "3XL", value: "3xl", available: true },
     ],
     colors: [
       { label: "Ivory", value: "ivory", available: true },
@@ -153,11 +153,11 @@ const PRODUCTS = [
     ],
     description: "100% Pima cotton in a classic muscle tank silhouette — the tank every wardrobe needs to exist.",
     sizes: [
-      { label: "XS", value: "xs", available: true },
-      { label: "S", value: "s", available: true },
       { label: "M", value: "m", available: true },
       { label: "L", value: "l", available: true },
       { label: "XL", value: "xl", available: true },
+      { label: "2XL", value: "2xl", available: true },
+      { label: "3XL", value: "3xl", available: true },
     ],
     colors: [
       { label: "White", value: "white", available: true },

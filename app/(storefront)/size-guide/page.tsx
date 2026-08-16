@@ -7,19 +7,27 @@ export const metadata = pageMetadata({
 });
 
 const WOMEN_SIZES = [
-  { size: "XS", uk: "6–8", eu: "34–36", us: "2–4", bust: "80–84", waist: "62–66", hips: "88–92" },
-  { size: "S",  uk: "8–10", eu: "36–38", us: "4–6", bust: "84–88", waist: "66–70", hips: "92–96" },
-  { size: "M",  uk: "10–12", eu: "38–40", us: "6–8", bust: "88–92", waist: "70–74", hips: "96–100" },
-  { size: "L",  uk: "12–14", eu: "40–42", us: "8–10", bust: "92–98", waist: "74–80", hips: "100–106" },
-  { size: "XL", uk: "14–16", eu: "42–44", us: "10–12", bust: "98–104", waist: "80–86", hips: "106–112" },
+  { size: "M",   uk: "10–12", eu: "38–40", us: "6–8", bust: "35–36", waist: "28–29", hips: "38–39" },
+  { size: "L",   uk: "12–14", eu: "40–42", us: "8–10", bust: "36–39", waist: "29–31", hips: "39–42" },
+  { size: "XL",  uk: "14–16", eu: "42–44", us: "10–12", bust: "39–41", waist: "31–34", hips: "42–44" },
+  { size: "2XL", uk: "16–18", eu: "44–46", us: "12–14", bust: "41–44", waist: "34–37", hips: "44–47" },
+  { size: "3XL", uk: "18–20", eu: "46–48", us: "14–16", bust: "44–47", waist: "37–40", hips: "47–50" },
 ];
 
 const MEN_SIZES = [
-  { size: "S",   uk: "36", eu: "46", us: "36", chest: "88–92", waist: "76–80", hips: "90–94" },
-  { size: "M",   uk: "38", eu: "48", us: "38", chest: "92–96", waist: "80–84", hips: "94–98" },
-  { size: "L",   uk: "40", eu: "50", us: "40", chest: "96–100", waist: "84–88", hips: "98–102" },
-  { size: "XL",  uk: "42", eu: "52", us: "42", chest: "100–104", waist: "88–92", hips: "102–106" },
-  { size: "XXL", uk: "44", eu: "54", us: "44", chest: "104–108", waist: "92–96", hips: "106–110" },
+  { size: "M",   uk: "38", eu: "48", us: "38", chest: "36–38", waist: "31–33", hips: "37–39" },
+  { size: "L",   uk: "40", eu: "50", us: "40", chest: "38–39", waist: "33–35", hips: "39–40" },
+  { size: "XL",  uk: "42", eu: "52", us: "42", chest: "39–41", waist: "35–36", hips: "40–42" },
+  { size: "2XL", uk: "44", eu: "54", us: "44", chest: "41–43", waist: "36–38", hips: "42–43" },
+  { size: "3XL", uk: "46", eu: "56", us: "46", chest: "43–45", waist: "38–40", hips: "43–45" },
+];
+
+const TSHIRT_SIZES = [
+  { size: "M",   chest: "42", length: "27", shoulder: "18", sleeve: "8.5" },
+  { size: "L",   chest: "44", length: "28", shoulder: "19", sleeve: "9" },
+  { size: "XL",  chest: "46", length: "29", shoulder: "20", sleeve: "9.5" },
+  { size: "2XL", chest: "48", length: "30", shoulder: "21", sleeve: "10" },
+  { size: "3XL", chest: "50", length: "31", shoulder: "22", sleeve: "10.5" },
 ];
 
 export default function SizeGuidePage() {
@@ -31,7 +39,7 @@ export default function SizeGuidePage() {
         </p>
         <h1 className="text-4xl font-semibold">Size Guide</h1>
         <p className="mt-3 text-sm text-zinc-500">
-          All measurements are in centimetres unless stated. If you're between sizes, we recommend sizing up.
+          All measurements are in inches unless stated. If you're between sizes, we recommend sizing up.
         </p>
       </div>
 
@@ -42,7 +50,7 @@ export default function SizeGuidePage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-black/10">
-                {["Size", "UK", "EU", "US", "Bust (cm)", "Waist (cm)", "Hips (cm)"].map((h) => (
+                {["Size", "UK", "EU", "US", "Bust (in)", "Waist (in)", "Hips (in)"].map((h) => (
                   <th key={h} className="pb-3 pr-6 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
                     {h}
                   </th>
@@ -73,7 +81,7 @@ export default function SizeGuidePage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-black/10">
-                {["Size", "UK", "EU", "US", "Chest (cm)", "Waist (cm)", "Hips (cm)"].map((h) => (
+                {["Size", "UK", "EU", "US", "Chest (in)", "Waist (in)", "Hips (in)"].map((h) => (
                   <th key={h} className="pb-3 pr-6 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
                     {h}
                   </th>
@@ -97,6 +105,35 @@ export default function SizeGuidePage() {
         </div>
       </section>
 
+      {/* T-Shirts */}
+      <section className="mb-12">
+        <h2 className="mb-4 text-lg font-semibold">T-Shirts</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-black/10">
+                {["Size", "Chest (in)", "Length (in)", "Shoulder (in)", "Sleeve (in)"].map((h) => (
+                  <th key={h} className="pb-3 pr-6 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-black/5">
+              {TSHIRT_SIZES.map((row) => (
+                <tr key={row.size}>
+                  <td className="py-3 pr-6 font-semibold">{row.size}</td>
+                  <td className="py-3 pr-6 text-zinc-600">{row.chest}</td>
+                  <td className="py-3 pr-6 text-zinc-600">{row.length}</td>
+                  <td className="py-3 pr-6 text-zinc-600">{row.shoulder}</td>
+                  <td className="py-3 pr-6 text-zinc-600">{row.sleeve}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       {/* How to measure */}
       <section className="border border-black/10 p-6">
         <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest">How to Measure</h2>
@@ -107,11 +144,11 @@ export default function SizeGuidePage() {
           </div>
           <div>
             <p className="mb-1 font-semibold text-black">Waist</p>
-            <p>Measure around your natural waistline — the narrowest part of your torso, above your belly button.</p>
+            <p>Measure around your natural waistline, the narrowest part of your torso, above your belly button.</p>
           </div>
           <div>
             <p className="mb-1 font-semibold text-black">Hips</p>
-            <p>Measure around the fullest part of your hips, approximately 20cm below your natural waist.</p>
+            <p>Measure around the fullest part of your hips, approximately 8 inches below your natural waist.</p>
           </div>
         </div>
       </section>

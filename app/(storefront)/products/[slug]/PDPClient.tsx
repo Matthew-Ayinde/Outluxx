@@ -7,6 +7,7 @@ import { useWishlist } from "@/lib/store/WishlistContext";
 import ProductGallery from "@/components/product/ProductGallery";
 import PriceBlock from "@/components/product/PriceBlock";
 import VariantSelector from "@/components/product/VariantSelector";
+import SizeGuideModal from "@/components/product/SizeGuideModal";
 import ProductGrid from "@/components/product/ProductGrid";
 import type { Product } from "@/types/commerce";
 
@@ -123,6 +124,7 @@ export default function PDPClient({ product, related }: { product: Product; rela
               selected={size}
               onChange={setSize}
               variant="size"
+              extra={<SizeGuideModal />}
             />
             {product.colors.length > 0 && (
               <VariantSelector
