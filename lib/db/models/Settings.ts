@@ -46,7 +46,7 @@ const SettingsSchema = new Schema<ISettings>(
     deliveryFeeNGN: { type: Number, min: 0 },
     storeName: { type: String, required: true, default: SITE_NAME },
     contactEmail: { type: String, required: true, default: "support@outlxx.co.uk" },
-    supportPhone: { type: String, required: true, default: "+44 (0) 20 7946 0958" },
+    supportPhone: { type: String, required: true, default: "+44 (0) 7350 163255" },
     currency: { type: String, required: true, default: "GBP" },
     metaTitle: { type: String, required: true, default: DEFAULT_TITLE },
     metaDescription: { type: String, required: true, default: DEFAULT_DESCRIPTION },

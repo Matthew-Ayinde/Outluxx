@@ -1,5 +1,6 @@
 import { pageMetadata } from "@/lib/config/seo";
 import { getStoreSettings } from "@/lib/data/settings";
+import ContactForm from "./ContactForm";
 
 export const metadata = pageMetadata({
   title: "Contact Us",
@@ -20,50 +21,14 @@ export default async function ContactPage() {
 
       <div className="grid gap-12 lg:grid-cols-2">
         {/* Form */}
-        <form className="flex flex-col gap-5">
-          <div className="grid grid-cols-2 gap-4">
-            <Field label="First name" type="text" />
-            <Field label="Last name" type="text" />
-          </div>
-          <Field label="Email address" type="email" />
-          <Field label="Order number (optional)" type="text" />
-
-          <div>
-            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
-              Subject
-            </label>
-            <select className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black dark:border-white/20 dark:focus:border-white dark:bg-transparent">
-              {["Order enquiry", "Return request", "Product question", "Press & partnerships", "Other"].map((o) => (
-                <option key={o}>{o}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
-              Message
-            </label>
-            <textarea
-              rows={5}
-              className="w-full resize-none border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black dark:border-white/20 dark:focus:border-white"
-              placeholder="How can we help?"
-            />
-          </div>
-
-          <button
-            type="button"
-            className="flex h-12 items-center justify-center bg-black text-xs font-semibold uppercase tracking-widest text-white hover:bg-zinc-800 transition-colors dark:bg-white dark:text-black dark:hover:bg-zinc-200"
-          >
-            Send Message
-          </button>
-        </form>
+        <ContactForm />
 
         {/* Contact info */}
         <div className="space-y-8">
           {[
             { label: "Email", value: contactEmail, sub: "We reply within 24 hours" },
             { label: "Phone", value: supportPhone, sub: "Mon–Fri, 9am–6pm GMT" },
-            { label: "Address", value: "Outlxx Ltd, 14 Savile Row", sub: "London W1S 3JN, United Kingdom" },
+            { label: "Address", value: "5 Clarence Road", sub: "Grays town centre, rm176qa" },
           ].map((item) => (
             <div key={item.label}>
               <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">{item.label}</p>
@@ -73,15 +38,6 @@ export default async function ContactPage() {
           ))}
         </div>
       </div>
-    </div>
-  );
-}
-
-function Field({ label, type }: { label: string; type: string }) {
-  return (
-    <div>
-      <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">{label}</label>
-      <input type={type} className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black dark:border-white/20 dark:focus:border-white" />
     </div>
   );
 }

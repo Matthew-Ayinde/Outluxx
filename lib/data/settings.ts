@@ -23,7 +23,7 @@ export const SETTINGS_CACHE_TAG = "store-settings";
 const FALLBACK: Omit<StoreSettings, "deliveryFee"> = {
   storeName: SITE_NAME,
   contactEmail: "support@outlxx.co.uk",
-  supportPhone: "+44 (0) 20 7946 0958",
+  supportPhone: "+44 (0) 7350 163255",
   currency: "GBP",
   metaTitle: DEFAULT_TITLE,
   metaDescription: DEFAULT_DESCRIPTION,

@@ -15,7 +15,6 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 
-
 const CATEGORY_LABELS: Record<string, string> = {
   tshirts: "T-Shirts",
   pants: "Pants",
