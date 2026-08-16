@@ -23,6 +23,9 @@ export interface ICustomer extends Document {
   role: "customer" | "admin";
   stripeCustomerId?: string;
   addresses: ICustomerAddress[];
+  resetCodeHash?: string;
+  resetCodeExpiresAt?: Date;
+  resetCodeAttempts?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -54,6 +57,9 @@ const CustomerSchema = new Schema<ICustomer>(
     role: { type: String, enum: ["customer", "admin"], default: "customer" },
     stripeCustomerId: { type: String },
     addresses: { type: [AddressSchema], default: [] },
+    resetCodeHash: { type: String, select: false },
+    resetCodeExpiresAt: { type: Date, select: false },
+    resetCodeAttempts: { type: Number, default: 0, select: false },
   },
   { timestamps: true }
 );

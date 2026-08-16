@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { randomInt } from "crypto";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -35,6 +36,11 @@ export function hashPassword(plain: string): Promise<string> {
 
 export function comparePassword(plain: string, hash: string): Promise<boolean> {
   return bcrypt.compare(plain, hash);
+}
+
+// 6-digit password-reset verification code (crypto-random, not Math.random).
+export function generateVerificationCode(): string {
+  return randomInt(100000, 1000000).toString();
 }
 
 export async function getSession(): Promise<JWTPayload | null> {
