@@ -13,6 +13,9 @@ const CATEGORY_COLORS: Record<string, string> = {
   armless: "#1baf7a",
   "tank-tops": "#eda100",
 };
+
+
+
 const CATEGORY_LABELS: Record<string, string> = {
   tshirts: "T-Shirts",
   pants: "Pants",
