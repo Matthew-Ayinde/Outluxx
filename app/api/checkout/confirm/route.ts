@@ -140,12 +140,16 @@ export async function POST(req: NextRequest) {
     console.log(`[ORDER CREATED] ${order.orderNumber} — ${symbol}${pricing.total.toFixed(2)} for ${customerEmail}`);
   }
 
-  Promise.all([
+  const [confirmationResult, adminResult] = await Promise.allSettled([
     sendOrderConfirmationEmail(order),
     sendAdminOrderNotification(order),
-  ]).catch((e) => {
-    console.error("Failed to send order emails:", e);
-  });
+  ]);
+  if (confirmationResult.status === "rejected") {
+    console.error(`Failed to send order confirmation email (${order.orderNumber}):`, confirmationResult.reason);
+  }
+  if (adminResult.status === "rejected") {
+    console.error(`Failed to send admin order notification (${order.orderNumber}):`, adminResult.reason);
+  }
 
   return ok(order.toObject(), 201);
 }
