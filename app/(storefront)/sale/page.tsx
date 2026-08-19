@@ -1,6 +1,7 @@
 import PLPTemplate from "@/components/plp/PLPTemplate";
 import { getSaleProducts, getSiteMedia } from "@/lib/data/server";
-import { pageMetadata } from "@/lib/config/seo";
+import { pageMetadata, breadcrumbJsonLd } from "@/lib/config/seo";
+import JsonLd from "@/components/seo/JsonLd";
 
 export const metadata = pageMetadata({
   title: "Sale",
@@ -15,11 +16,14 @@ export const dynamic = "force-dynamic";
 export default async function SalePage() {
   const [products, media] = await Promise.all([getSaleProducts(), getSiteMedia()]);
   return (
-    <PLPTemplate
-      title="Sale"
-      subtitle="Exceptional pieces. Exceptional prices."
-      heroImage={media["plp-hero-sale"].url}
-      products={products}
-    />
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Sale", path: "/sale" }])} />
+      <PLPTemplate
+        title="Sale"
+        subtitle="Exceptional pieces. Exceptional prices."
+        heroImage={media["plp-hero-sale"].url}
+        products={products}
+      />
+    </>
   );
 }

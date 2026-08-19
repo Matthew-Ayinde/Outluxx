@@ -1,6 +1,7 @@
 import PLPTemplate from "@/components/plp/PLPTemplate";
 import { getNewArrivals, getSiteMedia } from "@/lib/data/server";
-import { pageMetadata } from "@/lib/config/seo";
+import { pageMetadata, breadcrumbJsonLd } from "@/lib/config/seo";
+import JsonLd from "@/components/seo/JsonLd";
 
 export const metadata = pageMetadata({
   title: "New Arrivals",
@@ -15,11 +16,14 @@ export const dynamic = "force-dynamic";
 export default async function NewArrivalsPage() {
   const [products, media] = await Promise.all([getNewArrivals(), getSiteMedia()]);
   return (
-    <PLPTemplate
-      title="New Arrivals"
-      subtitle="The latest from the edit."
-      heroImage={media["plp-hero-newarrivals"].url}
-      products={products}
-    />
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "New Arrivals", path: "/new-arrivals" }])} />
+      <PLPTemplate
+        title="New Arrivals"
+        subtitle="The latest from the edit."
+        heroImage={media["plp-hero-newarrivals"].url}
+        products={products}
+      />
+    </>
   );
 }

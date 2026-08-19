@@ -10,13 +10,7 @@ import VariantSelector from "@/components/product/VariantSelector";
 import SizeGuideModal from "@/components/product/SizeGuideModal";
 import ProductGrid from "@/components/product/ProductGrid";
 import type { Product } from "@/types/commerce";
-
-const categoryLabels: Record<string, string> = {
-  "tshirts":   "T-Shirts",
-  "pants":     "Pants",
-  "armless":   "Armless",
-  "tank-tops": "Tank Tops",
-};
+import { CATEGORY_LABELS as categoryLabels } from "@/lib/config/categories";
 
 function AccordionSection({ title, children }: { title: string; children: React.ReactNode }) {
   const [open, setOpen] = useState(false);

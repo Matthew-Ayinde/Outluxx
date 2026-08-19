@@ -1,6 +1,7 @@
 import PLPTemplate from "@/components/plp/PLPTemplate";
 import { getProductsByCategory, getSiteMedia } from "@/lib/data/server";
-import { pageMetadata } from "@/lib/config/seo";
+import { pageMetadata, breadcrumbJsonLd } from "@/lib/config/seo";
+import JsonLd from "@/components/seo/JsonLd";
 
 export const metadata = pageMetadata({
   title: "Armless",
@@ -18,11 +19,14 @@ export default async function ArmlessPage() {
     getSiteMedia(),
   ]);
   return (
-    <PLPTemplate
-      title="Armless"
-      subtitle="Outlxx Essentials"
-      heroImage={media["plp-hero-armless"].url}
-      products={products}
-    />
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Armless", path: "/armless" }])} />
+      <PLPTemplate
+        title="Armless"
+        subtitle="Outlxx Essentials"
+        heroImage={media["plp-hero-armless"].url}
+        products={products}
+      />
+    </>
   );
 }
