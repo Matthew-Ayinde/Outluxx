@@ -68,3 +68,30 @@ export function pageMetadata({
 export const NOINDEX: Metadata = {
   robots: { index: false, follow: false },
 };
+
+/** Builds a schema.org BreadcrumbList — `items` should run from Home to the current page. */
+export function breadcrumbJsonLd(items: Array<{ name: string; path: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: `${SITE_URL}${item.path}`,
+    })),
+  };
+}
+
+/** Builds a schema.org FAQPage from question/answer pairs — text must match what's visibly rendered. */
+export function faqJsonLd(items: Array<{ q: string; a: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  };
+}

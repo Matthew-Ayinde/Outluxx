@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { NOINDEX } from "@/lib/config/seo";
+
+export const metadata = { title: "Page Not Found", ...NOINDEX };
 
 export default function NotFound() {
   return (

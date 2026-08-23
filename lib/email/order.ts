@@ -7,7 +7,11 @@ import { emailLayout, itemsTable, totalsBlock, addressBlock, button, LOGO_CID } 
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 const FROM = process.env.EMAIL_FROM || process.env.SMTP_USER || "";
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "support@outlxx.co.uk";
+const ADMIN_EMAILS = [
+  "support@outlxx.co.uk",
+  "theoutlxxbrand@gmail.com",
+  "ayindematthew2003@gmail.com",
+].join(", ");
 
 const LOGO_ATTACHMENT = {
   filename: "black-logo.png",
@@ -101,7 +105,7 @@ export async function sendAdminOrderNotification(order: IOrder) {
 
   await getTransporter().sendMail({
     from: FROM,
-    to: ADMIN_EMAIL,
+    to: ADMIN_EMAILS,
     subject: `New Order — ${order.orderNumber} (${formatMoney(order.total, order.currency)})`,
     html,
     attachments: [LOGO_ATTACHMENT],

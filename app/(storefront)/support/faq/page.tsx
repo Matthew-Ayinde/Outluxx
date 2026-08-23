@@ -1,4 +1,5 @@
-import { pageMetadata } from "@/lib/config/seo";
+import { pageMetadata, faqJsonLd } from "@/lib/config/seo";
+import JsonLd from "@/components/seo/JsonLd";
 
 export const metadata = pageMetadata({
   title: "FAQ",
@@ -42,8 +43,11 @@ const FAQ = [
 ];
 
 export default function FAQPage() {
+  const allQA = FAQ.flatMap((section) => section.items);
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
+      <JsonLd data={faqJsonLd(allQA)} />
       <div className="mb-10">
         <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">Help Centre</p>
         <h1 className="text-4xl font-semibold">Frequently Asked Questions</h1>

@@ -5,6 +5,7 @@ import { Providers } from "@/lib/store/Providers";
 import { SITE_URL, DEFAULT_OG_IMAGE } from "@/lib/config/seo";
 import { getStoreSettings } from "@/lib/data/settings";
 import type { Currency } from "@/lib/store/CurrencyContext";
+import JsonLd from "@/components/seo/JsonLd";
 import "./globals.css";
 
 const headingFont = Cormorant_Garamond({
@@ -100,10 +101,7 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-        />
+        <JsonLd data={organizationJsonLd} />
         {/* Prevent dark mode flash — runs before React hydrates */}
         <script
           dangerouslySetInnerHTML={{

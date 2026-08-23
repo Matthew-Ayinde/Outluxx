@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useMemo } from "react";
 import ProductGrid from "@/components/product/ProductGrid";
 import SortDropdown from "@/components/plp/SortDropdown";
@@ -62,6 +63,13 @@ export default function PLPTemplate({ title, subtitle, heroImage, products }: PL
       </div>
 
       <div className="mx-auto max-w-7xl px-5 py-10 lg:px-8">
+        {/* Breadcrumb */}
+        <nav className="mb-6 flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-muted">
+          <Link href="/" className="transition-opacity hover:opacity-100 opacity-60">Home</Link>
+          <span className="opacity-30">/</span>
+          <span className="text-foreground">{title}</span>
+        </nav>
+
         {/* Toolbar */}
         <div className="mb-8 flex items-center justify-between border-b border-border pb-5">
           <div className="flex items-center gap-2">

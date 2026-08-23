@@ -3,9 +3,11 @@ import type { Metadata } from "next";
 import { getProductBySlug, getAllProducts } from "@/lib/data/server";
 import PDPClient from "./PDPClient";
 import type { Product } from "@/types/commerce";
-import { pageMetadata, SITE_URL } from "@/lib/config/seo";
+import { pageMetadata, SITE_URL, breadcrumbJsonLd } from "@/lib/config/seo";
 import { getPageCurrency } from "@/lib/currency/getPageCurrency";
 import { resolveProductPrice } from "@/lib/utils/price";
+import { CATEGORY_LABELS } from "@/lib/config/categories";
+import JsonLd from "@/components/seo/JsonLd";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -58,12 +60,17 @@ export default async function ProductPage({ params }: Props) {
     },
   };
 
+  const categoryLabel = CATEGORY_LABELS[product.category] ?? product.category;
+  const breadcrumb = breadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: categoryLabel, path: `/${product.category}` },
+    { name: product.title, path: `/products/${product.slug}` },
+  ]);
+
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
-      />
+      <JsonLd data={productJsonLd} />
+      <JsonLd data={breadcrumb} />
       <PDPClient product={product} related={related} />
     </>
   );

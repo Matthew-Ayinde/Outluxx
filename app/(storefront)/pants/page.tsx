@@ -1,6 +1,7 @@
 import PLPTemplate from "@/components/plp/PLPTemplate";
 import { getProductsByCategory, getSiteMedia } from "@/lib/data/server";
-import { pageMetadata } from "@/lib/config/seo";
+import { pageMetadata, breadcrumbJsonLd } from "@/lib/config/seo";
+import JsonLd from "@/components/seo/JsonLd";
 
 export const metadata = pageMetadata({
   title: "Pants",
@@ -18,11 +19,14 @@ export default async function PantsPage() {
     getSiteMedia(),
   ]);
   return (
-    <PLPTemplate
-      title="Pants"
-      subtitle="Outlxx Essentials"
-      heroImage={media["plp-hero-pants"].url}
-      products={products}
-    />
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Pants", path: "/pants" }])} />
+      <PLPTemplate
+        title="Pants"
+        subtitle="Outlxx Essentials"
+        heroImage={media["plp-hero-pants"].url}
+        products={products}
+      />
+    </>
   );
 }

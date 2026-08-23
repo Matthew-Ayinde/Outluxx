@@ -25,7 +25,7 @@ export default function AboutPage() {
       {/* Image */}
       <div className="relative mb-14 h-[400px] overflow-hidden bg-zinc-50">
         <Image
-          src="/black-logo.png"
+          src="/about-image.png"
           alt="OUT.LXX"
           fill
           className=""
