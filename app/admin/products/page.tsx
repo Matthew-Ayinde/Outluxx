@@ -226,6 +226,7 @@ function ProductModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [uploadingImages, setUploadingImages] = useState(false);
+  const [slugTouched, setSlugTouched] = useState(isEdit);
 
   const [form, setForm] = useState({
     slug: product?.slug ?? "",
@@ -330,7 +331,7 @@ function ProductModal({
     setError("");
     try {
       const payload = {
-        slug: form.slug,
+        slug: isEdit ? form.slug : slugify(form.slug),
         title: form.title,
         brand: form.brand,
         category: form.category,
@@ -387,11 +388,24 @@ function ProductModal({
           {error && <div className="rounded-xl bg-rose-50 px-4 py-2 text-sm text-rose-700 ring-1 ring-inset ring-rose-200">{error}</div>}
 
           <div className="grid grid-cols-2 gap-4">
-            <F label="Title *" value={form.title} onChange={(v) => setForm((f) => ({ ...f, title: v }))} required />
+            <F
+              label="Title *"
+              value={form.title}
+              onChange={(v) =>
+                setForm((f) => ({ ...f, title: v, slug: slugTouched ? f.slug : slugify(v) }))
+              }
+              required
+            />
             <F label="Brand *" value={form.brand} onChange={(v) => setForm((f) => ({ ...f, brand: v }))} required />
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <F label="Slug *" value={form.slug} onChange={(v) => setForm((f) => ({ ...f, slug: v }))} required disabled={isEdit} />
+            <F
+              label="Slug *"
+              value={form.slug}
+              onChange={(v) => { setSlugTouched(true); setForm((f) => ({ ...f, slug: v })); }}
+              required
+              disabled={isEdit}
+            />
             <div>
               <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Category *</label>
               <select

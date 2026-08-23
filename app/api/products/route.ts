@@ -24,7 +24,12 @@ const ProductColorSchema = z.object({
 });
 
 const CreateProductSchema = z.object({
-  slug: z.string().min(1),
+  slug: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(1)
+    .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "Slug must contain only lowercase letters, numbers, and hyphens"),
   title: z.string().min(1),
   brand: z.string().min(1),
   category: z.enum(["tshirts", "pants", "armless", "tank-tops"]),
