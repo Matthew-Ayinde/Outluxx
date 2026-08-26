@@ -148,7 +148,7 @@ export default function ShippingPage() {
                 onChange={(e) => set("country", e.target.value)}
                 className="w-full border border-black/15 px-3 py-2.5 text-sm outline-none focus:border-black dark:border-white/20 dark:focus:border-white"
               >
-                {["United Kingdom", "United States", "France", "Germany", "Italy", "Japan", "Australia", "Canada"].map((c) => (
+                {["United Kingdom", "United States", "France", "Germany", "Italy", "Japan", "Australia", "Canada", "Nigeria"].map((c) => (
                   <option key={c}>{c}</option>
                 ))}
               </select>

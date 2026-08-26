@@ -89,6 +89,7 @@ const COUNTRY_CODES: Record<string, string> = {
   "Japan": "JP",
   "Australia": "AU",
   "Canada": "CA",
+  "Nigeria": "NG",
 };
 
 /** Shared by both provider forms: verifies + creates the order, then routes to confirmation. */
