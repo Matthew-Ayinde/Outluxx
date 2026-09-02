@@ -57,7 +57,7 @@ export default async function SearchPage({ searchParams }: Props) {
       ) : (
         <div className="py-16 text-center">
           <p className="text-sm text-zinc-500">
-            Try searching for "cashmere", "Maison Altair", or "silk"
+            Start typing to search...
           </p>
         </div>
       )}
