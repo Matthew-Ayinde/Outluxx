@@ -317,6 +317,7 @@ export const products: Product[] = [
   },
 
   // ── ARMLESS ───────────────────────────────────────────────────────────────
+  // The `armless` category also carries the merged-in Tank Tops below.
   {
     id: "ar-001", slug: "silk-slip-camisole",
     title: "Silk Slip Camisole", brand: "Maison Altair",
@@ -472,11 +473,12 @@ export const products: Product[] = [
     tags: ["armless", "modal", "racerback", "essential"],
   },
 
-  // ── TANK TOPS ─────────────────────────────────────────────────────────────
+  // ── ARMLESS · TANK TOPS ───────────────────────────────────────────────────
+  // Merged into the `armless` category; kept apart by their "Tank Tops" subcategory.
   {
     id: "tt-001", slug: "supima-fitted-tank",
     title: "Supima Fitted Tank", brand: "Maison Altair",
-    category: "tank-tops", subcategory: "Tank Tops",
+    category: "armless", subcategory: "Tank Tops",
     price: 145, isNew: true, isSale: false, isFeatured: true,
     images: [
       { src: `${B}/olx-tt1a/600/800`, alt: "Supima Fitted Tank – front" },
@@ -503,7 +505,7 @@ export const products: Product[] = [
   {
     id: "tt-002", slug: "silk-charmeuse-tank",
     title: "Silk Charmeuse Tank", brand: "Studio Voss",
-    category: "tank-tops", subcategory: "Tank Tops",
+    category: "armless", subcategory: "Tank Tops",
     price: 385, compareAtPrice: 480,
     isNew: false, isSale: true, isFeatured: false,
     images: [
@@ -529,7 +531,7 @@ export const products: Product[] = [
   {
     id: "tt-003", slug: "ribbed-merino-tank",
     title: "Ribbed Merino Tank", brand: "Crespi Milano",
-    category: "tank-tops", subcategory: "Tank Tops",
+    category: "armless", subcategory: "Tank Tops",
     price: 275, isNew: false, isSale: false, isFeatured: true,
     images: [
       { src: `${B}/olx-tt3a/600/800`, alt: "Ribbed Merino Tank – front" },
@@ -556,7 +558,7 @@ export const products: Product[] = [
   {
     id: "tt-004", slug: "linen-drape-tank",
     title: "Linen Drape Tank", brand: "Helios Collective",
-    category: "tank-tops", subcategory: "Tank Tops",
+    category: "armless", subcategory: "Tank Tops",
     price: 195, isNew: true, isSale: false, isFeatured: false,
     images: [
       { src: `${B}/olx-tt4a/600/800`, alt: "Linen Drape Tank – front" },
@@ -581,7 +583,7 @@ export const products: Product[] = [
   {
     id: "tt-005", slug: "modal-longline-tank",
     title: "Modal Longline Tank", brand: "Nero & Co.",
-    category: "tank-tops", subcategory: "Tank Tops",
+    category: "armless", subcategory: "Tank Tops",
     price: 165, isNew: false, isSale: false, isFeatured: false,
     images: [
       { src: `${B}/olx-tt5a/600/800`, alt: "Modal Longline Tank – front" },
@@ -606,7 +608,7 @@ export const products: Product[] = [
   {
     id: "tt-006", slug: "cashmere-knit-tank",
     title: "Cashmere Knit Tank", brand: "Valmont Atelier",
-    category: "tank-tops", subcategory: "Tank Tops",
+    category: "armless", subcategory: "Tank Tops",
     price: 680, isNew: true, isSale: false, isFeatured: true,
     images: [
       { src: `${B}/olx-tt6a/600/800`, alt: "Cashmere Knit Tank – front" },

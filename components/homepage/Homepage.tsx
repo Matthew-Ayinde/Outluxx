@@ -4,37 +4,7 @@ import HeroSlideshow from "@/components/homepage/HeroSlideshow";
 import FeaturedProducts from "@/components/homepage/FeaturedProducts";
 import BrandStatement from "@/components/homepage/BrandStatement";
 import { getSiteMedia } from "@/lib/data/server";
-
-const categories = [
-  {
-    label: "T-Shirts",
-    href: "/tshirts",
-    seed: "olx-cat-ts",
-    sub: "Supima · Pima · Modal",
-    slot: "category-tshirts",
-  },
-  {
-    label: "Pants",
-    href: "/pants",
-    seed: "olx-cat-pt",
-    sub: "Wool · Linen · Cashmere",
-    slot: "category-pants",
-  },
-  {
-    label: "Armless",
-    href: "/armless",
-    seed: "olx-cat-ar",
-    sub: "Silk · Knit · Linen",
-    slot: "category-armless",
-  },
-  {
-    label: "Tank Tops",
-    href: "/tank-tops",
-    seed: "olx-cat-tt",
-    sub: "Cotton · Silk · Cashmere",
-    slot: "category-tanktops",
-  },
-];
+import { PRODUCT_CATEGORIES } from "@/lib/config/categories";
 
 const trustItems = [
   { label: "Authenticated Luxury", sub: "Every piece verified" },
@@ -70,40 +40,50 @@ export default async function Homepage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
-          {categories.map((cat, i) => (
-            <Link
-              key={cat.href}
-              href={cat.href}
-              className="group relative overflow-hidden bg-surface"
-              style={{ animationDelay: `${i * 80}ms` }}
-            >
-              <div className="relative aspect-[3/4] w-full overflow-hidden">
-                <Image
-                  src={media[cat.slot].url}
-                  alt={cat.label}
-                  fill
-                  sizes="(max-width: 640px) 50vw, 25vw"
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                />
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/20 transition-opacity duration-500 group-hover:bg-black/30" />
-              </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4">
+          {PRODUCT_CATEGORIES.map((cat, i) => {
+            // With an odd number of categories the final card would sit alone in
+            // the 2-up mobile grid — let it run full width instead.
+            const orphaned = i === PRODUCT_CATEGORIES.length - 1 && PRODUCT_CATEGORIES.length % 2 === 1;
+            return (
+              <Link
+                key={cat.path}
+                href={cat.path}
+                className={[
+                  "group relative overflow-hidden bg-surface",
+                  orphaned ? "col-span-2 sm:col-span-1" : "",
+                ].join(" ")}
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
+                <div
+                  className={[
+                    "relative w-full overflow-hidden",
+                    orphaned ? "aspect-[3/2] sm:aspect-[3/4]" : "aspect-[3/4]",
+                  ].join(" ")}
+                >
+                  <Image
+                    src={media[cat.gridSlot].url}
+                    alt={cat.label}
+                    fill
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                  />
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-black/20 transition-opacity duration-500 group-hover:bg-black/30" />
+                </div>
 
-              {/* Caption */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 text-white sm:p-5">
-                <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/60">
-                  {/* {cat.sub} */}
-                </p>
-                <p className="mt-1 font-heading text-xl font-light sm:text-2xl">
-                  {cat.label}
-                </p>
-                <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-white/50 transition-opacity duration-300 group-hover:text-white/80">
-                  Explore →
-                </p>
-              </div>
-            </Link>
-          ))}
+                {/* Caption */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white sm:p-5">
+                  <p className="mt-1 font-heading text-xl font-light sm:text-2xl">
+                    {cat.label}
+                  </p>
+                  <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-white/50 transition-opacity duration-300 group-hover:text-white/80">
+                    Explore →
+                  </p>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

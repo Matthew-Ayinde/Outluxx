@@ -1,4 +1,6 @@
 import mongoose, { Schema, model, models } from "mongoose";
+import { CATEGORY_SLUGS } from "@/lib/config/categories";
+import type { ProductCategory } from "@/types/commerce";
 
 export interface IProductImage {
   src: string;
@@ -25,7 +27,7 @@ export interface IProduct {
   slug: string;
   title: string;
   brand: string;
-  category: "tshirts" | "pants" | "armless" | "tank-tops";
+  category: ProductCategory;
   subcategory: string;
   price: number;
   compareAtPrice?: number;
@@ -53,7 +55,7 @@ const ProductSchema = new Schema<any>(
     slug: { type: String, required: true, unique: true, index: true },
     title: { type: String, required: true },
     brand: { type: String, required: true },
-    category: { type: String, required: true, enum: ["tshirts", "pants", "armless", "tank-tops"] },
+    category: { type: String, required: true, enum: [...CATEGORY_SLUGS] },
     subcategory: { type: String, required: true },
     price: { type: Number, required: true, min: 0 },
     compareAtPrice: { type: Number, min: 0 },

@@ -8,13 +8,7 @@ import { useCart } from "@/lib/store/CartContext";
 import { useSettings } from "@/lib/store/SettingsContext";
 import MobileNav from "@/components/navigation/MobileNav";
 import MiniCart from "@/components/cart/MiniCart";
-
-const primaryNav = [
-  { label: "T-Shirts",  href: "/tshirts" },
-  { label: "Pants",     href: "/pants" },
-  { label: "Armless",   href: "/armless" },
-  { label: "Tank Tops", href: "/tank-tops" },
-];
+import { primaryNavigation as primaryNav } from "@/lib/config/navigation";
 
 function DarkModeToggle() {
   const [dark, setDark] = useState(false);
@@ -98,7 +92,7 @@ export default function Header() {
           </Link>
 
           {/* Center nav — desktop */}
-          <nav className="hidden lg:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
             {primaryNav.map((item) => {
               const active = pathname === item.href;
               return (
@@ -106,7 +100,7 @@ export default function Header() {
                   key={item.href}
                   href={item.href}
                   data-active={active}
-                  className="nav-link text-[11px] font-medium uppercase tracking-[0.18em] text-foreground opacity-60 transition-opacity hover:opacity-100"
+                  className="nav-link whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.14em] text-foreground opacity-60 transition-opacity hover:opacity-100 xl:tracking-[0.18em]"
                 >
                   {item.label}
                 </Link>

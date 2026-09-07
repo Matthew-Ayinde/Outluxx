@@ -1,32 +1,11 @@
-import PLPTemplate from "@/components/plp/PLPTemplate";
-import { getProductsByCategory, getSiteMedia } from "@/lib/data/server";
-import { pageMetadata, breadcrumbJsonLd } from "@/lib/config/seo";
-import JsonLd from "@/components/seo/JsonLd";
+import CategoryPLP, { categoryMetadata } from "@/components/plp/CategoryPLP";
 
-export const metadata = pageMetadata({
-  title: "Pants",
-  description: "Shop premium tailored and casual pants at Outlxx",
-  path: "/pants",
-});
+export const metadata = categoryMetadata("pants");
 
 // Product data lives in MongoDB and changes via the admin panel — render per-request
 // instead of baking it into static HTML at build time.
 export const dynamic = "force-dynamic";
 
-export default async function PantsPage() {
-  const [products, media] = await Promise.all([
-    getProductsByCategory("pants"),
-    getSiteMedia(),
-  ]);
-  return (
-    <>
-      <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Pants", path: "/pants" }])} />
-      <PLPTemplate
-        title="Pants"
-        subtitle="Outlxx Essentials"
-        heroImage={media["plp-hero-pants"].url}
-        products={products}
-      />
-    </>
-  );
+export default function Page() {
+  return <CategoryPLP category="pants" />;
 }

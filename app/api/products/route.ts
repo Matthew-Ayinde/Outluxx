@@ -3,6 +3,7 @@ import { z } from "zod";
 import connectDB from "@/lib/db/mongoose";
 import { Product } from "@/lib/db/models/Product";
 import { ok, err, requireAdmin, isNextResponse } from "@/lib/utils/api";
+import { CATEGORY_SLUGS, normalizeCategorySlug } from "@/lib/config/categories";
 
 const ProductVariantSchema = z.object({
   label: z.string(),
@@ -32,7 +33,7 @@ const CreateProductSchema = z.object({
     .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "Slug must contain only lowercase letters, numbers, and hyphens"),
   title: z.string().min(1),
   brand: z.string().min(1),
-  category: z.enum(["tshirts", "pants", "armless", "tank-tops"]),
+  category: z.enum(CATEGORY_SLUGS),
   subcategory: z.string().min(1),
   price: z.number().positive(),
   compareAtPrice: z.number().positive().optional(),
@@ -66,7 +67,10 @@ export async function GET(req: NextRequest) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const filter: Record<string, any> = {};
-  if (category) filter.category = category;
+  // Retired slugs (e.g. ?category=tank-tops) resolve to their replacement so old
+  // integrations and bookmarks keep working after the taxonomy merge.
+  const resolvedCategory = normalizeCategorySlug(category);
+  if (resolvedCategory) filter.category = resolvedCategory;
   if (featured === "true") filter.isFeatured = true;
   if (sale === "true") filter.isSale = true;
   if (newArrivals === "true") filter.isNew = true;

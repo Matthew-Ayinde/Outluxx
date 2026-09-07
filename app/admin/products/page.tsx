@@ -6,16 +6,22 @@ import { formatMoney } from "@/lib/utils/format";
 import { ApiError } from "@/lib/api/client";
 import { IconPlus, IconSearch, IconPencil, IconTrash, IconClose, IconShirt, IconStar, IconUpload } from "@/components/admin/icons";
 import { SectionHeader, Panel, IconButton, Tag, Button, FilterTab } from "@/components/admin/ui";
+import { PRODUCT_CATEGORIES, CATEGORY_LABELS, CATEGORY_SLUGS } from "@/lib/config/categories";
 
 export const dynamic = "force-dynamic";
 
-const CATEGORY_FILTERS = ["All", "T-Shirts", "Pants", "Armless", "Tank Tops", "On Sale", "New"];
-const categorySlugMap: Record<string, string> = {
-  "T-Shirts": "tshirts", Pants: "pants", Armless: "armless", "Tank Tops": "tank-tops",
-};
-const categoryDisplayMap: Record<string, string> = {
-  tshirts: "T-Shirts", pants: "Pants", armless: "Armless", "tank-tops": "Tank Tops",
-};
+// Filter tabs: "All", one per category, then the cross-cutting status filters.
+const CATEGORY_FILTERS = [
+  "All",
+  ...PRODUCT_CATEGORIES.map((c) => c.label),
+  "On Sale",
+  "New",
+];
+const categorySlugMap: Record<string, string> = Object.fromEntries(
+  PRODUCT_CATEGORIES.map((c) => [c.label, c.slug])
+);
+const categoryDisplayMap: Record<string, string> = CATEGORY_LABELS;
+const DEFAULT_CATEGORY = CATEGORY_SLUGS[0];
 
 interface Product {
   _id: string; slug: string; title: string; brand: string; category: string;
@@ -232,7 +238,7 @@ function ProductModal({
     slug: product?.slug ?? "",
     title: product?.title ?? "",
     brand: product?.brand ?? "",
-    category: product?.category ?? "tshirts",
+    category: product?.category ?? DEFAULT_CATEGORY,
     subcategory: product?.subcategory ?? "",
     price: String(product?.price ?? ""),
     compareAtPrice: String(product?.compareAtPrice ?? ""),
@@ -335,7 +341,9 @@ function ProductModal({
         title: form.title,
         brand: form.brand,
         category: form.category,
-        subcategory: form.subcategory || form.category,
+        // Falling back to the category's display label (not its raw slug) keeps
+        // the storefront's Style facet readable when no subcategory is given.
+        subcategory: form.subcategory || categoryDisplayMap[form.category] || form.category,
         price: Number(form.price),
         compareAtPrice: form.compareAtPrice ? Number(form.compareAtPrice) : undefined,
         priceNGN: form.priceNGN ? Number(form.priceNGN) : undefined,
@@ -413,7 +421,9 @@ function ProductModal({
                 onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
                 className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
               >
-                {["tshirts", "pants", "armless", "tank-tops"].map((c) => <option key={c} value={c}>{c}</option>)}
+                {PRODUCT_CATEGORIES.map((c) => (
+                  <option key={c.slug} value={c.slug}>{c.label}</option>
+                ))}
               </select>
             </div>
           </div>

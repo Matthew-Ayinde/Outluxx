@@ -1,11 +1,11 @@
 import CategoryPLP, { categoryMetadata } from "@/components/plp/CategoryPLP";
 
-export const metadata = categoryMetadata("armless");
+export const metadata = categoryMetadata("tracksuit");
 
 // Product data lives in MongoDB and changes via the admin panel — render per-request
 // instead of baking it into static HTML at build time.
 export const dynamic = "force-dynamic";
 
 export default function Page() {
-  return <CategoryPLP category="armless" />;
+  return <CategoryPLP category="tracksuit" />;
 }

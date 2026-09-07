@@ -1,17 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getStoreSettings } from "@/lib/data/settings";
+import { footerShopLinks } from "@/lib/config/navigation";
 
 const columns = [
   {
     heading: "Shop",
-    links: [
-      { label: "T-Shirts",     href: "/tshirts" },
-      { label: "Pants",        href: "/pants" },
-      { label: "Armless",      href: "/armless" },
-      { label: "Tank Tops",    href: "/tank-tops" },
-      { label: "New Arrivals", href: "/new-arrivals" },
-    ],
+    links: footerShopLinks,
   },
   {
     heading: "Help",

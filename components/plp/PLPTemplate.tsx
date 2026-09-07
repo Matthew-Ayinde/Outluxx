@@ -14,9 +14,19 @@ type PLPTemplateProps = {
   products: Product[];
 };
 
+/** Presentational only — legacy rows stored slug-ish subcategories ("tank-tops"). */
+function prettySubcategory(value: string) {
+  return value
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 export default function PLPTemplate({ title, subtitle, heroImage, products }: PLPTemplateProps) {
   const [sort, setSort] = useState("featured");
   const [sizeFilter, setSizeFilter] = useState<string[]>([]);
+  const [subcategoryFilter, setSubcategoryFilter] = useState<string[]>([]);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const allSizes = useMemo(
@@ -24,8 +34,19 @@ export default function PLPTemplate({ title, subtitle, heroImage, products }: PL
     [products]
   );
 
+  // A category can hold several styles — Armless carries both "Armless" and the
+  // merged-in "Tank Tops", for instance — so expose subcategory as a facet
+  // whenever there is more than one to choose between.
+  // A single subcategory would filter to the whole listing, so it stays hidden.
+  const allSubcategories = useMemo(() => {
+    const distinct = [...new Set(products.map((p) => p.subcategory).filter(Boolean))].sort();
+    return distinct.length > 1 ? distinct : [];
+  }, [products]);
+
   const filtered = useMemo(() => {
     let result = [...products];
+    if (subcategoryFilter.length)
+      result = result.filter((p) => subcategoryFilter.includes(p.subcategory));
     if (sizeFilter.length)
       result = result.filter((p) => p.sizes.some((s) => sizeFilter.includes(s.label) && s.available));
     switch (sort) {
@@ -34,11 +55,17 @@ export default function PLPTemplate({ title, subtitle, heroImage, products }: PL
       case "newest":     result.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0)); break;
     }
     return result;
-  }, [products, sizeFilter, sort]);
+  }, [products, subcategoryFilter, sizeFilter, sort]);
 
   function toggleSize(s: string) {
     setSizeFilter((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]);
   }
+
+  function toggleSubcategory(s: string) {
+    setSubcategoryFilter((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]);
+  }
+
+  const activeFilterCount = sizeFilter.length + subcategoryFilter.length;
 
   return (
     <div className="bg-background">
@@ -81,38 +108,70 @@ export default function PLPTemplate({ title, subtitle, heroImage, products }: PL
                 <path d="M1 2h12M3 6h8M5 10h4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
               </svg>
               Filter
+              {activeFilterCount > 0 && (
+                <span className="ml-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-foreground px-1 text-[9px] font-bold text-background">
+                  {activeFilterCount}
+                </span>
+              )}
             </button>
             <span className="text-xs text-muted">{filtered.length} pieces</span>
           </div>
           <SortDropdown value={sort} onChange={setSort} count={filtered.length} />
         </div>
 
-        {/* Size filter strip */}
-        {mobileFiltersOpen && allSizes.length > 0 && (
-          <div className="mb-8 flex flex-wrap items-center gap-2 border-b border-border pb-6">
-            <p className="mr-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
-              Size
-            </p>
-            {allSizes.map((s) => (
+        {/* Filter strips */}
+        {mobileFiltersOpen && (allSizes.length > 0 || allSubcategories.length > 1) && (
+          <div className="mb-8 space-y-4 border-b border-border pb-6">
+            {allSubcategories.length > 1 && (
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="mr-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
+                  Style
+                </p>
+                {allSubcategories.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => toggleSubcategory(s)}
+                    className={[
+                      "border px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider transition-colors",
+                      subcategoryFilter.includes(s)
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-border text-foreground hover:border-foreground",
+                    ].join(" ")}
+                  >
+                    {prettySubcategory(s)}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {allSizes.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="mr-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
+                  Size
+                </p>
+                {allSizes.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => toggleSize(s)}
+                    className={[
+                      "border px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider transition-colors",
+                      sizeFilter.includes(s)
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-border text-foreground hover:border-foreground",
+                    ].join(" ")}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {activeFilterCount > 0 && (
               <button
-                key={s}
-                onClick={() => toggleSize(s)}
-                className={[
-                  "border px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider transition-colors",
-                  sizeFilter.includes(s)
-                    ? "border-foreground bg-foreground text-background"
-                    : "border-border text-foreground hover:border-foreground",
-                ].join(" ")}
+                onClick={() => { setSizeFilter([]); setSubcategoryFilter([]); }}
+                className="text-[10px] text-muted underline underline-offset-2 hover:opacity-100 transition-opacity opacity-70"
               >
-                {s}
-              </button>
-            ))}
-            {sizeFilter.length > 0 && (
-              <button
-                onClick={() => setSizeFilter([])}
-                className="ml-1 text-[10px] text-muted underline underline-offset-2 hover:opacity-100 transition-opacity opacity-70"
-              >
-                Clear
+                Clear all
               </button>
             )}
           </div>

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/config/seo";
 import { getAllProducts } from "@/lib/data/server";
+import { PRODUCT_CATEGORIES } from "@/lib/config/categories";
 
 const STATIC_ROUTES: Array<{
   path: string;
@@ -8,10 +9,11 @@ const STATIC_ROUTES: Array<{
   priority: number;
 }> = [
   { path: "/", changeFrequency: "daily", priority: 1 },
-  { path: "/tshirts", changeFrequency: "daily", priority: 0.8 },
-  { path: "/pants", changeFrequency: "daily", priority: 0.8 },
-  { path: "/armless", changeFrequency: "daily", priority: 0.8 },
-  { path: "/tank-tops", changeFrequency: "daily", priority: 0.8 },
+  ...PRODUCT_CATEGORIES.map((c) => ({
+    path: c.path,
+    changeFrequency: "daily" as const,
+    priority: 0.8,
+  })),
   { path: "/new-arrivals", changeFrequency: "daily", priority: 0.8 },
   { path: "/sale", changeFrequency: "daily", priority: 0.8 },
   { path: "/about", changeFrequency: "monthly", priority: 0.5 },

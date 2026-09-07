@@ -4,25 +4,17 @@ import { Product } from "@/lib/db/models/Product";
 import { formatMoney } from "@/lib/utils/format";
 import { IconCard, IconChartBar, IconReceipt, IconShirt, IconTag } from "@/components/admin/icons";
 import { Panel, SectionHeader, StatCard } from "@/components/admin/ui";
+import { getCategory } from "@/lib/config/categories";
 
 // Fixed categorical identity colours (never cycled/reassigned by rank) —
-// keeps each product category the same hue everywhere it appears.
-const CATEGORY_COLORS: Record<string, string> = {
-  tshirts: "#2a78d6",
-  pants: "#eb6834",
-  armless: "#1baf7a",
-  "tank-tops": "#eda100",
-};
-
-
-const CATEGORY_LABELS: Record<string, string> = {
-  tshirts: "T-Shirts",
-  pants: "Pants",
-  armless: "Armless",
-  "tank-tops": "Tank Tops",
-};
+// keeps each product category the same hue everywhere it appears. Defined
+// alongside the category itself in lib/config/categories.ts.
 function categoryColor(category: string) {
-  return CATEGORY_COLORS[category] ?? "#a1a1aa";
+  return getCategory(category)?.color ?? "#a1a1aa";
+}
+
+function categoryLabel(category: string) {
+  return getCategory(category)?.label ?? category;
 }
 
 const STATUS_DOT: Record<string, string> = {
@@ -222,7 +214,7 @@ export default async function AdminAnalyticsPage() {
                       <div className="mb-1.5 flex items-center justify-between text-xs">
                         <span className="flex items-center gap-1.5 font-medium">
                           <span className="h-2 w-2 rounded-full" style={{ backgroundColor: color }} />
-                          {CATEGORY_LABELS[category] ?? category}
+                          {categoryLabel(category)}
                         </span>
                         <span className="font-semibold tabular-nums">{formatMoney(revenue, "GBP")}</span>
                       </div>

@@ -1,9 +1,11 @@
 export const routes = {
   home: "/",
   tshirts: "/tshirts",
-  pants: "/pants",
+  /** Armless / Tank Tops — the retired /tank-tops route redirects here. */
   armless: "/armless",
-  tankTops: "/tank-tops",
+  pants: "/pants",
+  tracksuit: "/tracksuit",
+  others: "/others",
   newArrivals: "/new-arrivals",
   sale: "/sale",
   cart: "/cart",

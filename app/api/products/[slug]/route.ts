@@ -4,6 +4,7 @@ import { z } from "zod";
 import connectDB from "@/lib/db/mongoose";
 import { Product } from "@/lib/db/models/Product";
 import { ok, err, requireAdmin, isNextResponse } from "@/lib/utils/api";
+import { CATEGORY_SLUGS } from "@/lib/config/categories";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -32,7 +33,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
   const UpdateSchema = z.object({
     title: z.string().min(1).optional(),
     brand: z.string().min(1).optional(),
-    category: z.enum(["tshirts", "pants", "armless", "tank-tops"]).optional(),
+    category: z.enum(CATEGORY_SLUGS).optional(),
     subcategory: z.string().optional(),
     price: z.number().positive().optional(),
     compareAtPrice: z.number().positive().nullable().optional(),

@@ -27,7 +27,7 @@ if (!MONGODB_URI) {
 const ProductSchema = new mongoose.Schema({
   slug: { type: String, required: true, unique: true },
   title: String, brand: String,
-  category: { type: String, enum: ["tshirts", "pants", "armless", "tank-tops"] },
+  category: { type: String, enum: ["tshirts", "armless", "pants", "tracksuit", "others"] },
   subcategory: String,
   price: Number, compareAtPrice: Number,
   stock: { type: Number, default: 100 },
@@ -146,7 +146,7 @@ const PRODUCTS = [
   {
     slug: "pima-muscle-tank",
     title: "Pima Muscle Tank", brand: "Forma Studio",
-    category: "tank-tops", subcategory: "Tank Tops",
+    category: "armless", subcategory: "Tank Tops",
     price: 145, isNew: false, isSale: false, isFeatured: true,
     images: [
       { src: `${B}/olx-tt1a/600/800`, alt: "Pima Muscle Tank – front" },
