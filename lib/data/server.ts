@@ -57,9 +57,13 @@ export async function getProductsByCategory(category: ProductCategory): Promise<
   return docs.map(toProduct);
 }
 
-export async function getFeaturedProducts(limit = 8): Promise<Product[]> {
+export async function getFeaturedProducts(limit?: number): Promise<Product[]> {
   await connectDB();
-  const docs = await ProductModel.find({ isFeatured: true }).limit(limit).lean<LeanProduct[]>();
+  const query = ProductModel.find({ isFeatured: true });
+  if (typeof limit === "number") {
+    query.limit(limit);
+  }
+  const docs = await query.lean<LeanProduct[]>();
   return docs.map(toProduct);
 }
 

@@ -5,7 +5,7 @@ import JsonLd from "@/components/seo/JsonLd";
 
 export const metadata = pageMetadata({
   title: "Pants",
-  description: "Shop premium tailored and casual pants at Outlxx — wool, linen, and cashmere silhouettes.",
+  description: "Shop premium tailored and casual pants at Outlxx",
   path: "/pants",
 });
 

@@ -93,7 +93,7 @@ export default async function Homepage() {
               {/* Caption */}
               <div className="absolute bottom-0 left-0 right-0 p-4 text-white sm:p-5">
                 <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/60">
-                  {cat.sub}
+                  {/* {cat.sub} */}
                 </p>
                 <p className="mt-1 font-heading text-xl font-light sm:text-2xl">
                   {cat.label}
