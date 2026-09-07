@@ -75,6 +75,17 @@ export const PRODUCT_CATEGORIES: readonly CategoryDef[] = [
     color: "#7c5cf0",
   },
   {
+    slug: "jacket",
+    label: "Jacket",
+    navLabel: "Jacket",
+    path: "/jacket",
+    subtitle: "Outlxx Essentials",
+    description: "Shop jackets at Outlxx — outerwear in wool, leather and waxed cotton, cut for layering.",
+    gridSlot: "category-jacket",
+    heroSlot: "plp-hero-jacket",
+    color: "#d6336c",
+  },
+  {
     slug: "others",
     label: "Others",
     navLabel: "Others",
@@ -92,7 +103,7 @@ export const PRODUCT_CATEGORIES: readonly CategoryDef[] = [
  * PRODUCT_CATEGORIES) because `z.enum` and the Mongoose enum need the literal
  * types at compile time. The `satisfies` clauses below keep it honest.
  */
-export const CATEGORY_SLUGS = ["tshirts", "armless", "pants", "tracksuit", "others"] as const;
+export const CATEGORY_SLUGS = ["tshirts", "armless", "pants", "tracksuit", "jacket", "others"] as const;
 
 // Compile-time guards: the tuple and the definitions must stay in lockstep, and
 // every member of ProductCategory must have exactly one definition.

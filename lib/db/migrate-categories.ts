@@ -27,7 +27,7 @@ if (!MONGODB_URI) {
 
 // Kept in step with lib/config/categories.ts. Declared inline (rather than
 // imported) so the script runs under plain tsx without Next.js path resolution.
-const LIVE_CATEGORIES = ["tshirts", "armless", "pants", "tracksuit", "others"];
+const LIVE_CATEGORIES = ["tshirts", "armless", "pants", "tracksuit", "jacket", "others"];
 const MERGES: Array<{ from: string; to: string; subcategory: string }> = [
   { from: "tank-tops", to: "armless", subcategory: "Tank Tops" },
   { from: "tanktops", to: "armless", subcategory: "Tank Tops" },

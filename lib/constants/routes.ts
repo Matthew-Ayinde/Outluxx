@@ -5,6 +5,7 @@ export const routes = {
   armless: "/armless",
   pants: "/pants",
   tracksuit: "/tracksuit",
+  jacket: "/jacket",
   others: "/others",
   newArrivals: "/new-arrivals",
   sale: "/sale",

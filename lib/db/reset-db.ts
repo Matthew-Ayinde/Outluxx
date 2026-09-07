@@ -27,7 +27,7 @@ if (!MONGODB_URI) {
 const ProductSchema = new mongoose.Schema({
   slug: { type: String, required: true, unique: true },
   title: String, brand: String,
-  category: { type: String, enum: ["tshirts", "armless", "pants", "tracksuit", "others"] },
+  category: { type: String, enum: ["tshirts", "armless", "pants", "tracksuit", "jacket", "others"] },
   subcategory: String,
   price: Number, compareAtPrice: Number,
   stock: { type: Number, default: 100 },

@@ -2,7 +2,7 @@
  * Live product taxonomy. `armless` covers armless *and* tank tops — the retired
  * `tank-tops` category was merged into it (see lib/config/categories.ts).
  */
-export type ProductCategory = "tshirts" | "armless" | "pants" | "tracksuit" | "others";
+export type ProductCategory = "tshirts" | "armless" | "pants" | "tracksuit" | "jacket" | "others";
 
 export type ProductVariant = {
   label: string;

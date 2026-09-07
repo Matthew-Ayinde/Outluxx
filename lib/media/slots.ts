@@ -78,6 +78,14 @@ export const MEDIA_SLOTS: MediaSlotDef[] = [
     defaultUrl: "/media/img6.PNG",
   },
   {
+    id: "category-jacket",
+    label: "Jacket Category",
+    group: "Category Grid",
+    allowed: ["image"],
+    defaultType: "image",
+    defaultUrl: "/media/img1.PNG",
+  },
+  {
     id: "category-others",
     label: "Others Category",
     group: "Category Grid",
@@ -116,6 +124,14 @@ export const MEDIA_SLOTS: MediaSlotDef[] = [
     allowed: ["image"],
     defaultType: "image",
     defaultUrl: "https://picsum.photos/seed/olx-hero-tracksuit/1600/600",
+  },
+  {
+    id: "plp-hero-jacket",
+    label: "Jacket Page Hero",
+    group: "Category Page Hero",
+    allowed: ["image"],
+    defaultType: "image",
+    defaultUrl: "https://picsum.photos/seed/olx-hero-jacket/1600/600",
   },
   {
     id: "plp-hero-others",

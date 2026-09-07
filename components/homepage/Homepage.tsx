@@ -6,6 +6,22 @@ import BrandStatement from "@/components/homepage/BrandStatement";
 import { getSiteMedia } from "@/lib/data/server";
 import { PRODUCT_CATEGORIES } from "@/lib/config/categories";
 
+// Desktop column count, chosen so the category grid never ends on a dangling
+// card. Spelled out as literal classes because Tailwind scans source text and
+// cannot see a class name built at runtime.
+const LG_GRID_COLS: Record<number, string> = {
+  1: "lg:grid-cols-1",
+  2: "lg:grid-cols-2",
+  3: "lg:grid-cols-3",
+  4: "lg:grid-cols-4",
+  5: "lg:grid-cols-5",
+  6: "lg:grid-cols-6",
+  7: "lg:grid-cols-4",
+  8: "lg:grid-cols-4",
+  9: "lg:grid-cols-3",
+};
+const lgGridCols = LG_GRID_COLS[PRODUCT_CATEGORIES.length] ?? "lg:grid-cols-4";
+
 const trustItems = [
   { label: "Authenticated Luxury", sub: "Every piece verified" },
   { label: "10-Day Returns",       sub: "Free, no questions asked" },
@@ -40,7 +56,7 @@ export default async function Homepage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4">
+        <div className={`grid grid-cols-2 gap-3 sm:grid-cols-3 lg:gap-4 ${lgGridCols}`}>
           {PRODUCT_CATEGORIES.map((cat, i) => {
             // With an odd number of categories the final card would sit alone in
             // the 2-up mobile grid — let it run full width instead.
